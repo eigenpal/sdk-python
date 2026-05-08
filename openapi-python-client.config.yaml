@@ -1,0 +1,14 @@
+# Configuration for `openapi-python-client`. Used by scripts/codegen.sh.
+#
+# Output: src/eigenpal/_generated/  (committed; ships with the published wheel)
+#
+# Naming: we override the auto-generated package name so the result lives at
+# eigenpal._generated instead of the spec-derived default. The hand-written
+# `eigenpal.client.Client` facade re-exports the relevant generated types
+# under the public `eigenpal` namespace.
+
+project_name_override: _generated
+package_name_override: _generated
+field_constraints: true
+use_path_prefixes_for_title_model_names: true
+post_hooks: []
