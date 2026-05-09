@@ -12,7 +12,7 @@ import pytest
 import respx
 
 from eigenpal import (
-    Eigenpal,
+    EigenpalClient,
     EigenpalAuthError,
     EigenpalNotFoundError,
     EigenpalRateLimitError,
@@ -21,13 +21,13 @@ from eigenpal import (
 
 
 @pytest.fixture
-def client() -> Eigenpal:
-    return Eigenpal(api_key="eg_test_key", base_url="http://localhost:3000")
+def client() -> EigenpalClient:
+    return EigenpalClient(api_key="eg_test_key", base_url="http://localhost:3000")
 
 
 @respx.mock
-def test_attaches_bearer_auth(client: Eigenpal) -> None:
-    route = respx.get("http://localhost:3000/v1/workflows").mock(
+def test_attaches_bearer_auth(client: EigenpalClient) -> None:
+    route = respx.get("http://localhost:3000/api/v1/workflows").mock(
         return_value=httpx.Response(
             200, json={"data": [], "total": 0, "limit": 50, "offset": 0}
         )
@@ -40,8 +40,27 @@ def test_attaches_bearer_auth(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_workflows_run_returns_execution_id(client: Eigenpal) -> None:
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+def test_attaches_sdk_telemetry_headers(client: EigenpalClient) -> None:
+    route = respx.get("http://localhost:3000/api/v1/workflows").mock(
+        return_value=httpx.Response(
+            200, json={"data": [], "total": 0, "limit": 50, "offset": 0}
+        )
+    )
+
+    client.workflows.list()
+
+    h = route.calls.last.request.headers
+    assert h["x-eigenpal-sdk"] == "python"
+    assert "x-eigenpal-sdk-version" in h
+    # Runtime tag is "python-X.Y.Z" or "pypy-X.Y.Z"
+    assert h["x-eigenpal-sdk-runtime"].startswith(("python-", "pypy-"))
+    assert "-" in h["x-eigenpal-sdk-os"]
+    assert h["user-agent"].startswith("eigenpal-sdk-python/")
+
+
+@respx.mock
+def test_workflows_run_returns_execution_id(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 
@@ -54,8 +73,8 @@ def test_workflows_run_returns_execution_id(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_workflows_run_with_wait_for_completion(client: Eigenpal) -> None:
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+def test_workflows_run_with_wait_for_completion(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(
             201,
             json={
@@ -73,8 +92,42 @@ def test_workflows_run_with_wait_for_completion(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_401_raises_auth_error(client: Eigenpal) -> None:
-    respx.get("http://localhost:3000/v1/workflows").mock(
+def test_agents_update_hits_update_endpoint(client: EigenpalClient) -> None:
+    route = respx.patch("http://localhost:3000/api/v1/agents/invoice-agent").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "agent": {
+                    "id": "awf_123",
+                    "slug": "invoice-agent",
+                    "name": "Invoice Agent",
+                    "description": "Updated",
+                    "config": {"triggers": {"api": {"enabled": True}}},
+                    "createdAt": "2026-01-01T00:00:00.000Z",
+                    "updatedAt": "2026-01-02T00:00:00.000Z",
+                }
+            },
+        )
+    )
+
+    result = client.agents.update(
+        "invoice-agent",
+        description="Updated",
+        config={"triggers": {"api": {"enabled": True}}},
+    )
+
+    assert route.called
+    assert result.agent.description == "Updated"
+    body = json.loads(route.calls.last.request.content.decode())
+    assert body == {
+        "description": "Updated",
+        "config": {"triggers": {"api": {"enabled": True}}},
+    }
+
+
+@respx.mock
+def test_401_raises_auth_error(client: EigenpalClient) -> None:
+    respx.get("http://localhost:3000/api/v1/workflows").mock(
         return_value=httpx.Response(
             401,
             json={
@@ -91,8 +144,8 @@ def test_401_raises_auth_error(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_404_raises_not_found_error(client: Eigenpal) -> None:
-    respx.get("http://localhost:3000/v1/workflows/wf_missing").mock(
+def test_404_raises_not_found_error(client: EigenpalClient) -> None:
+    respx.get("http://localhost:3000/api/v1/workflows/wf_missing").mock(
         return_value=httpx.Response(
             404,
             json={
@@ -109,8 +162,8 @@ def test_404_raises_not_found_error(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_429_raises_rate_limit_error_with_retry_after(client: Eigenpal) -> None:
-    respx.get("http://localhost:3000/v1/workflows").mock(
+def test_429_raises_rate_limit_error_with_retry_after(client: EigenpalClient) -> None:
+    respx.get("http://localhost:3000/api/v1/workflows").mock(
         return_value=httpx.Response(
             429,
             headers={"retry-after": "12"},
@@ -130,8 +183,8 @@ def test_429_raises_rate_limit_error_with_retry_after(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_400_raises_validation_error_with_issues(client: Eigenpal) -> None:
-    respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+def test_400_raises_validation_error_with_issues(client: EigenpalClient) -> None:
+    respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(
             400,
             json={
@@ -155,8 +208,8 @@ def test_400_raises_validation_error_with_issues(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_executions_cancel(client: Eigenpal) -> None:
-    route = respx.post("http://localhost:3000/v1/executions/exec_pq/cancel").mock(
+def test_executions_cancel(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/workflows/executions/exec_pq/cancel").mock(
         return_value=httpx.Response(
             200,
             json={
@@ -167,7 +220,7 @@ def test_executions_cancel(client: Eigenpal) -> None:
         )
     )
 
-    result = client.executions.cancel("exec_pq")
+    result = client.workflows.executions.cancel("exec_pq")
 
     assert route.called
     assert result.execution_id == "exec_pq"
@@ -175,12 +228,12 @@ def test_executions_cancel(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_run_and_wait_polls_until_terminal(client: Eigenpal) -> None:
-    respx.post("http://localhost:3000/v1/workflows/wf_abc/run").mock(
+def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
+    respx.post("http://localhost:3000/api/v1/workflows/wf_abc/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_pq"})
     )
     # First poll: running. Second: completed.
-    poll_route = respx.get("http://localhost:3000/v1/executions/exec_pq").mock(
+    poll_route = respx.get("http://localhost:3000/api/v1/workflows/executions/exec_pq").mock(
         side_effect=[
             httpx.Response(
                 200,
@@ -203,7 +256,7 @@ def test_run_and_wait_polls_until_terminal(client: Eigenpal) -> None:
         ]
     )
 
-    result = client.executions.run_and_wait(
+    result = client.workflows.executions.run_and_wait(
         "wf_abc", input={"x": 1}, poll_interval_seconds=0.01, timeout_seconds=5.0
     )
 

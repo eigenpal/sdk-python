@@ -12,20 +12,20 @@ import httpx
 import pytest
 import respx
 
-from eigenpal import Eigenpal
+from eigenpal import EigenpalClient
 
 
 @pytest.fixture
-def client() -> Eigenpal:
-    return Eigenpal(api_key="eg_test_key", base_url="http://localhost:3000")
+def client() -> EigenpalClient:
+    return EigenpalClient(api_key="eg_test_key", base_url="http://localhost:3000")
 
 
 @respx.mock
-def test_path_input_uploads_as_multipart(tmp_path: Path, client: Eigenpal) -> None:
+def test_path_input_uploads_as_multipart(tmp_path: Path, client: EigenpalClient) -> None:
     pdf = tmp_path / "contract.pdf"
     pdf.write_bytes(b"%PDF-1.4 fake content")
 
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 
@@ -48,8 +48,8 @@ def test_path_input_uploads_as_multipart(tmp_path: Path, client: Eigenpal) -> No
 
 
 @respx.mock
-def test_explicit_descriptor_with_raw_bytes(client: Eigenpal) -> None:
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+def test_explicit_descriptor_with_raw_bytes(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 
@@ -70,11 +70,11 @@ def test_explicit_descriptor_with_raw_bytes(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_file_like_object_uploads(tmp_path: Path, client: Eigenpal) -> None:
+def test_file_like_object_uploads(tmp_path: Path, client: EigenpalClient) -> None:
     fpath = tmp_path / "policy.txt"
     fpath.write_bytes(b"hello world")
 
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 
@@ -87,8 +87,8 @@ def test_file_like_object_uploads(tmp_path: Path, client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_no_files_uses_json(client: Eigenpal) -> None:
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+def test_no_files_uses_json(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 
@@ -100,13 +100,13 @@ def test_no_files_uses_json(client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_multiple_files_all_present(tmp_path: Path, client: Eigenpal) -> None:
+def test_multiple_files_all_present(tmp_path: Path, client: EigenpalClient) -> None:
     a = tmp_path / "a.pdf"
     a.write_bytes(b"a")
     b = tmp_path / "b.pdf"
     b.write_bytes(b"b")
 
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 
@@ -118,8 +118,8 @@ def test_multiple_files_all_present(tmp_path: Path, client: Eigenpal) -> None:
 
 
 @respx.mock
-def test_bytesio_uploads_with_default_filename(client: Eigenpal) -> None:
-    route = respx.post("http://localhost:3000/v1/workflows/wf_xyz/run").mock(
+def test_bytesio_uploads_with_default_filename(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
         return_value=httpx.Response(201, json={"executionId": "exec_abc"})
     )
 

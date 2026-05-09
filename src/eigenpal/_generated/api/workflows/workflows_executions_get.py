@@ -9,9 +9,9 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.execution_status_response import ExecutionStatusResponse
 from ...models.execution_summary import ExecutionSummary
-from ...models.executions_get_include_steps import ExecutionsGetIncludeSteps
+from ...models.workflow_execution_status_response import WorkflowExecutionStatusResponse
+from ...models.workflows_executions_get_include_steps import WorkflowsExecutionsGetIncludeSteps
 from ...types import UNSET, Unset
 from typing import cast
 
@@ -20,7 +20,7 @@ from typing import cast
 def _get_kwargs(
     execution_id: str,
     *,
-    include_steps: ExecutionsGetIncludeSteps | Unset = UNSET,
+    include_steps: WorkflowsExecutionsGetIncludeSteps | Unset = UNSET,
 
 ) -> dict[str, Any]:
     
@@ -41,7 +41,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/v1/executions/{execution_id}".format(execution_id=quote(str(execution_id), safe=""),),
+        "url": "/api/v1/workflows/executions/{execution_id}".format(execution_id=quote(str(execution_id), safe=""),),
         "params": params,
     }
 
@@ -50,13 +50,13 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse | None:
     if response.status_code == 200:
-        def _parse_response_200(data: object) -> ExecutionStatusResponse | ExecutionSummary:
+        def _parse_response_200(data: object) -> ExecutionSummary | WorkflowExecutionStatusResponse:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                response_200_type_0 = ExecutionStatusResponse.from_dict(data)
+                response_200_type_0 = WorkflowExecutionStatusResponse.from_dict(data)
 
 
 
@@ -123,7 +123,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -136,26 +136,25 @@ def sync_detailed(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include_steps: ExecutionsGetIncludeSteps | Unset = UNSET,
+    include_steps: WorkflowsExecutionsGetIncludeSteps | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary]:
-    """ Get execution status
+) -> Response[ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse]:
+    """ Get workflow execution status
 
-     Returns the current status, completion timestamps, and (when terminal) the result or error for a
-    single execution. Pass `includeSteps=true` for the per-step artifact payload (heavier; intended for
-    debugging).
+     Returns the current status, completion timestamps, and result or error for a workflow execution.
+    Pass `includeSteps=true` for the per-step artifact payload.
 
     Args:
         execution_id (str): Execution id (e.g. exec_xyz)
-        include_steps (ExecutionsGetIncludeSteps | Unset): When "true", returns the full per-step
-            execution payload instead of the summary
+        include_steps (WorkflowsExecutionsGetIncludeSteps | Unset): When "true", returns the full
+            per-step execution payload instead of the summary
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary]
+        Response[ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse]
      """
 
 
@@ -175,26 +174,25 @@ def sync(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include_steps: ExecutionsGetIncludeSteps | Unset = UNSET,
+    include_steps: WorkflowsExecutionsGetIncludeSteps | Unset = UNSET,
 
-) -> ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary | None:
-    """ Get execution status
+) -> ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse | None:
+    """ Get workflow execution status
 
-     Returns the current status, completion timestamps, and (when terminal) the result or error for a
-    single execution. Pass `includeSteps=true` for the per-step artifact payload (heavier; intended for
-    debugging).
+     Returns the current status, completion timestamps, and result or error for a workflow execution.
+    Pass `includeSteps=true` for the per-step artifact payload.
 
     Args:
         execution_id (str): Execution id (e.g. exec_xyz)
-        include_steps (ExecutionsGetIncludeSteps | Unset): When "true", returns the full per-step
-            execution payload instead of the summary
+        include_steps (WorkflowsExecutionsGetIncludeSteps | Unset): When "true", returns the full
+            per-step execution payload instead of the summary
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary
+        ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse
      """
 
 
@@ -209,26 +207,25 @@ async def asyncio_detailed(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include_steps: ExecutionsGetIncludeSteps | Unset = UNSET,
+    include_steps: WorkflowsExecutionsGetIncludeSteps | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary]:
-    """ Get execution status
+) -> Response[ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse]:
+    """ Get workflow execution status
 
-     Returns the current status, completion timestamps, and (when terminal) the result or error for a
-    single execution. Pass `includeSteps=true` for the per-step artifact payload (heavier; intended for
-    debugging).
+     Returns the current status, completion timestamps, and result or error for a workflow execution.
+    Pass `includeSteps=true` for the per-step artifact payload.
 
     Args:
         execution_id (str): Execution id (e.g. exec_xyz)
-        include_steps (ExecutionsGetIncludeSteps | Unset): When "true", returns the full per-step
-            execution payload instead of the summary
+        include_steps (WorkflowsExecutionsGetIncludeSteps | Unset): When "true", returns the full
+            per-step execution payload instead of the summary
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary]
+        Response[ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse]
      """
 
 
@@ -248,26 +245,25 @@ async def asyncio(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include_steps: ExecutionsGetIncludeSteps | Unset = UNSET,
+    include_steps: WorkflowsExecutionsGetIncludeSteps | Unset = UNSET,
 
-) -> ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary | None:
-    """ Get execution status
+) -> ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse | None:
+    """ Get workflow execution status
 
-     Returns the current status, completion timestamps, and (when terminal) the result or error for a
-    single execution. Pass `includeSteps=true` for the per-step artifact payload (heavier; intended for
-    debugging).
+     Returns the current status, completion timestamps, and result or error for a workflow execution.
+    Pass `includeSteps=true` for the per-step artifact payload.
 
     Args:
         execution_id (str): Execution id (e.g. exec_xyz)
-        include_steps (ExecutionsGetIncludeSteps | Unset): When "true", returns the full per-step
-            execution payload instead of the summary
+        include_steps (WorkflowsExecutionsGetIncludeSteps | Unset): When "true", returns the full
+            per-step execution payload instead of the summary
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ExecutionStatusResponse | ExecutionSummary
+        ApiErrorEnvelope | ExecutionSummary | WorkflowExecutionStatusResponse
      """
 
 

@@ -24,25 +24,20 @@ T = TypeVar("T", bound="WorkflowVersion")
 class WorkflowVersion:
     """ 
         Attributes:
-            id (str):
+            id (str): Version id (e.g. wfh_xyz). Stable for SDK pinning.
             workflow_id (str):
-            version (None | str | Unset):
-            yaml_content (str | Unset):
-            definition (Any | Unset):
-            message (None | str | Unset):
+            version (None | str | Unset): Release tag for this version.
+            yaml_content (str | Unset): Workflow YAML at this version.
+            is_current (bool | Unset): True when this is the workflow’s currently published version.
             created_at (str | Unset):
-            is_current_version (bool | Unset):
      """
 
     id: str
     workflow_id: str
     version: None | str | Unset = UNSET
     yaml_content: str | Unset = UNSET
-    definition: Any | Unset = UNSET
-    message: None | str | Unset = UNSET
+    is_current: bool | Unset = UNSET
     created_at: str | Unset = UNSET
-    is_current_version: bool | Unset = UNSET
-    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
 
@@ -61,13 +56,7 @@ class WorkflowVersion:
 
         yaml_content = self.yaml_content
 
-        definition = self.definition
-
-        message: None | str | Unset
-        if isinstance(self.message, Unset):
-            message = UNSET
-        else:
-            message = self.message
+        is_current = self.is_current
 
         created_at: str | Unset
         if isinstance(self.created_at, Unset):
@@ -75,11 +64,9 @@ class WorkflowVersion:
         else:
             created_at = self.created_at
 
-        is_current_version = self.is_current_version
-
 
         field_dict: dict[str, Any] = {}
-        field_dict.update(self.additional_properties)
+
         field_dict.update({
             "id": id,
             "workflowId": workflow_id,
@@ -88,14 +75,10 @@ class WorkflowVersion:
             field_dict["version"] = version
         if yaml_content is not UNSET:
             field_dict["yamlContent"] = yaml_content
-        if definition is not UNSET:
-            field_dict["definition"] = definition
-        if message is not UNSET:
-            field_dict["message"] = message
+        if is_current is not UNSET:
+            field_dict["isCurrent"] = is_current
         if created_at is not UNSET:
             field_dict["createdAt"] = created_at
-        if is_current_version is not UNSET:
-            field_dict["isCurrentVersion"] = is_current_version
 
         return field_dict
 
@@ -120,17 +103,7 @@ class WorkflowVersion:
 
         yaml_content = d.pop("yamlContent", UNSET)
 
-        definition = d.pop("definition", UNSET)
-
-        def _parse_message(data: object) -> None | str | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            return cast(None | str | Unset, data)
-
-        message = _parse_message(d.pop("message", UNSET))
-
+        is_current = d.pop("isCurrent", UNSET)
 
         def _parse_created_at(data: object) -> str | Unset:
             if isinstance(data, Unset):
@@ -140,35 +113,14 @@ class WorkflowVersion:
         created_at = _parse_created_at(d.pop("createdAt", UNSET))
 
 
-        is_current_version = d.pop("isCurrentVersion", UNSET)
-
         workflow_version = cls(
             id=id,
             workflow_id=workflow_id,
             version=version,
             yaml_content=yaml_content,
-            definition=definition,
-            message=message,
+            is_current=is_current,
             created_at=created_at,
-            is_current_version=is_current_version,
         )
 
-
-        workflow_version.additional_properties = d
         return workflow_version
 
-    @property
-    def additional_keys(self) -> list[str]:
-        return list(self.additional_properties.keys())
-
-    def __getitem__(self, key: str) -> Any:
-        return self.additional_properties[key]
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.additional_properties[key] = value
-
-    def __delitem__(self, key: str) -> None:
-        del self.additional_properties[key]
-
-    def __contains__(self, key: str) -> bool:
-        return key in self.additional_properties

@@ -1,4 +1,4 @@
-"""The hand-written `Eigenpal` facade.
+"""The hand-written `EigenpalClient` facade.
 
 Wraps the auto-generated `AuthenticatedClient` from
 `eigenpal._generated` with a friendlier API: namespaced resources,
@@ -10,34 +10,62 @@ from __future__ import annotations
 import json
 import os
 import time
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import httpx
 
 from eigenpal._files import has_file_input, is_file_input, to_upload_tuple
-from eigenpal._generated.api.executions import (
-    executions_cancel,
-    executions_get,
-    executions_list,
+from eigenpal._generated.api.agents import (
+    agents_create,
+    agents_executions_cancel,
+    agents_executions_get,
+    agents_executions_list,
+    agents_get,
+    agents_list,
+    agents_run,
+    agents_update,
 )
 from eigenpal._generated.api.workflows import (
     workflows_get,
+    workflows_executions_cancel,
+    workflows_executions_get,
+    workflows_executions_list,
     workflows_list,
     workflows_run,
     workflows_versions_list,
 )
 from eigenpal._generated.client import AuthenticatedClient
-from eigenpal._generated.models.cancel_execution_response import CancelExecutionResponse
-from eigenpal._generated.models.execution_status_response import ExecutionStatusResponse
-from eigenpal._generated.models.executions_get_include_steps import ExecutionsGetIncludeSteps
-from eigenpal._generated.models.list_executions_response import ListExecutionsResponse
+from eigenpal._generated.models.agent_execution_response import AgentExecutionResponse
+from eigenpal._generated.models.cancel_agent_execution_response import CancelAgentExecutionResponse
+from eigenpal._generated.models.cancel_workflow_execution_response import (
+    CancelWorkflowExecutionResponse,
+)
+from eigenpal._generated.models.create_agent_body import CreateAgentBody
+from eigenpal._generated.models.create_agent_response import CreateAgentResponse
+from eigenpal._generated.models.get_agent_response import GetAgentResponse
+from eigenpal._generated.models.list_agent_executions_response import ListAgentExecutionsResponse
+from eigenpal._generated.models.list_agents_response import ListAgentsResponse
 from eigenpal._generated.models.list_versions_response import ListVersionsResponse
+from eigenpal._generated.models.list_workflow_executions_response import (
+    ListWorkflowExecutionsResponse,
+)
 from eigenpal._generated.models.list_workflows_response import ListWorkflowsResponse
+from eigenpal._generated.models.patch_agent_body import PatchAgentBody
+from eigenpal._generated.models.patch_agent_response import PatchAgentResponse
+from eigenpal._generated.models.run_agent_body import RunAgentBody
+from eigenpal._generated.models.run_agent_response import RunAgentResponse
 from eigenpal._generated.models.run_workflow_body import RunWorkflowBody
 from eigenpal._generated.models.run_workflow_response import RunWorkflowResponse
+from eigenpal._generated.models.workflow_execution_status_response import (
+    WorkflowExecutionStatusResponse,
+)
 from eigenpal._generated.models.workflow_summary import WorkflowSummary
+from eigenpal._generated.models.workflows_executions_get_include_steps import (
+    WorkflowsExecutionsGetIncludeSteps,
+)
 from eigenpal._generated.types import UNSET, Response, Unset
-from eigenpal.errors import EigenpalTimeoutError, error_from_response
+from eigenpal._telemetry import build_telemetry_headers
+from eigenpal.errors import EigenpalError, EigenpalTimeoutError, error_from_response
 
 DEFAULT_BASE_URL = "https://app.eigenpal.com"
 DEFAULT_TIMEOUT_SECONDS = 60.0
@@ -47,13 +75,58 @@ DEFAULT_RUN_AND_WAIT_TIMEOUT_SECONDS = 5 * 60.0
 TERMINAL_STATUSES = frozenset({"completed", "failed", "cancelled", "rejected"})
 
 
+def _assert_json_response(response: httpx.Response) -> None:
+    """Raise EigenpalError when the response body isn't JSON.
+
+    Mirrors the TS client's assertJsonResponse guard. Without this, a
+    misconfigured ``base_url`` pointed at an HTML host (the marketing
+    site, a misconfigured proxy) lets the auto-generated client crash
+    with a raw ``JSONDecodeError`` when it tries to parse the body —
+    the same footgun that hid the @eigenpal/sdk@0.4.10 ``/v1`` bug.
+
+    Fires for both 2xx and error responses: a 4xx with HTML usually
+    means the URL never reached the API at all (e.g. example.com 404
+    page), and we want a typed error rather than a downstream
+    JSONDecodeError surfaced to the user.
+
+    Sync-only. Today no async API is exposed, so registering this on
+    httpx.AsyncClient would fire a "coroutine was never awaited"
+    warning. When we expose async, define an `async def` twin and stop
+    forwarding httpx_args verbatim — register the right hook per
+    client.
+    """
+    if response.status_code == 204:
+        return
+    content_type = (response.headers.get("content-type") or "").lower()
+    # Empty Content-Type can come from minimal proxies; tolerate it.
+    if content_type == "" or "json" in content_type:
+        return
+    raise EigenpalError(
+        f'Expected a JSON response from the API but got Content-Type "{content_type}". '
+        "This usually means `base_url` points at a non-API host (e.g. the marketing site or "
+        'a misconfigured proxy). Set `base_url` to your EigenPal instance root, '
+        'e.g. "https://app.eigenpal.com".',
+        status=response.status_code,
+    )
+
+
 def _opt(value: Any) -> Any:
     """Generated SDK takes UNSET (not None) for optional query params."""
     return UNSET if value is None else value
 
 
+def _csv(value: Optional[Union[str, list[str]]]) -> Optional[str]:
+    """Accept ``str`` or ``list[str]``; emit a comma-separated string for
+    the wire format (or ``None`` for "not provided")."""
+    if value is None:
+        return None
+    if isinstance(value, list):
+        return ",".join(value)
+    return value
+
+
 def _check_response(response: Response[Any]) -> Any:
-    """Raise a typed Eigenpal exception on non-2xx; return parsed body otherwise."""
+    """Raise a typed EigenPal exception on non-2xx; return parsed body otherwise."""
     if 200 <= response.status_code < 300:
         return response.parsed
 
@@ -74,11 +147,11 @@ def _check_response(response: Response[Any]) -> Any:
     raise error_from_response(response.status_code, envelope, retry_after)
 
 
-class Eigenpal:
+class EigenpalClient:
     """Top-level SDK client.
 
-    >>> client = Eigenpal()  # reads EIGENPAL_API_KEY from env
-    >>> client = Eigenpal(api_key="eg_...")  # explicit
+    >>> client = EigenpalClient()  # reads EIGENPAL_API_KEY from env
+    >>> client = EigenpalClient(api_key="eg_...")  # explicit
     """
 
     def __init__(
@@ -92,7 +165,7 @@ class Eigenpal:
         resolved_key = api_key or os.environ.get("EIGENPAL_API_KEY")
         if not resolved_key:
             raise ValueError(
-                "Missing API key. Pass Eigenpal(api_key=...) or set the "
+                "Missing API key. Pass EigenpalClient(api_key=...) or set the "
                 "EIGENPAL_API_KEY environment variable."
             )
 
@@ -104,12 +177,20 @@ class Eigenpal:
             timeout=httpx.Timeout(timeout_seconds),
             verify_ssl=verify_ssl,
             raise_on_unexpected_status=False,
-            headers={"User-Agent": "eigenpal-sdk-python/0.0.0"},
+            # SDK telemetry headers (X-Eigenpal-Sdk-*) + a richer User-Agent.
+            # The server logs these per request so we can track adoption.
+            headers=build_telemetry_headers(),
+            # Sync-only event hook. ``httpx_args`` is forwarded to both
+            # httpx.Client and httpx.AsyncClient by the generated wrapper,
+            # but no async API surface is exposed today. See the docstring
+            # on ``_assert_json_response`` for the path forward when async
+            # ships.
+            httpx_args={"event_hooks": {"response": [_assert_json_response]}},
         )
         self.workflows = WorkflowsResource(self._client)
-        self.executions = ExecutionsResource(self._client)
+        self.agents = AgentsResource(self._client)
 
-    def __enter__(self) -> "Eigenpal":
+    def __enter__(self) -> "EigenpalClient":
         return self
 
     def __exit__(self, *exc_info: Any) -> None:
@@ -154,7 +235,7 @@ def _run_multipart(
 
     httpx_client = client.get_httpx_client()
     raw_response = httpx_client.post(
-        f"/v1/workflows/{workflow_id}/run",
+        f"/api/v1/workflows/{workflow_id}/run",
         params=params,
         files=files,
         data=data,
@@ -176,11 +257,58 @@ def _run_multipart(
     )
 
 
+def _run_agent_multipart(
+    client: AuthenticatedClient,
+    agent_id: str,
+    input: dict[str, Any],
+    *,
+    wait_for_completion: Optional[int],
+) -> RunAgentResponse:
+    """Send an agent execution as ``multipart/form-data``.
+
+    Each file value in ``input`` becomes a top-level form field. Scalar inputs
+    ride in the ``_json`` field as the input object itself.
+    """
+    files: list[tuple[str, tuple[str, bytes, str]]] = []
+    scalars: dict[str, Any] = {}
+    for key, value in input.items():
+        if is_file_input(value):
+            files.append((key, to_upload_tuple(value)))
+        else:
+            scalars[key] = value
+
+    params: dict[str, Any] = {}
+    if wait_for_completion is not None:
+        params["wait_for_completion"] = wait_for_completion
+
+    data = {"_json": json.dumps(scalars)} if scalars else {}
+    raw_response = client.get_httpx_client().post(
+        f"/api/v1/agents/{agent_id}/run",
+        params=params,
+        files=files,
+        data=data,
+    )
+
+    if 200 <= raw_response.status_code < 300:
+        parsed = RunAgentResponse.from_dict(raw_response.json())
+    else:
+        parsed = None
+    return _check_response(
+        Response(
+            status_code=raw_response.status_code,
+            content=raw_response.content,
+            headers=raw_response.headers,
+            parsed=parsed,
+        )
+    )
+
+
 class WorkflowsResource:
     """Workflow operations: list, get, run, versions."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
+        self.executions = WorkflowExecutionsResource(client)
 
     def run(
         self,
@@ -265,15 +393,15 @@ class WorkflowsResource:
         return _check_response(response)
 
 
-class ExecutionsResource:
-    """Execution operations: list, get, cancel, run_and_wait."""
+class WorkflowExecutionsResource:
+    """Workflow execution operations: list, get, cancel, run_and_wait."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
 
-    def get(self, execution_id: str, *, include_steps: bool = False) -> ExecutionStatusResponse:
-        include = ExecutionsGetIncludeSteps.TRUE if include_steps else UNSET
-        response = executions_get.sync_detailed(
+    def get(self, execution_id: str, *, include_steps: bool = False) -> WorkflowExecutionStatusResponse:
+        include = WorkflowsExecutionsGetIncludeSteps.TRUE if include_steps else UNSET
+        response = workflows_executions_get.sync_detailed(
             execution_id=execution_id,
             client=self._client,
             include_steps=include,
@@ -282,19 +410,19 @@ class ExecutionsResource:
 
     def list(
         self,
+        workflow_id: str,
         *,
-        workflow_id: Optional[str] = None,
-        status: Optional[str] = None,
+        status: Optional[Union[str, list[str]]] = None,
         from_date: Optional[str] = None,
         to_date: Optional[str] = None,
         example_id: Optional[str] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> ListExecutionsResponse:
-        response = executions_list.sync_detailed(
+    ) -> ListWorkflowExecutionsResponse:
+        response = workflows_executions_list.sync_detailed(
+            id=workflow_id,
             client=self._client,
-            workflow_id=_opt(workflow_id),
-            status=_opt(status),
+            status=_opt(_csv(status)),
             from_date=_opt(from_date),
             to_date=_opt(to_date),
             example_id=_opt(example_id),
@@ -303,8 +431,8 @@ class ExecutionsResource:
         )
         return _check_response(response)
 
-    def cancel(self, execution_id: str) -> CancelExecutionResponse:
-        response = executions_cancel.sync_detailed(
+    def cancel(self, execution_id: str) -> CancelWorkflowExecutionResponse:
+        response = workflows_executions_cancel.sync_detailed(
             execution_id=execution_id, client=self._client
         )
         return _check_response(response)
@@ -373,3 +501,141 @@ class ExecutionsResource:
                 }
 
             time.sleep(poll_interval_seconds)
+
+
+class AgentExecutionsResource:
+    """Agent execution operations: list, get, cancel."""
+
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def list(
+        self,
+        agent_id: str,
+        *,
+        status: Optional[str] = None,
+        batch_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> ListAgentExecutionsResponse:
+        response = agents_executions_list.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            status=_opt(status),
+            batch_id=_opt(batch_id),
+            limit=_opt(limit),
+            offset=_opt(offset),
+        )
+        return _check_response(response)
+
+    def get(self, execution_id: str, *, include: Optional[str] = None) -> AgentExecutionResponse:
+        response = agents_executions_get.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+            include=_opt(include),
+        )
+        return _check_response(response)
+
+    def cancel(self, execution_id: str) -> CancelAgentExecutionResponse:
+        response = agents_executions_cancel.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+
+class AgentsResource:
+    """Agent operations: list, get, create, run, executions."""
+
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+        self.executions = AgentExecutionsResource(client)
+
+    def list(
+        self,
+        *,
+        search: Optional[str] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> ListAgentsResponse:
+        response = agents_list.sync_detailed(
+            client=self._client,
+            search=_opt(search),
+            limit=_opt(limit),
+            offset=_opt(offset),
+        )
+        return _check_response(response)
+
+    def get(self, agent_id: str, *, include: Optional[str] = None) -> GetAgentResponse:
+        response = agents_get.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            include=_opt(include),
+        )
+        return _check_response(response)
+
+    def create(
+        self,
+        *,
+        name: str,
+        slug: str,
+        description: Optional[str] = None,
+        config: Optional[dict[str, Any]] = None,
+    ) -> CreateAgentResponse:
+        body = CreateAgentBody.from_dict(
+            {
+                "name": name,
+                "slug": slug,
+                **({"description": description} if description is not None else {}),
+                **({"config": config} if config is not None else {}),
+            }
+        )
+        response = agents_create.sync_detailed(client=self._client, body=body)
+        return _check_response(response)
+
+    def update(
+        self,
+        agent_id: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        config: Optional[dict[str, Any]] = None,
+    ) -> PatchAgentResponse:
+        body = PatchAgentBody.from_dict(
+            {
+                **({"name": name} if name is not None else {}),
+                **({"description": description} if description is not None else {}),
+                **({"config": config} if config is not None else {}),
+            }
+        )
+        response = agents_update.sync_detailed(agent_id=agent_id, client=self._client, body=body)
+        return _check_response(response)
+
+    def run(
+        self,
+        agent_id: str,
+        input: Optional[dict[str, Any]] = None,
+        *,
+        wait_for_completion: Optional[int] = None,
+    ) -> RunAgentResponse:
+        if has_file_input(input):
+            assert input is not None
+            return _run_agent_multipart(
+                self._client,
+                agent_id,
+                input,
+                wait_for_completion=wait_for_completion,
+            )
+
+        body = RunAgentBody.from_dict(
+            {
+                **({"input": input} if input is not None else {}),
+            }
+        )
+        response = agents_run.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            body=body,
+            wait_for_completion=_opt(wait_for_completion),
+        )
+        return _check_response(response)

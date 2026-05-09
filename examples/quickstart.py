@@ -10,11 +10,11 @@ import json
 import os
 import sys
 
-from eigenpal import Eigenpal, EigenpalError
+from eigenpal import EigenpalClient, EigenpalError
 
 
 def main() -> None:
-    client = Eigenpal(
+    client = EigenpalClient(
         api_key=os.environ["EIGENPAL_API_KEY"],
         # For self-hosted deployments; defaults to https://app.eigenpal.com.
         base_url=os.environ.get("EIGENPAL_BASE_URL"),
@@ -29,7 +29,7 @@ def main() -> None:
     workflow_id = workflow.id  # type: ignore[union-attr]
     print(f"Triggering {workflow_id}")
 
-    result = client.executions.run_and_wait(
+    result = client.workflows.executions.run_and_wait(
         workflow_id,
         input={},
         timeout_seconds=5 * 60,

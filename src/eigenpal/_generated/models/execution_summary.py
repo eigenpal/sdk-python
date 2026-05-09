@@ -28,33 +28,30 @@ class ExecutionSummary:
     """ 
         Attributes:
             id (str):
-            tenant_id (str):
             workflow_id (str):
             status (ExecutionStatus):
             created_at (str):
-            version_id (None | str | Unset):
-            trigger_type (str | Unset):
-            trigger_input (Any | None | Unset):
-            result (Any | None | Unset):
-            error (None | str | Unset):
+            trigger_type (None | str | Unset): "api" | "scheduled" | "manual" | …
+            trigger_input (Any | None | Unset): Original input map. Useful for replay.
+            result (Any | None | Unset): Workflow output (status=completed).
+            error (None | str | Unset): Error message (status=failed).
+            started_at (None | str | Unset):
             completed_at (None | str | Unset):
             workflow (ExecutionSummaryWorkflowType0 | None | Unset): Owning workflow (null when the workflow has been
                 deleted)
      """
 
     id: str
-    tenant_id: str
     workflow_id: str
     status: ExecutionStatus
     created_at: str
-    version_id: None | str | Unset = UNSET
-    trigger_type: str | Unset = UNSET
+    trigger_type: None | str | Unset = UNSET
     trigger_input: Any | None | Unset = UNSET
     result: Any | None | Unset = UNSET
     error: None | str | Unset = UNSET
+    started_at: None | str | Unset = UNSET
     completed_at: None | str | Unset = UNSET
     workflow: ExecutionSummaryWorkflowType0 | None | Unset = UNSET
-    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
 
@@ -64,8 +61,6 @@ class ExecutionSummary:
         from ..models.execution_summary_workflow_type_0 import ExecutionSummaryWorkflowType0
         id = self.id
 
-        tenant_id = self.tenant_id
-
         workflow_id = self.workflow_id
 
         status = self.status.value
@@ -73,13 +68,11 @@ class ExecutionSummary:
         created_at: str
         created_at = self.created_at
 
-        version_id: None | str | Unset
-        if isinstance(self.version_id, Unset):
-            version_id = UNSET
+        trigger_type: None | str | Unset
+        if isinstance(self.trigger_type, Unset):
+            trigger_type = UNSET
         else:
-            version_id = self.version_id
-
-        trigger_type = self.trigger_type
+            trigger_type = self.trigger_type
 
         trigger_input: Any | None | Unset
         if isinstance(self.trigger_input, Unset):
@@ -99,6 +92,12 @@ class ExecutionSummary:
         else:
             error = self.error
 
+        started_at: None | str | Unset
+        if isinstance(self.started_at, Unset):
+            started_at = UNSET
+        else:
+            started_at = self.started_at
+
         completed_at: None | str | Unset
         if isinstance(self.completed_at, Unset):
             completed_at = UNSET
@@ -115,16 +114,13 @@ class ExecutionSummary:
 
 
         field_dict: dict[str, Any] = {}
-        field_dict.update(self.additional_properties)
+
         field_dict.update({
             "id": id,
-            "tenantId": tenant_id,
             "workflowId": workflow_id,
             "status": status,
             "createdAt": created_at,
         })
-        if version_id is not UNSET:
-            field_dict["versionId"] = version_id
         if trigger_type is not UNSET:
             field_dict["triggerType"] = trigger_type
         if trigger_input is not UNSET:
@@ -133,6 +129,8 @@ class ExecutionSummary:
             field_dict["result"] = result
         if error is not UNSET:
             field_dict["error"] = error
+        if started_at is not UNSET:
+            field_dict["startedAt"] = started_at
         if completed_at is not UNSET:
             field_dict["completedAt"] = completed_at
         if workflow is not UNSET:
@@ -148,8 +146,6 @@ class ExecutionSummary:
         d = dict(src_dict)
         id = d.pop("id")
 
-        tenant_id = d.pop("tenantId")
-
         workflow_id = d.pop("workflowId")
 
         status = ExecutionStatus(d.pop("status"))
@@ -163,17 +159,15 @@ class ExecutionSummary:
         created_at = _parse_created_at(d.pop("createdAt"))
 
 
-        def _parse_version_id(data: object) -> None | str | Unset:
+        def _parse_trigger_type(data: object) -> None | str | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
             return cast(None | str | Unset, data)
 
-        version_id = _parse_version_id(d.pop("versionId", UNSET))
+        trigger_type = _parse_trigger_type(d.pop("triggerType", UNSET))
 
-
-        trigger_type = d.pop("triggerType", UNSET)
 
         def _parse_trigger_input(data: object) -> Any | None | Unset:
             if data is None:
@@ -203,6 +197,16 @@ class ExecutionSummary:
             return cast(None | str | Unset, data)
 
         error = _parse_error(d.pop("error", UNSET))
+
+
+        def _parse_started_at(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        started_at = _parse_started_at(d.pop("startedAt", UNSET))
 
 
         def _parse_completed_at(data: object) -> None | str | Unset:
@@ -237,35 +241,17 @@ class ExecutionSummary:
 
         execution_summary = cls(
             id=id,
-            tenant_id=tenant_id,
             workflow_id=workflow_id,
             status=status,
             created_at=created_at,
-            version_id=version_id,
             trigger_type=trigger_type,
             trigger_input=trigger_input,
             result=result,
             error=error,
+            started_at=started_at,
             completed_at=completed_at,
             workflow=workflow,
         )
 
-
-        execution_summary.additional_properties = d
         return execution_summary
 
-    @property
-    def additional_keys(self) -> list[str]:
-        return list(self.additional_properties.keys())
-
-    def __getitem__(self, key: str) -> Any:
-        return self.additional_properties[key]
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.additional_properties[key] = value
-
-    def __delitem__(self, key: str) -> None:
-        del self.additional_properties[key]
-
-    def __contains__(self, key: str) -> bool:
-        return key in self.additional_properties

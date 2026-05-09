@@ -1,11 +1,11 @@
-"""Official Python SDK for the Eigenpal API.
+"""Official Python SDK for the EigenPal API.
 
 Example
 -------
 
-    from eigenpal import Eigenpal
+    from eigenpal import EigenpalClient
 
-    client = Eigenpal(api_key=os.environ["EIGENPAL_API_KEY"])
+    client = EigenpalClient(api_key=os.environ["EIGENPAL_API_KEY"])
 
     # Async — enqueue and poll later.
     result = client.workflows.run("wf_abc", input={"contract": {"file_id": "f_x"}})
@@ -16,10 +16,10 @@ Example
     )
 
     # Client-side poll (up to 5min by default).
-    result = client.executions.run_and_wait("wf_abc", input={...})
+    result = client.workflows.executions.run_and_wait("wf_abc", input={...})
 """
 
-from eigenpal.client import Eigenpal
+from eigenpal.client import EigenpalClient
 from eigenpal.errors import (
     EigenpalAuthError,
     EigenpalError,
@@ -32,7 +32,7 @@ from eigenpal.errors import (
 )
 
 __all__ = [
-    "Eigenpal",
+    "EigenpalClient",
     "EigenpalError",
     "EigenpalAuthError",
     "EigenpalForbiddenError",

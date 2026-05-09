@@ -1,6 +1,6 @@
 from enum import Enum
 
-class ExecutionsGetIncludeSteps(str, Enum):
+class WorkflowsExecutionsGetIncludeSteps(str, Enum):
     FALSE = "false"
     TRUE = "true"
 

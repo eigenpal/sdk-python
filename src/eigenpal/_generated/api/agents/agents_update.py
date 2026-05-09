@@ -9,47 +9,43 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.list_versions_response import ListVersionsResponse
-from ...types import UNSET, Unset
+from ...models.patch_agent_body import PatchAgentBody
+from ...models.patch_agent_response import PatchAgentResponse
 from typing import cast
 
 
 
 def _get_kwargs(
-    id: str,
+    agent_id: str,
     *,
-    limit: int | Unset = UNSET,
-    offset: int | Unset = UNSET,
+    body: PatchAgentBody,
 
 ) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
+
+
     
 
     
-
-    params: dict[str, Any] = {}
-
-    params["limit"] = limit
-
-    params["offset"] = offset
-
-
-    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/api/v1/workflows/{id}/versions".format(id=quote(str(id), safe=""),),
-        "params": params,
+        "method": "patch",
+        "url": "/api/v1/agents/{agent_id}".format(agent_id=quote(str(agent_id), safe=""),),
     }
 
+    _kwargs["json"] = body.to_dict()
 
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListVersionsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | PatchAgentResponse | None:
     if response.status_code == 200:
-        response_200 = ListVersionsResponse.from_dict(response.json())
+        response_200 = PatchAgentResponse.from_dict(response.json())
 
 
 
@@ -103,7 +99,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | PatchAgentResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -113,35 +109,32 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    limit: int | Unset = UNSET,
-    offset: int | Unset = UNSET,
+    body: PatchAgentBody,
 
-) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
-    """ List tagged versions for a workflow
+) -> Response[ApiErrorEnvelope | PatchAgentResponse]:
+    """ Update an agent
 
-     Returns released versions in reverse-chronological order, paginated.
+     Updates mutable agent metadata and configuration.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        body (PatchAgentBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListVersionsResponse]
+        Response[ApiErrorEnvelope | PatchAgentResponse]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
-limit=limit,
-offset=offset,
+        agent_id=agent_id,
+body=body,
 
     )
 
@@ -152,69 +145,63 @@ offset=offset,
     return _build_response(client=client, response=response)
 
 def sync(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    limit: int | Unset = UNSET,
-    offset: int | Unset = UNSET,
+    body: PatchAgentBody,
 
-) -> ApiErrorEnvelope | ListVersionsResponse | None:
-    """ List tagged versions for a workflow
+) -> ApiErrorEnvelope | PatchAgentResponse | None:
+    """ Update an agent
 
-     Returns released versions in reverse-chronological order, paginated.
+     Updates mutable agent metadata and configuration.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        body (PatchAgentBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListVersionsResponse
+        ApiErrorEnvelope | PatchAgentResponse
      """
 
 
     return sync_detailed(
-        id=id,
+        agent_id=agent_id,
 client=client,
-limit=limit,
-offset=offset,
+body=body,
 
     ).parsed
 
 async def asyncio_detailed(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    limit: int | Unset = UNSET,
-    offset: int | Unset = UNSET,
+    body: PatchAgentBody,
 
-) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
-    """ List tagged versions for a workflow
+) -> Response[ApiErrorEnvelope | PatchAgentResponse]:
+    """ Update an agent
 
-     Returns released versions in reverse-chronological order, paginated.
+     Updates mutable agent metadata and configuration.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        body (PatchAgentBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListVersionsResponse]
+        Response[ApiErrorEnvelope | PatchAgentResponse]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
-limit=limit,
-offset=offset,
+        agent_id=agent_id,
+body=body,
 
     )
 
@@ -225,35 +212,32 @@ offset=offset,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    limit: int | Unset = UNSET,
-    offset: int | Unset = UNSET,
+    body: PatchAgentBody,
 
-) -> ApiErrorEnvelope | ListVersionsResponse | None:
-    """ List tagged versions for a workflow
+) -> ApiErrorEnvelope | PatchAgentResponse | None:
+    """ Update an agent
 
-     Returns released versions in reverse-chronological order, paginated.
+     Updates mutable agent metadata and configuration.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        body (PatchAgentBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListVersionsResponse
+        ApiErrorEnvelope | PatchAgentResponse
      """
 
 
     return (await asyncio_detailed(
-        id=id,
+        agent_id=agent_id,
 client=client,
-limit=limit,
-offset=offset,
+body=body,
 
     )).parsed

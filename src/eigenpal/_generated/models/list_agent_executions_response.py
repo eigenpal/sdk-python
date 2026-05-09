@@ -11,27 +11,27 @@ from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
-  from ..models.execution_summary import ExecutionSummary
+  from ..models.agent_execution_summary import AgentExecutionSummary
 
 
 
 
 
-T = TypeVar("T", bound="ListExecutionsResponse")
+T = TypeVar("T", bound="ListAgentExecutionsResponse")
 
 
 
 @_attrs_define
-class ListExecutionsResponse:
+class ListAgentExecutionsResponse:
     """ 
         Attributes:
-            data (list[ExecutionSummary]):
+            executions (list[AgentExecutionSummary]):
             total (int):
             limit (int):
             offset (int):
      """
 
-    data: list[ExecutionSummary]
+    executions: list[AgentExecutionSummary]
     total: int
     limit: int
     offset: int
@@ -41,11 +41,11 @@ class ListExecutionsResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.execution_summary import ExecutionSummary
-        data = []
-        for data_item_data in self.data:
-            data_item = data_item_data.to_dict()
-            data.append(data_item)
+        from ..models.agent_execution_summary import AgentExecutionSummary
+        executions = []
+        for executions_item_data in self.executions:
+            executions_item = executions_item_data.to_dict()
+            executions.append(executions_item)
 
 
 
@@ -59,7 +59,7 @@ class ListExecutionsResponse:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "data": data,
+            "executions": executions,
             "total": total,
             "limit": limit,
             "offset": offset,
@@ -71,16 +71,16 @@ class ListExecutionsResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.execution_summary import ExecutionSummary
+        from ..models.agent_execution_summary import AgentExecutionSummary
         d = dict(src_dict)
-        data = []
-        _data = d.pop("data")
-        for data_item_data in (_data):
-            data_item = ExecutionSummary.from_dict(data_item_data)
+        executions = []
+        _executions = d.pop("executions")
+        for executions_item_data in (_executions):
+            executions_item = AgentExecutionSummary.from_dict(executions_item_data)
 
 
 
-            data.append(data_item)
+            executions.append(executions_item)
 
 
         total = d.pop("total")
@@ -89,12 +89,12 @@ class ListExecutionsResponse:
 
         offset = d.pop("offset")
 
-        list_executions_response = cls(
-            data=data,
+        list_agent_executions_response = cls(
+            executions=executions,
             total=total,
             limit=limit,
             offset=offset,
         )
 
-        return list_executions_response
+        return list_agent_executions_response
 

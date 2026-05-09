@@ -17,12 +17,12 @@ from typing import cast
 
 
 
-T = TypeVar("T", bound="ExecutionStatusResponse")
+T = TypeVar("T", bound="WorkflowExecutionStatusResponse")
 
 
 
 @_attrs_define
-class ExecutionStatusResponse:
+class WorkflowExecutionStatusResponse:
     """ 
         Attributes:
             execution_id (str):
@@ -130,7 +130,7 @@ class ExecutionStatusResponse:
         error = _parse_error(d.pop("error", UNSET))
 
 
-        execution_status_response = cls(
+        workflow_execution_status_response = cls(
             execution_id=execution_id,
             status=status,
             created_at=created_at,
@@ -139,5 +139,5 @@ class ExecutionStatusResponse:
             error=error,
         )
 
-        return execution_status_response
+        return workflow_execution_status_response
 

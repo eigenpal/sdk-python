@@ -9,24 +9,39 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.cancel_execution_response import CancelExecutionResponse
+from ...models.list_agents_response import ListAgentsResponse
+from ...types import UNSET, Unset
 from typing import cast
 
 
 
 def _get_kwargs(
-    execution_id: str,
+    *,
+    search: str | Unset = UNSET,
+    limit: int | Unset = UNSET,
+    offset: int | Unset = UNSET,
 
 ) -> dict[str, Any]:
     
 
     
 
-    
+    params: dict[str, Any] = {}
+
+    params["search"] = search
+
+    params["limit"] = limit
+
+    params["offset"] = offset
+
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
 
     _kwargs: dict[str, Any] = {
-        "method": "post",
-        "url": "/v1/executions/{execution_id}/cancel".format(execution_id=quote(str(execution_id), safe=""),),
+        "method": "get",
+        "url": "/api/v1/agents",
+        "params": params,
     }
 
 
@@ -34,9 +49,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | CancelExecutionResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListAgentsResponse | None:
     if response.status_code == 200:
-        response_200 = CancelExecutionResponse.from_dict(response.json())
+        response_200 = ListAgentsResponse.from_dict(response.json())
 
 
 
@@ -90,7 +105,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | CancelExecutionResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -100,31 +115,35 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
+    search: str | Unset = UNSET,
+    limit: int | Unset = UNSET,
+    offset: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | CancelExecutionResponse]:
-    """ Cancel an execution
+) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
+    """ List agents
 
-     Idempotent. For executions not yet picked up by a worker (status=created/pending), transitions
-    immediately to `cancelled`. For running/waiting executions, stamps `cancelRequestedAt` so the worker
-    observes cancellation between step transitions. Terminal executions are a no-op.
+     Returns agents the API key has access to, with pagination and basic execution stats.
 
     Args:
-        execution_id (str): Execution id to cancel
+        search (str | Unset): Substring match against agent fields
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | CancelExecutionResponse]
+        Response[ApiErrorEnvelope | ListAgentsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        execution_id=execution_id,
+        search=search,
+limit=limit,
+offset=offset,
 
     )
 
@@ -135,61 +154,69 @@ def sync_detailed(
     return _build_response(client=client, response=response)
 
 def sync(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
+    search: str | Unset = UNSET,
+    limit: int | Unset = UNSET,
+    offset: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | CancelExecutionResponse | None:
-    """ Cancel an execution
+) -> ApiErrorEnvelope | ListAgentsResponse | None:
+    """ List agents
 
-     Idempotent. For executions not yet picked up by a worker (status=created/pending), transitions
-    immediately to `cancelled`. For running/waiting executions, stamps `cancelRequestedAt` so the worker
-    observes cancellation between step transitions. Terminal executions are a no-op.
+     Returns agents the API key has access to, with pagination and basic execution stats.
 
     Args:
-        execution_id (str): Execution id to cancel
+        search (str | Unset): Substring match against agent fields
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | CancelExecutionResponse
+        ApiErrorEnvelope | ListAgentsResponse
      """
 
 
     return sync_detailed(
-        execution_id=execution_id,
-client=client,
+        client=client,
+search=search,
+limit=limit,
+offset=offset,
 
     ).parsed
 
 async def asyncio_detailed(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
+    search: str | Unset = UNSET,
+    limit: int | Unset = UNSET,
+    offset: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | CancelExecutionResponse]:
-    """ Cancel an execution
+) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
+    """ List agents
 
-     Idempotent. For executions not yet picked up by a worker (status=created/pending), transitions
-    immediately to `cancelled`. For running/waiting executions, stamps `cancelRequestedAt` so the worker
-    observes cancellation between step transitions. Terminal executions are a no-op.
+     Returns agents the API key has access to, with pagination and basic execution stats.
 
     Args:
-        execution_id (str): Execution id to cancel
+        search (str | Unset): Substring match against agent fields
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | CancelExecutionResponse]
+        Response[ApiErrorEnvelope | ListAgentsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        execution_id=execution_id,
+        search=search,
+limit=limit,
+offset=offset,
 
     )
 
@@ -200,31 +227,35 @@ async def asyncio_detailed(
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
+    search: str | Unset = UNSET,
+    limit: int | Unset = UNSET,
+    offset: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | CancelExecutionResponse | None:
-    """ Cancel an execution
+) -> ApiErrorEnvelope | ListAgentsResponse | None:
+    """ List agents
 
-     Idempotent. For executions not yet picked up by a worker (status=created/pending), transitions
-    immediately to `cancelled`. For running/waiting executions, stamps `cancelRequestedAt` so the worker
-    observes cancellation between step transitions. Terminal executions are a no-op.
+     Returns agents the API key has access to, with pagination and basic execution stats.
 
     Args:
-        execution_id (str): Execution id to cancel
+        search (str | Unset): Substring match against agent fields
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | CancelExecutionResponse
+        ApiErrorEnvelope | ListAgentsResponse
      """
 
 
     return (await asyncio_detailed(
-        execution_id=execution_id,
-client=client,
+        client=client,
+search=search,
+limit=limit,
+offset=offset,
 
     )).parsed

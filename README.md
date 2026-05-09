@@ -1,21 +1,32 @@
-# EigenPal Python SDK
+# eigenpal
 
-Official Python SDK for the [EigenPal](https://eigenpal.com) API.
+Trigger EigenPal workflows from Python.
+
+[![pypi](https://img.shields.io/pypi/v/eigenpal?color=3B5BDB&labelColor=555&label=pypi)](https://pypi.org/project/eigenpal/)
+[![downloads](https://img.shields.io/pypi/dm/eigenpal?color=3B5BDB&labelColor=555&label=downloads)](https://pypi.org/project/eigenpal/)
+[![license](https://img.shields.io/badge/license-Apache--2.0-3B5BDB?labelColor=555)](https://github.com/eigenpal/sdk-python/blob/main/LICENSE)
+[![docs](https://img.shields.io/badge/docs-eigenpal-3B5BDB?labelColor=555)](https://github.com/eigenpal/sdk-python)
+
+## Install
 
 ```bash
 pip install eigenpal
 ```
 
+Requires Python 3.9+. Get an API key at **app.eigenpal.com → Settings → API Keys**.
+
+## Quick start
+
 ```python
 import os
 from pathlib import Path
-from eigenpal import Eigenpal
+from eigenpal import EigenpalClient, EigenpalValidationError
 
-client = Eigenpal(api_key=os.environ["EIGENPAL_API_KEY"])
+client = EigenpalClient(api_key=os.environ["EIGENPAL_API_KEY"])
 
 # Pass a Path / file handle / { content, filename, mime_type }. The SDK
 # uploads the request as multipart/form-data, no base64 needed.
-result = client.executions.run_and_wait(
+result = client.workflows.executions.run_and_wait(
     "extract-invoice",
     input={"contract_document": Path("contract.pdf")},
 )
@@ -27,7 +38,7 @@ print(result["status"], result["result"])
 Generate an API key from the dashboard under **Settings → API Keys**, then pass it explicitly:
 
 ```python
-client = Eigenpal(api_key=os.environ["EIGENPAL_API_KEY"])
+client = EigenpalClient(api_key=os.environ["EIGENPAL_API_KEY"])
 ```
 
 The `api_key` argument always wins. If you omit it, the SDK falls back to `EIGENPAL_API_KEY` for convenience, handy in scripts where you'd be writing exactly the line above.
@@ -37,7 +48,7 @@ The `api_key` argument always wins. If you omit it, the SDK falls back to `EIGEN
 Point the SDK at your own deployment via `base_url`:
 
 ```python
-client = Eigenpal(
+client = EigenpalClient(
     api_key=os.environ["EIGENPAL_API_KEY"],
     base_url=os.environ.get("EIGENPAL_BASE_URL", "https://eigenpal.acme.internal"),
 )
@@ -68,7 +79,7 @@ result = client.workflows.run(
 print(result.status, result.result)
 
 # Long-running: client-side polling (default 5min cap).
-final = client.executions.run_and_wait(
+final = client.workflows.executions.run_and_wait(
     "extract-invoice",
     input={"contract_document": Path("contract.pdf")},
 )
@@ -108,17 +119,17 @@ client.workflows.run("extract-invoice", input={
 ## Execution polling
 
 ```python
-status = client.executions.get(execution_id)
+status = client.workflows.executions.get(execution_id)
 #   ExecutionStatusResponse(execution_id=..., status=..., result=..., ...)
 
-executions = client.executions.list(
-    workflow_id="extract-invoice",
+executions = client.workflows.executions.list(
+    "extract-invoice",
     status="failed",
     from_date="now()-7d",
     limit=50,
 )
 
-client.executions.cancel(execution_id)
+client.workflows.executions.cancel(execution_id)
 ```
 
 ## Workflows
@@ -127,6 +138,20 @@ client.executions.cancel(execution_id)
 client.workflows.list(search="invoice", limit=20)
 client.workflows.get("extract-invoice")
 client.workflows.versions("extract-invoice")
+```
+
+## Agents
+
+```python
+client.agents.list(search="invoice")
+client.agents.get("invoice-agent")
+
+result = client.agents.run("invoice-agent", input={
+    "invoice": Path("invoice.pdf"),
+})
+
+client.agents.executions.get(result.execution_id)
+client.agents.executions.cancel(result.execution_id)
 ```
 
 ## Errors
@@ -144,33 +169,35 @@ Every non-2xx response raises a typed subclass of `EigenpalError`:
 | timeout | `EigenpalTimeoutError`    |                                                       |
 
 ```python
-from eigenpal import Eigenpal, EigenpalValidationError
+from eigenpal import EigenpalClient, EigenpalValidationError
+
+client = EigenpalClient(api_key=os.environ["EIGENPAL_API_KEY"])
 
 try:
-    client.workflows.run("extract-invoice")
-except EigenpalValidationError as e:
-    for issue in e.issues:
+    # First arg accepts the workflow slug ("extract-invoice") or id ("wf_abc123").
+    result = client.workflows.executions.run_and_wait(
+        "extract-invoice",
+        input={"language": "en"},
+    )
+    print(result["status"], result["result"])
+except EigenpalValidationError as err:
+    for issue in err.issues:
         print(f"{issue['field']}: {issue['message']}")
     raise
 ```
 
-## Configuration
+For file inputs, see [docs/files.md](./docs/files.md).
 
-```python
-client = Eigenpal(
-    api_key="eg_…",                 # or EIGENPAL_API_KEY
-    base_url="https://app.eigenpal.com",  # or EIGENPAL_BASE_URL
-    timeout_seconds=60.0,           # per-request timeout
-    verify_ssl=True,
-)
-```
+## Reference
 
-Use as a context manager to ensure the underlying HTTP connection pool is closed:
-
-```python
-with Eigenpal() as client:
-    client.workflows.run("extract-invoice")
-```
+| Topic                                     | What's in it                                       |
+| ----------------------------------------- | -------------------------------------------------- |
+| [Workflows](./docs/workflows.md)          | List, get, trigger runs, pin versions.             |
+| [Executions](./docs/executions.md)        | Status, polling, cancel, run-and-wait.             |
+| [File inputs](./docs/files.md)            | Multipart upload from Path, file handle, or bytes. |
+| [Errors](./docs/errors.md)                | Typed exceptions, retries, request ids.            |
+| [Configuration](./docs/configuration.md)  | API key, base_url, timeouts, headers.              |
+| [Full API reference](./docs/reference.md) | Every method, generated from the OpenAPI spec.     |
 
 ## License
 

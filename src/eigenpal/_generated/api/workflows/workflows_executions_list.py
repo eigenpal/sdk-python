@@ -9,15 +9,15 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.list_executions_response import ListExecutionsResponse
+from ...models.list_workflow_executions_response import ListWorkflowExecutionsResponse
 from ...types import UNSET, Unset
 from typing import cast
 
 
 
 def _get_kwargs(
+    id: str,
     *,
-    workflow_id: str | Unset = UNSET,
     status: str | Unset = UNSET,
     from_date: str | Unset = UNSET,
     to_date: str | Unset = UNSET,
@@ -31,8 +31,6 @@ def _get_kwargs(
     
 
     params: dict[str, Any] = {}
-
-    params["workflowId"] = workflow_id
 
     params["status"] = status
 
@@ -52,7 +50,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/v1/executions",
+        "url": "/api/v1/workflows/{id}/executions".format(id=quote(str(id), safe=""),),
         "params": params,
     }
 
@@ -61,9 +59,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListExecutionsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListWorkflowExecutionsResponse | None:
     if response.status_code == 200:
-        response_200 = ListExecutionsResponse.from_dict(response.json())
+        response_200 = ListWorkflowExecutionsResponse.from_dict(response.json())
 
 
 
@@ -117,7 +115,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListExecutionsResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListWorkflowExecutionsResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -127,9 +125,9 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    workflow_id: str | Unset = UNSET,
     status: str | Unset = UNSET,
     from_date: str | Unset = UNSET,
     to_date: str | Unset = UNSET,
@@ -137,14 +135,14 @@ def sync_detailed(
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | ListExecutionsResponse]:
-    """ List executions
+) -> Response[ApiErrorEnvelope | ListWorkflowExecutionsResponse]:
+    """ List workflow executions
 
-     Returns executions across the tenant, optionally filtered by workflow, status, date range, or eval
-    example. Paginated.
+     Returns executions for a workflow, optionally filtered by status, date range, or eval example.
+    Paginated.
 
     Args:
-        workflow_id (str | Unset): Comma-separated list of workflow ids to filter by
+        id (str): Workflow id (e.g. wf_abc123)
         status (str | Unset): Comma-separated list of execution statuses to filter by
         from_date (str | Unset): ISO-8601 timestamp or relative expression (e.g. "now()-7d") for
             the lower bound on `createdAt`
@@ -158,12 +156,12 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListExecutionsResponse]
+        Response[ApiErrorEnvelope | ListWorkflowExecutionsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        workflow_id=workflow_id,
+        id=id,
 status=status,
 from_date=from_date,
 to_date=to_date,
@@ -180,9 +178,9 @@ offset=offset,
     return _build_response(client=client, response=response)
 
 def sync(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    workflow_id: str | Unset = UNSET,
     status: str | Unset = UNSET,
     from_date: str | Unset = UNSET,
     to_date: str | Unset = UNSET,
@@ -190,14 +188,14 @@ def sync(
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | ListExecutionsResponse | None:
-    """ List executions
+) -> ApiErrorEnvelope | ListWorkflowExecutionsResponse | None:
+    """ List workflow executions
 
-     Returns executions across the tenant, optionally filtered by workflow, status, date range, or eval
-    example. Paginated.
+     Returns executions for a workflow, optionally filtered by status, date range, or eval example.
+    Paginated.
 
     Args:
-        workflow_id (str | Unset): Comma-separated list of workflow ids to filter by
+        id (str): Workflow id (e.g. wf_abc123)
         status (str | Unset): Comma-separated list of execution statuses to filter by
         from_date (str | Unset): ISO-8601 timestamp or relative expression (e.g. "now()-7d") for
             the lower bound on `createdAt`
@@ -211,13 +209,13 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListExecutionsResponse
+        ApiErrorEnvelope | ListWorkflowExecutionsResponse
      """
 
 
     return sync_detailed(
-        client=client,
-workflow_id=workflow_id,
+        id=id,
+client=client,
 status=status,
 from_date=from_date,
 to_date=to_date,
@@ -228,9 +226,9 @@ offset=offset,
     ).parsed
 
 async def asyncio_detailed(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    workflow_id: str | Unset = UNSET,
     status: str | Unset = UNSET,
     from_date: str | Unset = UNSET,
     to_date: str | Unset = UNSET,
@@ -238,14 +236,14 @@ async def asyncio_detailed(
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | ListExecutionsResponse]:
-    """ List executions
+) -> Response[ApiErrorEnvelope | ListWorkflowExecutionsResponse]:
+    """ List workflow executions
 
-     Returns executions across the tenant, optionally filtered by workflow, status, date range, or eval
-    example. Paginated.
+     Returns executions for a workflow, optionally filtered by status, date range, or eval example.
+    Paginated.
 
     Args:
-        workflow_id (str | Unset): Comma-separated list of workflow ids to filter by
+        id (str): Workflow id (e.g. wf_abc123)
         status (str | Unset): Comma-separated list of execution statuses to filter by
         from_date (str | Unset): ISO-8601 timestamp or relative expression (e.g. "now()-7d") for
             the lower bound on `createdAt`
@@ -259,12 +257,12 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListExecutionsResponse]
+        Response[ApiErrorEnvelope | ListWorkflowExecutionsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        workflow_id=workflow_id,
+        id=id,
 status=status,
 from_date=from_date,
 to_date=to_date,
@@ -281,9 +279,9 @@ offset=offset,
     return _build_response(client=client, response=response)
 
 async def asyncio(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    workflow_id: str | Unset = UNSET,
     status: str | Unset = UNSET,
     from_date: str | Unset = UNSET,
     to_date: str | Unset = UNSET,
@@ -291,14 +289,14 @@ async def asyncio(
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | ListExecutionsResponse | None:
-    """ List executions
+) -> ApiErrorEnvelope | ListWorkflowExecutionsResponse | None:
+    """ List workflow executions
 
-     Returns executions across the tenant, optionally filtered by workflow, status, date range, or eval
-    example. Paginated.
+     Returns executions for a workflow, optionally filtered by status, date range, or eval example.
+    Paginated.
 
     Args:
-        workflow_id (str | Unset): Comma-separated list of workflow ids to filter by
+        id (str): Workflow id (e.g. wf_abc123)
         status (str | Unset): Comma-separated list of execution statuses to filter by
         from_date (str | Unset): ISO-8601 timestamp or relative expression (e.g. "now()-7d") for
             the lower bound on `createdAt`
@@ -312,13 +310,13 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListExecutionsResponse
+        ApiErrorEnvelope | ListWorkflowExecutionsResponse
      """
 
 
     return (await asyncio_detailed(
-        client=client,
-workflow_id=workflow_id,
+        id=id,
+client=client,
 status=status,
 from_date=from_date,
 to_date=to_date,

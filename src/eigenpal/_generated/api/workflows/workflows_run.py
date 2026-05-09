@@ -42,7 +42,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/v1/workflows/{id}/run".format(id=quote(str(id), safe=""),),
+        "url": "/api/v1/workflows/{id}/run".format(id=quote(str(id), safe=""),),
         "params": params,
     }
 

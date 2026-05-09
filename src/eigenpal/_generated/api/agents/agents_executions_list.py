@@ -9,15 +9,17 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.list_versions_response import ListVersionsResponse
+from ...models.list_agent_executions_response import ListAgentExecutionsResponse
 from ...types import UNSET, Unset
 from typing import cast
 
 
 
 def _get_kwargs(
-    id: str,
+    agent_id: str,
     *,
+    status: str | Unset = UNSET,
+    batch_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -27,6 +29,10 @@ def _get_kwargs(
     
 
     params: dict[str, Any] = {}
+
+    params["status"] = status
+
+    params["batchId"] = batch_id
 
     params["limit"] = limit
 
@@ -38,7 +44,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/workflows/{id}/versions".format(id=quote(str(id), safe=""),),
+        "url": "/api/v1/agents/{agent_id}/executions".format(agent_id=quote(str(agent_id), safe=""),),
         "params": params,
     }
 
@@ -47,9 +53,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListVersionsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListAgentExecutionsResponse | None:
     if response.status_code == 200:
-        response_200 = ListVersionsResponse.from_dict(response.json())
+        response_200 = ListAgentExecutionsResponse.from_dict(response.json())
 
 
 
@@ -103,7 +109,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListAgentExecutionsResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -113,33 +119,39 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    status: str | Unset = UNSET,
+    batch_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
-    """ List tagged versions for a workflow
+) -> Response[ApiErrorEnvelope | ListAgentExecutionsResponse]:
+    """ List agent executions
 
-     Returns released versions in reverse-chronological order, paginated.
+     Returns executions for an agent, optionally filtered by status or experiment batch.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        status (str | Unset): Execution status filter
+        batch_id (str | Unset): Experiment batch id filter
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListVersionsResponse]
+        Response[ApiErrorEnvelope | ListAgentExecutionsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
+        agent_id=agent_id,
+status=status,
+batch_id=batch_id,
 limit=limit,
 offset=offset,
 
@@ -152,67 +164,79 @@ offset=offset,
     return _build_response(client=client, response=response)
 
 def sync(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    status: str | Unset = UNSET,
+    batch_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | ListVersionsResponse | None:
-    """ List tagged versions for a workflow
+) -> ApiErrorEnvelope | ListAgentExecutionsResponse | None:
+    """ List agent executions
 
-     Returns released versions in reverse-chronological order, paginated.
+     Returns executions for an agent, optionally filtered by status or experiment batch.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        status (str | Unset): Execution status filter
+        batch_id (str | Unset): Experiment batch id filter
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListVersionsResponse
+        ApiErrorEnvelope | ListAgentExecutionsResponse
      """
 
 
     return sync_detailed(
-        id=id,
+        agent_id=agent_id,
 client=client,
+status=status,
+batch_id=batch_id,
 limit=limit,
 offset=offset,
 
     ).parsed
 
 async def asyncio_detailed(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    status: str | Unset = UNSET,
+    batch_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
-    """ List tagged versions for a workflow
+) -> Response[ApiErrorEnvelope | ListAgentExecutionsResponse]:
+    """ List agent executions
 
-     Returns released versions in reverse-chronological order, paginated.
+     Returns executions for an agent, optionally filtered by status or experiment batch.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        status (str | Unset): Execution status filter
+        batch_id (str | Unset): Experiment batch id filter
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListVersionsResponse]
+        Response[ApiErrorEnvelope | ListAgentExecutionsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
+        agent_id=agent_id,
+status=status,
+batch_id=batch_id,
 limit=limit,
 offset=offset,
 
@@ -225,34 +249,40 @@ offset=offset,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    status: str | Unset = UNSET,
+    batch_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | ListVersionsResponse | None:
-    """ List tagged versions for a workflow
+) -> ApiErrorEnvelope | ListAgentExecutionsResponse | None:
+    """ List agent executions
 
-     Returns released versions in reverse-chronological order, paginated.
+     Returns executions for an agent, optionally filtered by status or experiment batch.
 
     Args:
-        id (str): Workflow id
-        limit (int | Unset): Page size (max 100, default 50)
-        offset (int | Unset): Page offset
+        agent_id (str): Agent id or slug
+        status (str | Unset): Execution status filter
+        batch_id (str | Unset): Experiment batch id filter
+        limit (int | Unset):
+        offset (int | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListVersionsResponse
+        ApiErrorEnvelope | ListAgentExecutionsResponse
      """
 
 
     return (await asyncio_detailed(
-        id=id,
+        agent_id=agent_id,
 client=client,
+status=status,
+batch_id=batch_id,
 limit=limit,
 offset=offset,
 
