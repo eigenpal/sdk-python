@@ -12,6 +12,9 @@ from ..models.execution_status import ExecutionStatus
 from ..types import UNSET, Unset
 from typing import cast
 
+if TYPE_CHECKING:
+  from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
+  from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
 
 
 
@@ -36,6 +39,9 @@ class AgentExecutionSummary:
             batch_id (None | str | Unset):
             started_at (None | str | Unset):
             completed_at (None | str | Unset):
+            feedback (AgentExecutionSummaryFeedbackType0 | None | Unset):
+            expected (Any | None | Unset):
+            expected_files (list[AgentExecutionSummaryExpectedFilesItem] | Unset):
      """
 
     id: str
@@ -49,6 +55,9 @@ class AgentExecutionSummary:
     batch_id: None | str | Unset = UNSET
     started_at: None | str | Unset = UNSET
     completed_at: None | str | Unset = UNSET
+    feedback: AgentExecutionSummaryFeedbackType0 | None | Unset = UNSET
+    expected: Any | None | Unset = UNSET
+    expected_files: list[AgentExecutionSummaryExpectedFilesItem] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -56,6 +65,8 @@ class AgentExecutionSummary:
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
+        from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
         id = self.id
 
         status = self.status.value
@@ -111,6 +122,29 @@ class AgentExecutionSummary:
         else:
             completed_at = self.completed_at
 
+        feedback: dict[str, Any] | None | Unset
+        if isinstance(self.feedback, Unset):
+            feedback = UNSET
+        elif isinstance(self.feedback, AgentExecutionSummaryFeedbackType0):
+            feedback = self.feedback.to_dict()
+        else:
+            feedback = self.feedback
+
+        expected: Any | None | Unset
+        if isinstance(self.expected, Unset):
+            expected = UNSET
+        else:
+            expected = self.expected
+
+        expected_files: list[dict[str, Any]] | Unset = UNSET
+        if not isinstance(self.expected_files, Unset):
+            expected_files = []
+            for expected_files_item_data in self.expected_files:
+                expected_files_item = expected_files_item_data.to_dict()
+                expected_files.append(expected_files_item)
+
+
+
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -135,6 +169,12 @@ class AgentExecutionSummary:
             field_dict["startedAt"] = started_at
         if completed_at is not UNSET:
             field_dict["completedAt"] = completed_at
+        if feedback is not UNSET:
+            field_dict["feedback"] = feedback
+        if expected is not UNSET:
+            field_dict["expected"] = expected
+        if expected_files is not UNSET:
+            field_dict["expectedFiles"] = expected_files
 
         return field_dict
 
@@ -142,6 +182,8 @@ class AgentExecutionSummary:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
+        from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
         d = dict(src_dict)
         id = d.pop("id")
 
@@ -236,6 +278,48 @@ class AgentExecutionSummary:
         completed_at = _parse_completed_at(d.pop("completedAt", UNSET))
 
 
+        def _parse_feedback(data: object) -> AgentExecutionSummaryFeedbackType0 | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                feedback_type_0 = AgentExecutionSummaryFeedbackType0.from_dict(data)
+
+
+
+                return feedback_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(AgentExecutionSummaryFeedbackType0 | None | Unset, data)
+
+        feedback = _parse_feedback(d.pop("feedback", UNSET))
+
+
+        def _parse_expected(data: object) -> Any | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(Any | None | Unset, data)
+
+        expected = _parse_expected(d.pop("expected", UNSET))
+
+
+        _expected_files = d.pop("expectedFiles", UNSET)
+        expected_files: list[AgentExecutionSummaryExpectedFilesItem] | Unset = UNSET
+        if _expected_files is not UNSET:
+            expected_files = []
+            for expected_files_item_data in _expected_files:
+                expected_files_item = AgentExecutionSummaryExpectedFilesItem.from_dict(expected_files_item_data)
+
+
+
+                expected_files.append(expected_files_item)
+
+
         agent_execution_summary = cls(
             id=id,
             status=status,
@@ -248,6 +332,9 @@ class AgentExecutionSummary:
             batch_id=batch_id,
             started_at=started_at,
             completed_at=completed_at,
+            feedback=feedback,
+            expected=expected,
+            expected_files=expected_files,
         )
 
 

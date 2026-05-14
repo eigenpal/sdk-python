@@ -8,9 +8,9 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.agent_execution_response import AgentExecutionResponse
+from ...models.agent_execution_feedback_detail import AgentExecutionFeedbackDetail
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...types import UNSET, Unset
+from ...models.update_agent_execution_feedback_body import UpdateAgentExecutionFeedbackBody
 from typing import cast
 
 
@@ -18,35 +18,34 @@ from typing import cast
 def _get_kwargs(
     execution_id: str,
     *,
-    include: str | Unset = UNSET,
+    body: UpdateAgentExecutionFeedbackBody,
 
 ) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
+
+
     
 
     
-
-    params: dict[str, Any] = {}
-
-    params["include"] = include
-
-
-    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/api/v1/agents/executions/{execution_id}".format(execution_id=quote(str(execution_id), safe=""),),
-        "params": params,
+        "method": "patch",
+        "url": "/api/v1/agents/executions/{execution_id}/feedback".format(execution_id=quote(str(execution_id), safe=""),),
     }
 
+    _kwargs["json"] = body.to_dict()
 
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentExecutionResponse | ApiErrorEnvelope | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentExecutionFeedbackDetail | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = AgentExecutionResponse.from_dict(response.json())
+        response_200 = AgentExecutionFeedbackDetail.from_dict(response.json())
 
 
 
@@ -100,7 +99,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentExecutionFeedbackDetail | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -113,29 +112,29 @@ def sync_detailed(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    body: UpdateAgentExecutionFeedbackBody,
 
-) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
-    """ Get agent execution
+) -> Response[AgentExecutionFeedbackDetail | ApiErrorEnvelope]:
+    """ Update execution feedback
 
-     Returns one agent execution by id.
+     Updates the feedback body, rating, status, or structured expected JSON attached to one execution.
 
     Args:
         execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        body (UpdateAgentExecutionFeedbackBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentExecutionResponse | ApiErrorEnvelope]
+        Response[AgentExecutionFeedbackDetail | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         execution_id=execution_id,
-include=include,
+body=body,
 
     )
 
@@ -149,30 +148,30 @@ def sync(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    body: UpdateAgentExecutionFeedbackBody,
 
-) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    """ Get agent execution
+) -> AgentExecutionFeedbackDetail | ApiErrorEnvelope | None:
+    """ Update execution feedback
 
-     Returns one agent execution by id.
+     Updates the feedback body, rating, status, or structured expected JSON attached to one execution.
 
     Args:
         execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        body (UpdateAgentExecutionFeedbackBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentExecutionResponse | ApiErrorEnvelope
+        AgentExecutionFeedbackDetail | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
         execution_id=execution_id,
 client=client,
-include=include,
+body=body,
 
     ).parsed
 
@@ -180,29 +179,29 @@ async def asyncio_detailed(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    body: UpdateAgentExecutionFeedbackBody,
 
-) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
-    """ Get agent execution
+) -> Response[AgentExecutionFeedbackDetail | ApiErrorEnvelope]:
+    """ Update execution feedback
 
-     Returns one agent execution by id.
+     Updates the feedback body, rating, status, or structured expected JSON attached to one execution.
 
     Args:
         execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        body (UpdateAgentExecutionFeedbackBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentExecutionResponse | ApiErrorEnvelope]
+        Response[AgentExecutionFeedbackDetail | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         execution_id=execution_id,
-include=include,
+body=body,
 
     )
 
@@ -216,29 +215,29 @@ async def asyncio(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    body: UpdateAgentExecutionFeedbackBody,
 
-) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    """ Get agent execution
+) -> AgentExecutionFeedbackDetail | ApiErrorEnvelope | None:
+    """ Update execution feedback
 
-     Returns one agent execution by id.
+     Updates the feedback body, rating, status, or structured expected JSON attached to one execution.
 
     Args:
         execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        body (UpdateAgentExecutionFeedbackBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentExecutionResponse | ApiErrorEnvelope
+        AgentExecutionFeedbackDetail | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
         execution_id=execution_id,
 client=client,
-include=include,
+body=body,
 
     )).parsed

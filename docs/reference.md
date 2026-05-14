@@ -27,9 +27,22 @@ client
 │   ├── create
 │   ├── update
 │   ├── run
+│   ├── list_files
+│   ├── put_file
+│   ├── upload_files
 │   ├── executions.list
 │   ├── executions.get
-│   └── executions.cancel
+│   ├── executions.cancel
+│   ├── executions.rerun
+│   ├── executions.get_feedback
+│   ├── executions.update_feedback
+│   ├── executions.clear_feedback
+│   ├── executions.list_expected
+│   ├── executions.copy_output_to_expected / upload_expected
+│   ├── executions.download_expected
+│   ├── executions.rename_expected
+│   ├── executions.delete_expected
+│   └── executions.download_file
 └── workflows
     ├── list
     ├── get
@@ -81,17 +94,130 @@ Returns executions for an agent, optionally filtered by status or experiment bat
 
 **Query parameters**
 
-| Name      | Type  | Description                          |
-| --------- | ----- | ------------------------------------ |
-| `status`  | `str` | (optional)Execution status filter    |
-| `batchId` | `str` | (optional)Experiment batch id filter |
-| `limit`   | `int` | (optional)                           |
-| `offset`  | `int` | (optional)                           |
+| Name                     | Type                                                           | Description                                                      |
+| ------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `status`                 | `str`                                                          | (optional)Execution status filter                                |
+| `batchId`                | `str`                                                          | (optional)Experiment batch id filter                             |
+| `exampleName`            | `str`                                                          | (optional)Exact dataset example name filter                      |
+| `exampleNameContains`    | `str`                                                          | (optional)Substring match on example name                        |
+| `createdAfter`           | `str`                                                          | (optional)Only executions created at/after this ISO timestamp    |
+| `createdBefore`          | `str`                                                          | (optional)Only executions created at/before this ISO timestamp   |
+| `completedAfter`         | `str`                                                          | (optional)Only executions completed at/after this ISO timestamp  |
+| `completedBefore`        | `str`                                                          | (optional)Only executions completed at/before this ISO timestamp |
+| `feedbackStatus`         | `Literal["open", "resolved", "ignored"]`                       | (optional)                                                       |
+| `feedbackRating`         | `Literal["pass", "fail", "partial", "none"]`                   | (optional)                                                       |
+| `hasFeedback`            | `bool`                                                         | (optional)                                                       |
+| `noFeedback`             | `bool`                                                         | (optional)                                                       |
+| `hasExpected`            | `bool`                                                         | (optional)                                                       |
+| `hasExpectedJson`        | `bool`                                                         | (optional)                                                       |
+| `hasExpectedFiles`       | `bool`                                                         | (optional)                                                       |
+| `feedbackBodyContains`   | `str`                                                          | (optional)                                                       |
+| `feedbackCreatedAfter`   | `str`                                                          | (optional)                                                       |
+| `feedbackCreatedBefore`  | `str`                                                          | (optional)                                                       |
+| `feedbackUpdatedAfter`   | `str`                                                          | (optional)                                                       |
+| `feedbackUpdatedBefore`  | `str`                                                          | (optional)                                                       |
+| `feedbackResolvedAfter`  | `str`                                                          | (optional)                                                       |
+| `feedbackResolvedBefore` | `str`                                                          | (optional)                                                       |
+| `promotedToExample`      | `bool`                                                         | (optional)                                                       |
+| `promotedExampleName`    | `str`                                                          | (optional)                                                       |
+| `sinceLastResolved`      | `bool`                                                         | (optional)                                                       |
+| `include`                | `str`                                                          | (optional)Comma-separated extra parts: feedback, expected, files |
+| `sort`                   | `Literal["createdAt", "completedAt", "status", "exampleName"]` | (optional)                                                       |
+| `order`                  | `Literal["asc", "desc"]`                                       | (optional)                                                       |
+| `scanLimit`              | `int`                                                          | (optional)                                                       |
+| `limit`                  | `int`                                                          | (optional)                                                       |
+| `offset`                 | `int`                                                          | (optional)                                                       |
 
 **Response**
 
 ```python
 // ListAgentExecutionsResponse
+```
+
+### `client.agents.list_files`
+
+**`GET /api/v1/agents/{agentId}/files`**
+
+List or download agent files
+
+Lists live agent files, or returns one file when `path` is provided.
+
+**Path parameters**
+
+| Name      | Type  | Description      |
+| --------- | ----- | ---------------- |
+| `agentId` | `str` | Agent id or slug |
+
+**Query parameters**
+
+| Name     | Type  | Description |
+| -------- | ----- | ----------- |
+| `path`   | `str` | (optional)  |
+| `prefix` | `str` | (optional)  |
+
+**Response**
+
+```python
+// Any
+```
+
+### `client.agents.put_file`
+
+**`PUT /api/v1/agents/{agentId}/files`**
+
+Upload one agent file
+
+Uploads one file into the live agent namespace at the safe relative `path` query parameter.
+
+**Path parameters**
+
+| Name      | Type  | Description      |
+| --------- | ----- | ---------------- |
+| `agentId` | `str` | Agent id or slug |
+
+**Query parameters**
+
+| Name     | Type  | Description |
+| -------- | ----- | ----------- |
+| `path`   | `str` | (optional)  |
+| `prefix` | `str` | (optional)  |
+
+**Request body**
+
+```python
+// AgentFileBody
+```
+
+**Response**
+
+```python
+// dict[str, Any]
+```
+
+### `client.agents.upload_files`
+
+**`POST /api/v1/agents/{agentId}/files`**
+
+Upload agent files
+
+Uploads multiple files into the live agent namespace.
+
+**Path parameters**
+
+| Name      | Type  | Description      |
+| --------- | ----- | ---------------- |
+| `agentId` | `str` | Agent id or slug |
+
+**Request body**
+
+```python
+// AgentFilesBody
+```
+
+**Response**
+
+```python
+// dict[str, Any]
 ```
 
 ### `client.agents.get`
@@ -198,6 +324,211 @@ Requests cancellation for one agent execution by id.
 // CancelAgentExecutionResponse
 ```
 
+### `client.agents.executions.download_expected`
+
+**`GET /api/v1/agents/executions/{executionId}/expected/{filename}`**
+
+Download an expected file
+
+Downloads one expected file attached to an agent execution.
+
+**Path parameters**
+
+| Name          | Type  | Description            |
+| ------------- | ----- | ---------------------- |
+| `executionId` | `str` | Execution id           |
+| `filename`    | `str` | Expected artifact path |
+
+### `client.agents.executions.rename_expected`
+
+**`PATCH /api/v1/agents/executions/{executionId}/expected/{filename}`**
+
+Rename an expected file
+
+Renames one expected file attached to an agent execution.
+
+**Path parameters**
+
+| Name          | Type  | Description            |
+| ------------- | ----- | ---------------------- |
+| `executionId` | `str` | Execution id           |
+| `filename`    | `str` | Expected artifact path |
+
+**Request body**
+
+```python
+// RenameExpectedFileBody
+```
+
+**Response**
+
+```python
+// RenameExpectedFileResponse
+```
+
+### `client.agents.executions.delete_expected`
+
+**`DELETE /api/v1/agents/executions/{executionId}/expected/{filename}`**
+
+Delete an expected file
+
+Deletes one expected file attached to an agent execution.
+
+**Path parameters**
+
+| Name          | Type  | Description            |
+| ------------- | ----- | ---------------------- |
+| `executionId` | `str` | Execution id           |
+| `filename`    | `str` | Expected artifact path |
+
+### `client.agents.executions.list_expected`
+
+**`GET /api/v1/agents/executions/{executionId}/expected`**
+
+List execution expected artifacts
+
+Returns structured expected JSON and expected file names for one execution.
+
+**Path parameters**
+
+| Name          | Type  | Description  |
+| ------------- | ----- | ------------ |
+| `executionId` | `str` | Execution id |
+
+**Response**
+
+```python
+// AgentExecutionExpectedArtifacts
+```
+
+### `client.agents.executions.copy_output_to_expected / upload_expected`
+
+**`POST /api/v1/agents/executions/{executionId}/expected`**
+
+Create an expected file
+
+Uploads an expected file with multipart/form-data, or copies a generated output file into expected artifacts with JSON.
+
+**Path parameters**
+
+| Name          | Type  | Description  |
+| ------------- | ----- | ------------ |
+| `executionId` | `str` | Execution id |
+
+**Request body**
+
+```python
+// CopyAgentExecutionOutputToExpectedBody
+```
+
+**Response**
+
+```python
+// dict[str, Any]
+```
+
+### `client.agents.executions.get_feedback`
+
+**`GET /api/v1/agents/executions/{executionId}/feedback`**
+
+Get execution feedback
+
+Returns feedback and expected artifacts attached to one agent execution.
+
+**Path parameters**
+
+| Name          | Type  | Description  |
+| ------------- | ----- | ------------ |
+| `executionId` | `str` | Execution id |
+
+**Response**
+
+```python
+// AgentExecutionFeedbackDetail
+```
+
+### `client.agents.executions.update_feedback`
+
+**`PATCH /api/v1/agents/executions/{executionId}/feedback`**
+
+Update execution feedback
+
+Updates the feedback body, rating, status, or structured expected JSON attached to one execution.
+
+**Path parameters**
+
+| Name          | Type  | Description  |
+| ------------- | ----- | ------------ |
+| `executionId` | `str` | Execution id |
+
+**Request body**
+
+```python
+// UpdateAgentExecutionFeedbackBody
+```
+
+**Response**
+
+```python
+// AgentExecutionFeedbackDetail
+```
+
+### `client.agents.executions.clear_feedback`
+
+**`DELETE /api/v1/agents/executions/{executionId}/feedback`**
+
+Clear execution feedback
+
+Deletes feedback, structured expected JSON, and expected files from one execution.
+
+**Path parameters**
+
+| Name          | Type  | Description  |
+| ------------- | ----- | ------------ |
+| `executionId` | `str` | Execution id |
+
+**Response**
+
+```python
+// AgentExecutionFeedbackDetail
+```
+
+### `client.agents.executions.download_file`
+
+**`GET /api/v1/agents/executions/{executionId}/files/{kind}/{filename}`**
+
+Download an execution file
+
+Downloads an input file, output file, issues.md, or trace.jsonl attached to an agent execution.
+
+**Path parameters**
+
+| Name          | Type                                            | Description |
+| ------------- | ----------------------------------------------- | ----------- |
+| `executionId` | `str`                                           |             |
+| `kind`        | `Literal["input", "output", "issues", "trace"]` |             |
+| `filename`    | `str`                                           |             |
+
+### `client.agents.executions.rerun`
+
+**`POST /api/v1/agents/executions/{executionId}/rerun`**
+
+Rerun agent execution
+
+Creates a new execution for the same agent using a previous execution's stored input snapshot.
+
+**Path parameters**
+
+| Name          | Type  | Description         |
+| ------------- | ----- | ------------------- |
+| `executionId` | `str` | Source execution id |
+
+**Response**
+
+```python
+// RerunAgentExecutionResponse
+```
+
 ### `client.agents.executions.get`
 
 **`GET /api/v1/agents/executions/{executionId}`**
@@ -214,9 +545,9 @@ Returns one agent execution by id.
 
 **Query parameters**
 
-| Name      | Type  | Description                                             |
-| --------- | ----- | ------------------------------------------------------- |
-| `include` | `str` | (optional)Comma-separated optional sections, e.g. files |
+| Name      | Type  | Description                                                               |
+| --------- | ----- | ------------------------------------------------------------------------- |
+| `include` | `str` | (optional)Comma-separated optional sections, e.g. feedback,expected,files |
 
 **Response**
 

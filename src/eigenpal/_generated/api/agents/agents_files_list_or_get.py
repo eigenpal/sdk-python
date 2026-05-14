@@ -8,7 +8,6 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.agent_execution_response import AgentExecutionResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...types import UNSET, Unset
 from typing import cast
@@ -16,9 +15,10 @@ from typing import cast
 
 
 def _get_kwargs(
-    execution_id: str,
+    agent_id: str,
     *,
-    include: str | Unset = UNSET,
+    path: str | Unset = UNSET,
+    prefix: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
     
@@ -27,7 +27,9 @@ def _get_kwargs(
 
     params: dict[str, Any] = {}
 
-    params["include"] = include
+    params["path"] = path
+
+    params["prefix"] = prefix
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -35,7 +37,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/agents/executions/{execution_id}".format(execution_id=quote(str(execution_id), safe=""),),
+        "url": "/api/v1/agents/{agent_id}/files".format(agent_id=quote(str(agent_id), safe=""),),
         "params": params,
     }
 
@@ -44,12 +46,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentExecutionResponse | ApiErrorEnvelope | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = AgentExecutionResponse.from_dict(response.json())
-
-
-
+        response_200 = response.json()
         return response_200
 
     if response.status_code == 400:
@@ -100,7 +99,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -110,32 +109,35 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    execution_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    path: str | Unset = UNSET,
+    prefix: str | Unset = UNSET,
 
-) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
-    """ Get agent execution
+) -> Response[Any | ApiErrorEnvelope]:
+    """ List or download agent files
 
-     Returns one agent execution by id.
+     Lists live agent files, or returns one file when `path` is provided.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        agent_id (str): Agent id or slug
+        path (str | Unset):
+        prefix (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentExecutionResponse | ApiErrorEnvelope]
+        Response[Any | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
-        execution_id=execution_id,
-include=include,
+        agent_id=agent_id,
+path=path,
+prefix=prefix,
 
     )
 
@@ -146,63 +148,69 @@ include=include,
     return _build_response(client=client, response=response)
 
 def sync(
-    execution_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    path: str | Unset = UNSET,
+    prefix: str | Unset = UNSET,
 
-) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    """ Get agent execution
+) -> Any | ApiErrorEnvelope | None:
+    """ List or download agent files
 
-     Returns one agent execution by id.
+     Lists live agent files, or returns one file when `path` is provided.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        agent_id (str): Agent id or slug
+        path (str | Unset):
+        prefix (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentExecutionResponse | ApiErrorEnvelope
+        Any | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
-        execution_id=execution_id,
+        agent_id=agent_id,
 client=client,
-include=include,
+path=path,
+prefix=prefix,
 
     ).parsed
 
 async def asyncio_detailed(
-    execution_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    path: str | Unset = UNSET,
+    prefix: str | Unset = UNSET,
 
-) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
-    """ Get agent execution
+) -> Response[Any | ApiErrorEnvelope]:
+    """ List or download agent files
 
-     Returns one agent execution by id.
+     Lists live agent files, or returns one file when `path` is provided.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        agent_id (str): Agent id or slug
+        path (str | Unset):
+        prefix (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentExecutionResponse | ApiErrorEnvelope]
+        Response[Any | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
-        execution_id=execution_id,
-include=include,
+        agent_id=agent_id,
+path=path,
+prefix=prefix,
 
     )
 
@@ -213,32 +221,35 @@ include=include,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    execution_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
+    path: str | Unset = UNSET,
+    prefix: str | Unset = UNSET,
 
-) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    """ Get agent execution
+) -> Any | ApiErrorEnvelope | None:
+    """ List or download agent files
 
-     Returns one agent execution by id.
+     Lists live agent files, or returns one file when `path` is provided.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        agent_id (str): Agent id or slug
+        path (str | Unset):
+        prefix (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentExecutionResponse | ApiErrorEnvelope
+        Any | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
-        execution_id=execution_id,
+        agent_id=agent_id,
 client=client,
-include=include,
+path=path,
+prefix=prefix,
 
     )).parsed

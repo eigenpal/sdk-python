@@ -10,7 +10,8 @@ from __future__ import annotations
 import json
 import os
 import time
-from typing import Any, Optional, Union
+from typing import Any, BinaryIO, Optional, Union
+from urllib.parse import quote
 
 import httpx
 
@@ -18,8 +19,19 @@ from eigenpal._files import has_file_input, is_file_input, to_upload_tuple
 from eigenpal._generated.api.agents import (
     agents_create,
     agents_executions_cancel,
+    agents_executions_rerun,
+    agents_executions_expected_create,
+    agents_executions_expected_delete,
+    agents_executions_expected_list,
+    agents_executions_expected_rename,
+    agents_executions_feedback_delete,
+    agents_executions_feedback_get,
+    agents_executions_feedback_update,
     agents_executions_get,
     agents_executions_list,
+    agents_files_list_or_get,
+    agents_files_put,
+    agents_files_upload_batch,
     agents_get,
     agents_list,
     agents_run,
@@ -36,6 +48,20 @@ from eigenpal._generated.api.workflows import (
 )
 from eigenpal._generated.client import AuthenticatedClient
 from eigenpal._generated.models.agent_execution_response import AgentExecutionResponse
+from eigenpal._generated.models.agent_file_body import AgentFileBody
+from eigenpal._generated.models.agent_files_body import AgentFilesBody
+from eigenpal._generated.models.agent_execution_expected_artifacts import (
+    AgentExecutionExpectedArtifacts,
+)
+from eigenpal._generated.models.agent_execution_feedback_detail import AgentExecutionFeedbackDetail
+from eigenpal._generated.models.agents_executions_list_feedback_rating import (
+    AgentsExecutionsListFeedbackRating,
+)
+from eigenpal._generated.models.agents_executions_list_feedback_status import (
+    AgentsExecutionsListFeedbackStatus,
+)
+from eigenpal._generated.models.agents_executions_list_order import AgentsExecutionsListOrder
+from eigenpal._generated.models.agents_executions_list_sort import AgentsExecutionsListSort
 from eigenpal._generated.models.cancel_agent_execution_response import CancelAgentExecutionResponse
 from eigenpal._generated.models.cancel_workflow_execution_response import (
     CancelWorkflowExecutionResponse,
@@ -52,10 +78,18 @@ from eigenpal._generated.models.list_workflow_executions_response import (
 from eigenpal._generated.models.list_workflows_response import ListWorkflowsResponse
 from eigenpal._generated.models.patch_agent_body import PatchAgentBody
 from eigenpal._generated.models.patch_agent_response import PatchAgentResponse
+from eigenpal._generated.models.copy_agent_execution_output_to_expected_body import (
+    CopyAgentExecutionOutputToExpectedBody,
+)
+from eigenpal._generated.models.rename_expected_file_body import RenameExpectedFileBody
+from eigenpal._generated.models.rerun_agent_execution_response import RerunAgentExecutionResponse
 from eigenpal._generated.models.run_agent_body import RunAgentBody
 from eigenpal._generated.models.run_agent_response import RunAgentResponse
 from eigenpal._generated.models.run_workflow_body import RunWorkflowBody
 from eigenpal._generated.models.run_workflow_response import RunWorkflowResponse
+from eigenpal._generated.models.update_agent_execution_feedback_body import (
+    UpdateAgentExecutionFeedbackBody,
+)
 from eigenpal._generated.models.workflow_execution_status_response import (
     WorkflowExecutionStatusResponse,
 )
@@ -99,7 +133,7 @@ def _assert_json_response(response: httpx.Response) -> None:
         return
     content_type = (response.headers.get("content-type") or "").lower()
     # Empty Content-Type can come from minimal proxies; tolerate it.
-    if content_type == "" or "json" in content_type:
+    if content_type == "" or "json" in content_type or "octet-stream" in content_type:
         return
     raise EigenpalError(
         f'Expected a JSON response from the API but got Content-Type "{content_type}". '
@@ -504,7 +538,7 @@ class WorkflowExecutionsResource:
 
 
 class AgentExecutionsResource:
-    """Agent execution operations: list, get, cancel."""
+    """Agent execution operations: list, get, cancel, feedback, and expected artifacts."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
@@ -515,6 +549,33 @@ class AgentExecutionsResource:
         *,
         status: Optional[str] = None,
         batch_id: Optional[str] = None,
+        example_name: Optional[str] = None,
+        example_name_contains: Optional[str] = None,
+        created_after: Optional[str] = None,
+        created_before: Optional[str] = None,
+        completed_after: Optional[str] = None,
+        completed_before: Optional[str] = None,
+        feedback_status: Optional[str] = None,
+        feedback_rating: Optional[str] = None,
+        has_feedback: Optional[bool] = None,
+        no_feedback: Optional[bool] = None,
+        has_expected: Optional[bool] = None,
+        has_expected_json: Optional[bool] = None,
+        has_expected_files: Optional[bool] = None,
+        feedback_body_contains: Optional[str] = None,
+        feedback_created_after: Optional[str] = None,
+        feedback_created_before: Optional[str] = None,
+        feedback_updated_after: Optional[str] = None,
+        feedback_updated_before: Optional[str] = None,
+        feedback_resolved_after: Optional[str] = None,
+        feedback_resolved_before: Optional[str] = None,
+        promoted_to_example: Optional[bool] = None,
+        promoted_example_name: Optional[str] = None,
+        since_last_resolved: Optional[bool] = None,
+        include: Optional[str] = None,
+        sort: Optional[str] = None,
+        order: Optional[str] = None,
+        scan_limit: Optional[int] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> ListAgentExecutionsResponse:
@@ -523,6 +584,41 @@ class AgentExecutionsResource:
             client=self._client,
             status=_opt(status),
             batch_id=_opt(batch_id),
+            example_name=_opt(example_name),
+            example_name_contains=_opt(example_name_contains),
+            created_after=_opt(created_after),
+            created_before=_opt(created_before),
+            completed_after=_opt(completed_after),
+            completed_before=_opt(completed_before),
+            feedback_status=(
+                _opt(None)
+                if feedback_status is None
+                else AgentsExecutionsListFeedbackStatus(feedback_status)
+            ),
+            feedback_rating=(
+                _opt(None)
+                if feedback_rating is None
+                else AgentsExecutionsListFeedbackRating(feedback_rating)
+            ),
+            has_feedback=_opt(has_feedback),
+            no_feedback=_opt(no_feedback),
+            has_expected=_opt(has_expected),
+            has_expected_json=_opt(has_expected_json),
+            has_expected_files=_opt(has_expected_files),
+            feedback_body_contains=_opt(feedback_body_contains),
+            feedback_created_after=_opt(feedback_created_after),
+            feedback_created_before=_opt(feedback_created_before),
+            feedback_updated_after=_opt(feedback_updated_after),
+            feedback_updated_before=_opt(feedback_updated_before),
+            feedback_resolved_after=_opt(feedback_resolved_after),
+            feedback_resolved_before=_opt(feedback_resolved_before),
+            promoted_to_example=_opt(promoted_to_example),
+            promoted_example_name=_opt(promoted_example_name),
+            since_last_resolved=_opt(since_last_resolved),
+            include=_opt(include),
+            sort=_opt(None) if sort is None else AgentsExecutionsListSort(sort),
+            order=_opt(None) if order is None else AgentsExecutionsListOrder(order),
+            scan_limit=_opt(scan_limit),
             limit=_opt(limit),
             offset=_opt(offset),
         )
@@ -542,6 +638,136 @@ class AgentExecutionsResource:
             client=self._client,
         )
         return _check_response(response)
+
+    def rerun(self, execution_id: str) -> RerunAgentExecutionResponse:
+        response = agents_executions_rerun.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+    def get_feedback(self, execution_id: str) -> AgentExecutionFeedbackDetail:
+        response = agents_executions_feedback_get.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+    def update_feedback(
+        self,
+        execution_id: str,
+        *,
+        body: Optional[str] = None,
+        feedback: Optional[str] = None,
+        rating: Optional[str] = None,
+        feedback_rating: Optional[str] = None,
+        status: Optional[str] = None,
+        feedback_status: Optional[str] = None,
+        expected: Any | None | Unset = UNSET,
+    ) -> AgentExecutionFeedbackDetail:
+        payload = UpdateAgentExecutionFeedbackBody.from_dict(
+            {
+                **({ "body": body } if body is not None else {}),
+                **({ "feedback": feedback } if feedback is not None else {}),
+                **({ "rating": rating } if rating is not None else {}),
+                **({ "feedbackRating": feedback_rating } if feedback_rating is not None else {}),
+                **({ "status": status } if status is not None else {}),
+                **({ "feedbackStatus": feedback_status } if feedback_status is not None else {}),
+                **({ "expected": expected } if not isinstance(expected, Unset) else {}),
+            }
+        )
+        response = agents_executions_feedback_update.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+            body=payload,
+        )
+        return _check_response(response)
+
+    def clear_feedback(self, execution_id: str) -> AgentExecutionFeedbackDetail:
+        response = agents_executions_feedback_delete.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+    def list_expected(self, execution_id: str) -> AgentExecutionExpectedArtifacts:
+        response = agents_executions_expected_list.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+    def copy_output_to_expected(
+        self,
+        execution_id: str,
+        *,
+        output_file_name: str,
+        expected_name: Optional[str] = None,
+    ) -> Any:
+        response = agents_executions_expected_create.sync_detailed(
+            execution_id=execution_id,
+            client=self._client,
+            body=CopyAgentExecutionOutputToExpectedBody(
+                output_file_name=output_file_name,
+                expected_name=_opt(expected_name),
+            ),
+        )
+        return _check_response(response)
+
+    def rename_expected(self, execution_id: str, filename: str, *, name: str) -> Any:
+        response = agents_executions_expected_rename.sync_detailed(
+            execution_id=execution_id,
+            filename=filename,
+            client=self._client,
+            body=RenameExpectedFileBody(name=name),
+        )
+        return _check_response(response)
+
+    def delete_expected(self, execution_id: str, filename: str) -> None:
+        response = agents_executions_expected_delete.sync_detailed(
+            execution_id=execution_id,
+            filename=filename,
+            client=self._client,
+        )
+        _check_response(response)
+        return None
+
+    def upload_expected(
+        self,
+        execution_id: str,
+        *,
+        file: bytes | BinaryIO,
+        filename: str,
+        name: Optional[str] = None,
+    ) -> Any:
+        files = {"file": (filename, file)}
+        data = {"name": name} if name is not None else None
+        raw_response = self._client.get_httpx_client().post(
+            f"/api/v1/agents/executions/{quote(execution_id, safe='')}/expected",
+            files=files,
+            data=data,
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.json()
+        return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
+
+    def download_expected(self, execution_id: str, filename: str) -> bytes:
+        raw_response = self._client.get_httpx_client().get(
+            "/api/v1/agents/executions/"
+            f"{quote(execution_id, safe='')}/expected/{quote(filename, safe='')}"
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.content
+        return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
+
+    def download_file(self, execution_id: str, kind: str, filename: str) -> bytes:
+        raw_response = self._client.get_httpx_client().get(
+            "/api/v1/agents/executions/"
+            f"{quote(execution_id, safe='')}/files/{quote(kind, safe='')}/{quote(filename, safe='')}"
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.content
+        return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
 
 
 class AgentsResource:
@@ -571,6 +797,38 @@ class AgentsResource:
             agent_id=agent_id,
             client=self._client,
             include=_opt(include),
+        )
+        return _check_response(response)
+
+    def list_files(
+        self,
+        agent_id: str,
+        *,
+        path: Optional[str] = None,
+        prefix: Optional[str] = None,
+    ) -> Any:
+        response = agents_files_list_or_get.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            path=_opt(path),
+            prefix=_opt(prefix),
+        )
+        return _check_response(response)
+
+    def put_file(self, agent_id: str, path: str, *, content_base64: str) -> Any:
+        response = agents_files_put.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            path=path,
+            body=AgentFileBody(content_base_64=content_base64),
+        )
+        return _check_response(response)
+
+    def upload_files(self, agent_id: str, files: list[dict[str, Any]]) -> Any:
+        response = agents_files_upload_batch.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            body=AgentFilesBody.from_dict({"files": files}),
         )
         return _check_response(response)
 

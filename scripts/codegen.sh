@@ -43,4 +43,20 @@ mkdir -p "$OUT_DIR"
 cp -R "$GENERATED_DIR"/. "$OUT_DIR/"
 rm -rf "$TMP_DIR"
 
+python3 - "$OUT_DIR" <<'PY'
+from pathlib import Path
+import sys
+
+out_dir = Path(sys.argv[1])
+for path in out_dir.rglob("*.py"):
+    text = path.read_text()
+    if "Unset" not in text or "from ...types import" not in text:
+        continue
+    if "from ...types import UNSET, Unset" in text:
+        continue
+    updated = text.replace("from ...types import Response, UNSET", "from ...types import Response, UNSET, Unset")
+    if updated != text:
+        path.write_text(updated)
+PY
+
 echo "✓ Wrote generated client to $OUT_DIR"

@@ -8,35 +8,25 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.agent_execution_response import AgentExecutionResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...types import UNSET, Unset
+from ...models.rerun_agent_execution_response import RerunAgentExecutionResponse
 from typing import cast
 
 
 
 def _get_kwargs(
     execution_id: str,
-    *,
-    include: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
     
 
     
 
-    params: dict[str, Any] = {}
-
-    params["include"] = include
-
-
-    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
-
+    
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/api/v1/agents/executions/{execution_id}".format(execution_id=quote(str(execution_id), safe=""),),
-        "params": params,
+        "method": "post",
+        "url": "/api/v1/agents/executions/{execution_id}/rerun".format(execution_id=quote(str(execution_id), safe=""),),
     }
 
 
@@ -44,13 +34,13 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    if response.status_code == 200:
-        response_200 = AgentExecutionResponse.from_dict(response.json())
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RerunAgentExecutionResponse | None:
+    if response.status_code == 202:
+        response_202 = RerunAgentExecutionResponse.from_dict(response.json())
 
 
 
-        return response_200
+        return response_202
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -100,7 +90,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RerunAgentExecutionResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -113,29 +103,26 @@ def sync_detailed(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
 
-) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
-    """ Get agent execution
+) -> Response[ApiErrorEnvelope | RerunAgentExecutionResponse]:
+    """ Rerun agent execution
 
-     Returns one agent execution by id.
+     Creates a new execution for the same agent using a previous execution's stored input snapshot.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        execution_id (str): Source execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentExecutionResponse | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | RerunAgentExecutionResponse]
      """
 
 
     kwargs = _get_kwargs(
         execution_id=execution_id,
-include=include,
 
     )
 
@@ -149,30 +136,27 @@ def sync(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
 
-) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    """ Get agent execution
+) -> ApiErrorEnvelope | RerunAgentExecutionResponse | None:
+    """ Rerun agent execution
 
-     Returns one agent execution by id.
+     Creates a new execution for the same agent using a previous execution's stored input snapshot.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        execution_id (str): Source execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentExecutionResponse | ApiErrorEnvelope
+        ApiErrorEnvelope | RerunAgentExecutionResponse
      """
 
 
     return sync_detailed(
         execution_id=execution_id,
 client=client,
-include=include,
 
     ).parsed
 
@@ -180,29 +164,26 @@ async def asyncio_detailed(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
 
-) -> Response[AgentExecutionResponse | ApiErrorEnvelope]:
-    """ Get agent execution
+) -> Response[ApiErrorEnvelope | RerunAgentExecutionResponse]:
+    """ Rerun agent execution
 
-     Returns one agent execution by id.
+     Creates a new execution for the same agent using a previous execution's stored input snapshot.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        execution_id (str): Source execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentExecutionResponse | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | RerunAgentExecutionResponse]
      """
 
 
     kwargs = _get_kwargs(
         execution_id=execution_id,
-include=include,
 
     )
 
@@ -216,29 +197,26 @@ async def asyncio(
     execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-    include: str | Unset = UNSET,
 
-) -> AgentExecutionResponse | ApiErrorEnvelope | None:
-    """ Get agent execution
+) -> ApiErrorEnvelope | RerunAgentExecutionResponse | None:
+    """ Rerun agent execution
 
-     Returns one agent execution by id.
+     Creates a new execution for the same agent using a previous execution's stored input snapshot.
 
     Args:
-        execution_id (str): Execution id
-        include (str | Unset): Comma-separated optional sections, e.g. feedback,expected,files
+        execution_id (str): Source execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentExecutionResponse | ApiErrorEnvelope
+        ApiErrorEnvelope | RerunAgentExecutionResponse
      """
 
 
     return (await asyncio_detailed(
         execution_id=execution_id,
 client=client,
-include=include,
 
     )).parsed

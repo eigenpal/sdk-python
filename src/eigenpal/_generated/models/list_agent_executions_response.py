@@ -8,6 +8,7 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
@@ -29,12 +30,16 @@ class ListAgentExecutionsResponse:
             total (int):
             limit (int):
             offset (int):
+            scan_limited (bool | Unset):
+            no_resolved_anchor (bool | Unset):
      """
 
     executions: list[AgentExecutionSummary]
     total: int
     limit: int
     offset: int
+    scan_limited: bool | Unset = UNSET
+    no_resolved_anchor: bool | Unset = UNSET
 
 
 
@@ -55,6 +60,10 @@ class ListAgentExecutionsResponse:
 
         offset = self.offset
 
+        scan_limited = self.scan_limited
+
+        no_resolved_anchor = self.no_resolved_anchor
+
 
         field_dict: dict[str, Any] = {}
 
@@ -64,6 +73,10 @@ class ListAgentExecutionsResponse:
             "limit": limit,
             "offset": offset,
         })
+        if scan_limited is not UNSET:
+            field_dict["scanLimited"] = scan_limited
+        if no_resolved_anchor is not UNSET:
+            field_dict["noResolvedAnchor"] = no_resolved_anchor
 
         return field_dict
 
@@ -89,11 +102,17 @@ class ListAgentExecutionsResponse:
 
         offset = d.pop("offset")
 
+        scan_limited = d.pop("scanLimited", UNSET)
+
+        no_resolved_anchor = d.pop("noResolvedAnchor", UNSET)
+
         list_agent_executions_response = cls(
             executions=executions,
             total=total,
             limit=limit,
             offset=offset,
+            scan_limited=scan_limited,
+            no_resolved_anchor=no_resolved_anchor,
         )
 
         return list_agent_executions_response
