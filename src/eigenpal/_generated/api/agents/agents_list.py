@@ -20,6 +20,7 @@ def _get_kwargs(
     search: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include_archived: bool | Unset = UNSET,
 
 ) -> dict[str, Any]:
     
@@ -33,6 +34,8 @@ def _get_kwargs(
     params["limit"] = limit
 
     params["offset"] = offset
+
+    params["includeArchived"] = include_archived
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -120,6 +123,7 @@ def sync_detailed(
     search: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include_archived: bool | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     """ List agents
@@ -130,6 +134,7 @@ def sync_detailed(
         search (str | Unset): Substring match against agent fields
         limit (int | Unset):
         offset (int | Unset):
+        include_archived (bool | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,6 +149,7 @@ def sync_detailed(
         search=search,
 limit=limit,
 offset=offset,
+include_archived=include_archived,
 
     )
 
@@ -159,6 +165,7 @@ def sync(
     search: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include_archived: bool | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | ListAgentsResponse | None:
     """ List agents
@@ -169,6 +176,7 @@ def sync(
         search (str | Unset): Substring match against agent fields
         limit (int | Unset):
         offset (int | Unset):
+        include_archived (bool | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -184,6 +192,7 @@ def sync(
 search=search,
 limit=limit,
 offset=offset,
+include_archived=include_archived,
 
     ).parsed
 
@@ -193,6 +202,7 @@ async def asyncio_detailed(
     search: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include_archived: bool | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     """ List agents
@@ -203,6 +213,7 @@ async def asyncio_detailed(
         search (str | Unset): Substring match against agent fields
         limit (int | Unset):
         offset (int | Unset):
+        include_archived (bool | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -217,6 +228,7 @@ async def asyncio_detailed(
         search=search,
 limit=limit,
 offset=offset,
+include_archived=include_archived,
 
     )
 
@@ -232,6 +244,7 @@ async def asyncio(
     search: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include_archived: bool | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | ListAgentsResponse | None:
     """ List agents
@@ -242,6 +255,7 @@ async def asyncio(
         search (str | Unset): Substring match against agent fields
         limit (int | Unset):
         offset (int | Unset):
+        include_archived (bool | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -257,5 +271,6 @@ async def asyncio(
 search=search,
 limit=limit,
 offset=offset,
+include_archived=include_archived,
 
     )).parsed

@@ -18,6 +18,7 @@ from .agent_files_body import AgentFilesBody
 from .agent_files_body_files_item import AgentFilesBodyFilesItem
 from .agent_summary import AgentSummary
 from .agent_summary_config import AgentSummaryConfig
+from .agent_summary_source_integrity import AgentSummarySourceIntegrity
 from .agent_summary_stats import AgentSummaryStats
 from .agents_executions_expected_create_files_body import AgentsExecutionsExpectedCreateFilesBody
 from .agents_executions_expected_create_response_201 import AgentsExecutionsExpectedCreateResponse201
@@ -107,6 +108,7 @@ __all__ = (
     "AgentsRunFilesBody",
     "AgentSummary",
     "AgentSummaryConfig",
+    "AgentSummarySourceIntegrity",
     "AgentSummaryStats",
     "ApiErrorEnvelope",
     "ApiErrorIssue",

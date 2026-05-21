@@ -8,6 +8,7 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..models.agent_summary_source_integrity import AgentSummarySourceIntegrity
 from ..types import UNSET, Unset
 from typing import cast
 
@@ -32,6 +33,9 @@ class AgentSummary:
             name (str):
             created_at (str):
             description (None | str | Unset):
+            source_integrity (AgentSummarySourceIntegrity | Unset):
+            latest_version (None | str | Unset):
+            latest_commit (None | str | Unset):
             config (AgentSummaryConfig | Unset):
             updated_at (str | Unset):
             stats (AgentSummaryStats | Unset):
@@ -42,6 +46,9 @@ class AgentSummary:
     name: str
     created_at: str
     description: None | str | Unset = UNSET
+    source_integrity: AgentSummarySourceIntegrity | Unset = UNSET
+    latest_version: None | str | Unset = UNSET
+    latest_commit: None | str | Unset = UNSET
     config: AgentSummaryConfig | Unset = UNSET
     updated_at: str | Unset = UNSET
     stats: AgentSummaryStats | Unset = UNSET
@@ -69,6 +76,23 @@ class AgentSummary:
         else:
             description = self.description
 
+        source_integrity: str | Unset = UNSET
+        if not isinstance(self.source_integrity, Unset):
+            source_integrity = self.source_integrity.value
+
+
+        latest_version: None | str | Unset
+        if isinstance(self.latest_version, Unset):
+            latest_version = UNSET
+        else:
+            latest_version = self.latest_version
+
+        latest_commit: None | str | Unset
+        if isinstance(self.latest_commit, Unset):
+            latest_commit = UNSET
+        else:
+            latest_commit = self.latest_commit
+
         config: dict[str, Any] | Unset = UNSET
         if not isinstance(self.config, Unset):
             config = self.config.to_dict()
@@ -94,6 +118,12 @@ class AgentSummary:
         })
         if description is not UNSET:
             field_dict["description"] = description
+        if source_integrity is not UNSET:
+            field_dict["sourceIntegrity"] = source_integrity
+        if latest_version is not UNSET:
+            field_dict["latestVersion"] = latest_version
+        if latest_commit is not UNSET:
+            field_dict["latestCommit"] = latest_commit
         if config is not UNSET:
             field_dict["config"] = config
         if updated_at is not UNSET:
@@ -132,6 +162,36 @@ class AgentSummary:
         description = _parse_description(d.pop("description", UNSET))
 
 
+        _source_integrity = d.pop("sourceIntegrity", UNSET)
+        source_integrity: AgentSummarySourceIntegrity | Unset
+        if isinstance(_source_integrity,  Unset):
+            source_integrity = UNSET
+        else:
+            source_integrity = AgentSummarySourceIntegrity(_source_integrity)
+
+
+
+
+        def _parse_latest_version(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        latest_version = _parse_latest_version(d.pop("latestVersion", UNSET))
+
+
+        def _parse_latest_commit(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        latest_commit = _parse_latest_commit(d.pop("latestCommit", UNSET))
+
+
         _config = d.pop("config", UNSET)
         config: AgentSummaryConfig | Unset
         if isinstance(_config,  Unset):
@@ -166,6 +226,9 @@ class AgentSummary:
             name=name,
             created_at=created_at,
             description=description,
+            source_integrity=source_integrity,
+            latest_version=latest_version,
+            latest_commit=latest_commit,
             config=config,
             updated_at=updated_at,
             stats=stats,
