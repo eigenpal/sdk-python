@@ -126,6 +126,54 @@ def test_agents_update_hits_update_endpoint(client: EigenpalClient) -> None:
 
 
 @respx.mock
+def test_agents_run_with_wait_for_completion_accepts_200(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/agents/invoice-agent/run").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "runId": "aex_123",
+                "status": "completed",
+                "output": {"ok": True},
+            },
+        )
+    )
+
+    result = client.agents.run(
+        "invoice-agent",
+        input={"prompt": "hello"},
+        wait_for_completion=30,
+        source_ref="1.2.3",
+    )
+
+    assert route.called
+    assert result.run_id == "aex_123"
+    assert result.status == "completed"
+    assert result.output == {"ok": True}
+    assert "wait_for_completion=30" in str(route.calls.last.request.url)
+    assert "sourceRef=1.2.3" in str(route.calls.last.request.url)
+
+
+@respx.mock
+def test_agents_runs_list_accepts_source_ref(client: EigenpalClient) -> None:
+    route = respx.get("http://localhost:3000/api/v1/agents/invoice-agent/runs").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "runs": [],
+                "total": 0,
+                "limit": 10,
+                "offset": 0,
+            },
+        )
+    )
+
+    client.agents.runs.list("invoice-agent", source_ref="latest", limit=10)
+
+    assert route.called
+    assert "sourceRef=latest" in str(route.calls.last.request.url)
+
+
+@respx.mock
 def test_401_raises_auth_error(client: EigenpalClient) -> None:
     respx.get("http://localhost:3000/api/v1/workflows").mock(
         return_value=httpx.Response(

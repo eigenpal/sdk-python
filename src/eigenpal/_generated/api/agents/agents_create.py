@@ -115,7 +115,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | CreateAgentResponse]:
     """ Create an agent
 
-     Creates a new agent and initializes its workspace files.
+     Creates a new agent, registers it in the automation table, and scaffolds its Git source package.
+    Accepts session cookies or API keys.
 
     Args:
         body (CreateAgentBody):
@@ -148,7 +149,8 @@ def sync(
 ) -> ApiErrorEnvelope | CreateAgentResponse | None:
     """ Create an agent
 
-     Creates a new agent and initializes its workspace files.
+     Creates a new agent, registers it in the automation table, and scaffolds its Git source package.
+    Accepts session cookies or API keys.
 
     Args:
         body (CreateAgentBody):
@@ -176,7 +178,8 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | CreateAgentResponse]:
     """ Create an agent
 
-     Creates a new agent and initializes its workspace files.
+     Creates a new agent, registers it in the automation table, and scaffolds its Git source package.
+    Accepts session cookies or API keys.
 
     Args:
         body (CreateAgentBody):
@@ -209,7 +212,8 @@ async def asyncio(
 ) -> ApiErrorEnvelope | CreateAgentResponse | None:
     """ Create an agent
 
-     Creates a new agent and initializes its workspace files.
+     Creates a new agent, registers it in the automation table, and scaffolds its Git source package.
+    Accepts session cookies or API keys.
 
     Args:
         body (CreateAgentBody):

@@ -28,7 +28,7 @@ T = TypeVar("T", bound="RunAgentResponse")
 class RunAgentResponse:
     """ 
         Attributes:
-            execution_id (str):
+            run_id (str):
             status (ExecutionStatus | Literal['timeout'] | Unset):
             output (Any | Unset):
             schema_valid (bool | None | Unset):
@@ -36,7 +36,7 @@ class RunAgentResponse:
             cost (RunAgentResponseCost | Unset):
      """
 
-    execution_id: str
+    run_id: str
     status: ExecutionStatus | Literal['timeout'] | Unset = UNSET
     output: Any | Unset = UNSET
     schema_valid: bool | None | Unset = UNSET
@@ -49,7 +49,7 @@ class RunAgentResponse:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_agent_response_cost import RunAgentResponseCost
-        execution_id = self.execution_id
+        run_id = self.run_id
 
         status: Literal['timeout'] | str | Unset
         if isinstance(self.status, Unset):
@@ -81,7 +81,7 @@ class RunAgentResponse:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "executionId": execution_id,
+            "runId": run_id,
         })
         if status is not UNSET:
             field_dict["status"] = status
@@ -102,7 +102,7 @@ class RunAgentResponse:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_agent_response_cost import RunAgentResponseCost
         d = dict(src_dict)
-        execution_id = d.pop("executionId")
+        run_id = d.pop("runId")
 
         def _parse_status(data: object) -> ExecutionStatus | Literal['timeout'] | Unset:
             if isinstance(data, Unset):
@@ -158,7 +158,7 @@ class RunAgentResponse:
 
 
         run_agent_response = cls(
-            execution_id=execution_id,
+            run_id=run_id,
             status=status,
             output=output,
             schema_valid=schema_valid,

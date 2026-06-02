@@ -8,8 +8,8 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.agent_file_body import AgentFileBody
-from ...models.agents_files_put_response_200 import AgentsFilesPutResponse200
+from ...models.agents_files_put_body import AgentsFilesPutBody
+from ...models.agents_files_put_response_409 import AgentsFilesPutResponse409
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...types import UNSET, Unset
 from typing import cast
@@ -19,9 +19,10 @@ from typing import cast
 def _get_kwargs(
     agent_id: str,
     *,
-    body: AgentFileBody,
+    body: AgentsFilesPutBody,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -34,6 +35,8 @@ def _get_kwargs(
     params["path"] = path
 
     params["prefix"] = prefix
+
+    params["ref"] = ref
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -55,14 +58,7 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentsFilesPutResponse200 | ApiErrorEnvelope | None:
-    if response.status_code == 200:
-        response_200 = AgentsFilesPutResponse200.from_dict(response.json())
-
-
-
-        return response_200
-
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentsFilesPutResponse409 | ApiErrorEnvelope | None:
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -91,6 +87,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 409:
+        response_409 = AgentsFilesPutResponse409.from_dict(response.json())
+
+
+
+        return response_409
+
     if response.status_code == 429:
         response_429 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -111,7 +114,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentsFilesPutResponse200 | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentsFilesPutResponse409 | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -124,27 +127,29 @@ def sync_detailed(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFileBody,
+    body: AgentsFilesPutBody,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
-) -> Response[AgentsFilesPutResponse200 | ApiErrorEnvelope]:
-    """ Upload one agent file
+) -> Response[AgentsFilesPutResponse409 | ApiErrorEnvelope]:
+    """ Upload one agent file (deprecated)
 
-     Uploads one file into the live agent namespace at the safe relative `path` query parameter.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
-        body (AgentFileBody):
+        ref (str | Unset): Git ref (default main)
+        body (AgentsFilesPutBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentsFilesPutResponse200 | ApiErrorEnvelope]
+        Response[AgentsFilesPutResponse409 | ApiErrorEnvelope]
      """
 
 
@@ -153,6 +158,7 @@ def sync_detailed(
 body=body,
 path=path,
 prefix=prefix,
+ref=ref,
 
     )
 
@@ -166,27 +172,29 @@ def sync(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFileBody,
+    body: AgentsFilesPutBody,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
-) -> AgentsFilesPutResponse200 | ApiErrorEnvelope | None:
-    """ Upload one agent file
+) -> AgentsFilesPutResponse409 | ApiErrorEnvelope | None:
+    """ Upload one agent file (deprecated)
 
-     Uploads one file into the live agent namespace at the safe relative `path` query parameter.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
-        body (AgentFileBody):
+        ref (str | Unset): Git ref (default main)
+        body (AgentsFilesPutBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentsFilesPutResponse200 | ApiErrorEnvelope
+        AgentsFilesPutResponse409 | ApiErrorEnvelope
      """
 
 
@@ -196,6 +204,7 @@ client=client,
 body=body,
 path=path,
 prefix=prefix,
+ref=ref,
 
     ).parsed
 
@@ -203,27 +212,29 @@ async def asyncio_detailed(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFileBody,
+    body: AgentsFilesPutBody,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
-) -> Response[AgentsFilesPutResponse200 | ApiErrorEnvelope]:
-    """ Upload one agent file
+) -> Response[AgentsFilesPutResponse409 | ApiErrorEnvelope]:
+    """ Upload one agent file (deprecated)
 
-     Uploads one file into the live agent namespace at the safe relative `path` query parameter.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
-        body (AgentFileBody):
+        ref (str | Unset): Git ref (default main)
+        body (AgentsFilesPutBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentsFilesPutResponse200 | ApiErrorEnvelope]
+        Response[AgentsFilesPutResponse409 | ApiErrorEnvelope]
      """
 
 
@@ -232,6 +243,7 @@ async def asyncio_detailed(
 body=body,
 path=path,
 prefix=prefix,
+ref=ref,
 
     )
 
@@ -245,27 +257,29 @@ async def asyncio(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFileBody,
+    body: AgentsFilesPutBody,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
-) -> AgentsFilesPutResponse200 | ApiErrorEnvelope | None:
-    """ Upload one agent file
+) -> AgentsFilesPutResponse409 | ApiErrorEnvelope | None:
+    """ Upload one agent file (deprecated)
 
-     Uploads one file into the live agent namespace at the safe relative `path` query parameter.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
-        body (AgentFileBody):
+        ref (str | Unset): Git ref (default main)
+        body (AgentsFilesPutBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentsFilesPutResponse200 | ApiErrorEnvelope
+        AgentsFilesPutResponse409 | ApiErrorEnvelope
      """
 
 
@@ -275,5 +289,6 @@ client=client,
 body=body,
 path=path,
 prefix=prefix,
+ref=ref,
 
     )).parsed

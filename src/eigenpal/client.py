@@ -18,17 +18,17 @@ import httpx
 from eigenpal._files import has_file_input, is_file_input, to_upload_tuple
 from eigenpal._generated.api.agents import (
     agents_create,
-    agents_executions_cancel,
-    agents_executions_rerun,
-    agents_executions_expected_create,
-    agents_executions_expected_delete,
-    agents_executions_expected_list,
-    agents_executions_expected_rename,
-    agents_executions_feedback_delete,
-    agents_executions_feedback_get,
-    agents_executions_feedback_update,
-    agents_executions_get,
-    agents_executions_list,
+    agents_runs_cancel,
+    agents_runs_rerun,
+    agents_runs_expected_create,
+    agents_runs_expected_delete,
+    agents_runs_expected_list,
+    agents_runs_expected_rename,
+    agents_runs_feedback_delete,
+    agents_runs_feedback_get,
+    agents_runs_feedback_update,
+    agents_runs_get,
+    agents_runs_list,
     agents_files_list_or_get,
     agents_files_put,
     agents_files_upload_batch,
@@ -36,6 +36,14 @@ from eigenpal._generated.api.agents import (
     agents_list,
     agents_run,
     agents_update,
+)
+from eigenpal._generated.api.automations import automations_sync
+from eigenpal._generated.api.source import (
+    source_lockfile_preview,
+    source_raw,
+    source_releases,
+    source_repository,
+    source_secrets_decrypt,
 )
 from eigenpal._generated.api.workflows import (
     workflows_get,
@@ -47,29 +55,26 @@ from eigenpal._generated.api.workflows import (
     workflows_versions_list,
 )
 from eigenpal._generated.client import AuthenticatedClient
-from eigenpal._generated.models.agent_execution_response import AgentExecutionResponse
-from eigenpal._generated.models.agent_file_body import AgentFileBody
-from eigenpal._generated.models.agent_files_body import AgentFilesBody
+from eigenpal._generated.models.agent_run_response import AgentRunResponse
+from eigenpal._generated.models.agents_files_put_body import AgentsFilesPutBody
+from eigenpal._generated.models.agents_files_upload_batch_body import AgentsFilesUploadBatchBody
 from eigenpal._generated.models.agent_execution_expected_artifacts import (
     AgentExecutionExpectedArtifacts,
 )
 from eigenpal._generated.models.agent_execution_feedback_detail import AgentExecutionFeedbackDetail
-from eigenpal._generated.models.agents_executions_list_feedback_rating import (
-    AgentsExecutionsListFeedbackRating,
-)
-from eigenpal._generated.models.agents_executions_list_feedback_status import (
-    AgentsExecutionsListFeedbackStatus,
-)
-from eigenpal._generated.models.agents_executions_list_order import AgentsExecutionsListOrder
-from eigenpal._generated.models.agents_executions_list_sort import AgentsExecutionsListSort
+from eigenpal._generated.models.agents_runs_list_feedback_rating import AgentsRunsListFeedbackRating
+from eigenpal._generated.models.agents_runs_list_feedback_status import AgentsRunsListFeedbackStatus
+from eigenpal._generated.models.agents_runs_list_order import AgentsRunsListOrder
+from eigenpal._generated.models.agents_runs_list_sort import AgentsRunsListSort
 from eigenpal._generated.models.cancel_agent_execution_response import CancelAgentExecutionResponse
 from eigenpal._generated.models.cancel_workflow_execution_response import (
     CancelWorkflowExecutionResponse,
 )
+from eigenpal._generated.models.source_secrets_decrypt_body import SourceSecretsDecryptBody
 from eigenpal._generated.models.create_agent_body import CreateAgentBody
 from eigenpal._generated.models.create_agent_response import CreateAgentResponse
 from eigenpal._generated.models.get_agent_response import GetAgentResponse
-from eigenpal._generated.models.list_agent_executions_response import ListAgentExecutionsResponse
+from eigenpal._generated.models.list_agent_runs_response import ListAgentRunsResponse
 from eigenpal._generated.models.list_agents_response import ListAgentsResponse
 from eigenpal._generated.models.list_versions_response import ListVersionsResponse
 from eigenpal._generated.models.list_workflow_executions_response import (
@@ -82,7 +87,7 @@ from eigenpal._generated.models.copy_agent_execution_output_to_expected_body imp
     CopyAgentExecutionOutputToExpectedBody,
 )
 from eigenpal._generated.models.rename_expected_file_body import RenameExpectedFileBody
-from eigenpal._generated.models.rerun_agent_execution_response import RerunAgentExecutionResponse
+from eigenpal._generated.models.rerun_agent_run_response import RerunAgentRunResponse
 from eigenpal._generated.models.run_agent_body import RunAgentBody
 from eigenpal._generated.models.run_agent_response import RunAgentResponse
 from eigenpal._generated.models.run_workflow_body import RunWorkflowBody
@@ -224,6 +229,8 @@ class EigenpalClient:
         )
         self.workflows = WorkflowsResource(self._client)
         self.agents = AgentsResource(self._client)
+        self.source = SourceResource(self._client)
+        self.automations = AutomationsResource(self._client)
 
     def __enter__(self) -> "EigenpalClient":
         return self
@@ -298,6 +305,7 @@ def _run_agent_multipart(
     input: dict[str, Any],
     *,
     wait_for_completion: Optional[int],
+    source_ref: Optional[str],
 ) -> RunAgentResponse:
     """Send an agent execution as ``multipart/form-data``.
 
@@ -315,6 +323,8 @@ def _run_agent_multipart(
     params: dict[str, Any] = {}
     if wait_for_completion is not None:
         params["wait_for_completion"] = wait_for_completion
+    if source_ref is not None:
+        params["sourceRef"] = source_ref
 
     data = {"_json": json.dumps(scalars)} if scalars else {}
     raw_response = client.get_httpx_client().post(
@@ -336,6 +346,56 @@ def _run_agent_multipart(
             parsed=parsed,
         )
     )
+
+
+class SourceResource:
+    """Source repository operations: repository metadata, raw files, releases, lockfiles, secrets."""
+
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def repository(self) -> Any:
+        response = source_repository.sync_detailed(client=self._client)
+        return _check_response(response)
+
+    def raw(self, path: str, *, ref: str = "main") -> Any:
+        response = source_raw.sync_detailed(client=self._client, path=path, ref=ref)
+        return _check_response(response)
+
+    def releases(self, package_path: str, *, version: Optional[str] = None) -> Any:
+        response = source_releases.sync_detailed(
+            client=self._client,
+            package_path=package_path,
+            version=_opt(version),
+        )
+        return _check_response(response)
+
+    def lockfile(self, package_ref: str) -> Any:
+        response = source_lockfile_preview.sync_detailed(
+            client=self._client,
+            package_ref=package_ref,
+        )
+        return _check_response(response)
+
+    def decrypt_secrets(self, body: dict[str, Any] | SourceSecretsDecryptBody) -> Any:
+        payload = (
+            body
+            if isinstance(body, SourceSecretsDecryptBody)
+            else SourceSecretsDecryptBody.from_dict(body)
+        )
+        response = source_secrets_decrypt.sync_detailed(client=self._client, body=payload)
+        return _check_response(response)
+
+
+class AutomationsResource:
+    """Automation operations: sync public automation metadata from source."""
+
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def sync(self, automation: str) -> Any:
+        response = automations_sync.sync_detailed(client=self._client, automation=automation)
+        return _check_response(response)
 
 
 class WorkflowsResource:
@@ -539,8 +599,8 @@ class WorkflowExecutionsResource:
             time.sleep(poll_interval_seconds)
 
 
-class AgentExecutionsResource:
-    """Agent execution operations: list, get, cancel, feedback, and expected artifacts."""
+class AgentRunsResource:
+    """Agent run operations: list, get, cancel, feedback, and expected artifacts."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
@@ -551,12 +611,13 @@ class AgentExecutionsResource:
         *,
         status: Optional[str] = None,
         batch_id: Optional[str] = None,
-        example_name: Optional[str] = None,
-        example_name_contains: Optional[str] = None,
+        example_id: Optional[str] = None,
+        example_id_contains: Optional[str] = None,
         created_after: Optional[str] = None,
         created_before: Optional[str] = None,
         completed_after: Optional[str] = None,
         completed_before: Optional[str] = None,
+        source_ref: Optional[str] = None,
         feedback_status: Optional[str] = None,
         feedback_rating: Optional[str] = None,
         has_feedback: Optional[bool] = None,
@@ -580,27 +641,28 @@ class AgentExecutionsResource:
         scan_limit: Optional[int] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> ListAgentExecutionsResponse:
-        response = agents_executions_list.sync_detailed(
+    ) -> ListAgentRunsResponse:
+        response = agents_runs_list.sync_detailed(
             agent_id=agent_id,
             client=self._client,
             status=_opt(status),
             batch_id=_opt(batch_id),
-            example_name=_opt(example_name),
-            example_name_contains=_opt(example_name_contains),
+            example_id=_opt(example_id),
+            example_id_contains=_opt(example_id_contains),
             created_after=_opt(created_after),
             created_before=_opt(created_before),
             completed_after=_opt(completed_after),
             completed_before=_opt(completed_before),
+            source_ref=_opt(source_ref),
             feedback_status=(
                 _opt(None)
                 if feedback_status is None
-                else AgentsExecutionsListFeedbackStatus(feedback_status)
+                else AgentsRunsListFeedbackStatus(feedback_status)
             ),
             feedback_rating=(
                 _opt(None)
                 if feedback_rating is None
-                else AgentsExecutionsListFeedbackRating(feedback_rating)
+                else AgentsRunsListFeedbackRating(feedback_rating)
             ),
             has_feedback=_opt(has_feedback),
             no_feedback=_opt(no_feedback),
@@ -618,46 +680,46 @@ class AgentExecutionsResource:
             promoted_example_name=_opt(promoted_example_name),
             since_last_resolved=_opt(since_last_resolved),
             include=_opt(include),
-            sort=_opt(None) if sort is None else AgentsExecutionsListSort(sort),
-            order=_opt(None) if order is None else AgentsExecutionsListOrder(order),
+            sort=_opt(None) if sort is None else AgentsRunsListSort(sort),
+            order=_opt(None) if order is None else AgentsRunsListOrder(order),
             scan_limit=_opt(scan_limit),
             limit=_opt(limit),
             offset=_opt(offset),
         )
         return _check_response(response)
 
-    def get(self, execution_id: str, *, include: Optional[str] = None) -> AgentExecutionResponse:
-        response = agents_executions_get.sync_detailed(
-            execution_id=execution_id,
+    def get(self, run_id: str, *, include: Optional[str] = None) -> AgentRunResponse:
+        response = agents_runs_get.sync_detailed(
+            run_id=run_id,
             client=self._client,
             include=_opt(include),
         )
         return _check_response(response)
 
-    def cancel(self, execution_id: str) -> CancelAgentExecutionResponse:
-        response = agents_executions_cancel.sync_detailed(
-            execution_id=execution_id,
+    def cancel(self, run_id: str) -> CancelAgentExecutionResponse:
+        response = agents_runs_cancel.sync_detailed(
+            run_id=run_id,
             client=self._client,
         )
         return _check_response(response)
 
-    def rerun(self, execution_id: str) -> RerunAgentExecutionResponse:
-        response = agents_executions_rerun.sync_detailed(
-            execution_id=execution_id,
+    def rerun(self, run_id: str) -> RerunAgentRunResponse:
+        response = agents_runs_rerun.sync_detailed(
+            run_id=run_id,
             client=self._client,
         )
         return _check_response(response)
 
-    def get_feedback(self, execution_id: str) -> AgentExecutionFeedbackDetail:
-        response = agents_executions_feedback_get.sync_detailed(
-            execution_id=execution_id,
+    def get_feedback(self, run_id: str) -> AgentExecutionFeedbackDetail:
+        response = agents_runs_feedback_get.sync_detailed(
+            run_id=run_id,
             client=self._client,
         )
         return _check_response(response)
 
     def update_feedback(
         self,
-        execution_id: str,
+        run_id: str,
         *,
         body: Optional[str] = None,
         feedback: Optional[str] = None,
@@ -678,36 +740,36 @@ class AgentExecutionsResource:
                 **({ "expected": expected } if not isinstance(expected, Unset) else {}),
             }
         )
-        response = agents_executions_feedback_update.sync_detailed(
-            execution_id=execution_id,
+        response = agents_runs_feedback_update.sync_detailed(
+            run_id=run_id,
             client=self._client,
             body=payload,
         )
         return _check_response(response)
 
-    def clear_feedback(self, execution_id: str) -> AgentExecutionFeedbackDetail:
-        response = agents_executions_feedback_delete.sync_detailed(
-            execution_id=execution_id,
+    def clear_feedback(self, run_id: str) -> AgentExecutionFeedbackDetail:
+        response = agents_runs_feedback_delete.sync_detailed(
+            run_id=run_id,
             client=self._client,
         )
         return _check_response(response)
 
-    def list_expected(self, execution_id: str) -> AgentExecutionExpectedArtifacts:
-        response = agents_executions_expected_list.sync_detailed(
-            execution_id=execution_id,
+    def list_expected(self, run_id: str) -> AgentExecutionExpectedArtifacts:
+        response = agents_runs_expected_list.sync_detailed(
+            run_id=run_id,
             client=self._client,
         )
         return _check_response(response)
 
     def copy_output_to_expected(
         self,
-        execution_id: str,
+        run_id: str,
         *,
         output_file_name: str,
         expected_name: Optional[str] = None,
     ) -> Any:
-        response = agents_executions_expected_create.sync_detailed(
-            execution_id=execution_id,
+        response = agents_runs_expected_create.sync_detailed(
+            run_id=run_id,
             client=self._client,
             body=CopyAgentExecutionOutputToExpectedBody(
                 output_file_name=output_file_name,
@@ -716,18 +778,18 @@ class AgentExecutionsResource:
         )
         return _check_response(response)
 
-    def rename_expected(self, execution_id: str, filename: str, *, name: str) -> Any:
-        response = agents_executions_expected_rename.sync_detailed(
-            execution_id=execution_id,
+    def rename_expected(self, run_id: str, filename: str, *, name: str) -> Any:
+        response = agents_runs_expected_rename.sync_detailed(
+            run_id=run_id,
             filename=filename,
             client=self._client,
             body=RenameExpectedFileBody(name=name),
         )
         return _check_response(response)
 
-    def delete_expected(self, execution_id: str, filename: str) -> None:
-        response = agents_executions_expected_delete.sync_detailed(
-            execution_id=execution_id,
+    def delete_expected(self, run_id: str, filename: str) -> None:
+        response = agents_runs_expected_delete.sync_detailed(
+            run_id=run_id,
             filename=filename,
             client=self._client,
         )
@@ -736,7 +798,7 @@ class AgentExecutionsResource:
 
     def upload_expected(
         self,
-        execution_id: str,
+        run_id: str,
         *,
         file: bytes | BinaryIO,
         filename: str,
@@ -745,7 +807,7 @@ class AgentExecutionsResource:
         files = {"file": (filename, file)}
         data = {"name": name} if name is not None else None
         raw_response = self._client.get_httpx_client().post(
-            f"/api/v1/agents/executions/{quote(execution_id, safe='')}/expected",
+            f"/api/v1/agents/runs/{quote(run_id, safe='')}/expected",
             files=files,
             data=data,
         )
@@ -753,19 +815,19 @@ class AgentExecutionsResource:
             return raw_response.json()
         return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
 
-    def download_expected(self, execution_id: str, filename: str) -> bytes:
+    def download_expected(self, run_id: str, filename: str) -> bytes:
         raw_response = self._client.get_httpx_client().get(
-            "/api/v1/agents/executions/"
-            f"{quote(execution_id, safe='')}/expected/{quote(filename, safe='')}"
+            "/api/v1/agents/runs/"
+            f"{quote(run_id, safe='')}/expected/{quote(filename, safe='')}"
         )
         if 200 <= raw_response.status_code < 300:
             return raw_response.content
         return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
 
-    def download_file(self, execution_id: str, kind: str, filename: str) -> bytes:
+    def download_file(self, run_id: str, kind: str, filename: str) -> bytes:
         raw_response = self._client.get_httpx_client().get(
-            "/api/v1/agents/executions/"
-            f"{quote(execution_id, safe='')}/files/{quote(kind, safe='')}/{quote(filename, safe='')}"
+            "/api/v1/agents/runs/"
+            f"{quote(run_id, safe='')}/files/{quote(kind, safe='')}/{quote(filename, safe='')}"
         )
         if 200 <= raw_response.status_code < 300:
             return raw_response.content
@@ -773,11 +835,11 @@ class AgentExecutionsResource:
 
 
 class AgentsResource:
-    """Agent operations: list, get, create, run, executions."""
+    """Agent operations: list, get, create, run, and runs."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
-        self.executions = AgentExecutionsResource(client)
+        self.runs = AgentRunsResource(client)
 
     def list(
         self,
@@ -822,7 +884,7 @@ class AgentsResource:
             agent_id=agent_id,
             client=self._client,
             path=path,
-            body=AgentFileBody(content_base_64=content_base64),
+            body=AgentsFilesPutBody.from_dict({"contentBase64": content_base64}),
         )
         return _check_response(response)
 
@@ -830,7 +892,7 @@ class AgentsResource:
         response = agents_files_upload_batch.sync_detailed(
             agent_id=agent_id,
             client=self._client,
-            body=AgentFilesBody.from_dict({"files": files}),
+            body=AgentsFilesUploadBatchBody.from_dict({"files": files}),
         )
         return _check_response(response)
 
@@ -877,6 +939,7 @@ class AgentsResource:
         input: Optional[dict[str, Any]] = None,
         *,
         wait_for_completion: Optional[int] = None,
+        source_ref: Optional[str] = None,
     ) -> RunAgentResponse:
         if has_file_input(input):
             assert input is not None
@@ -885,17 +948,20 @@ class AgentsResource:
                 agent_id,
                 input,
                 wait_for_completion=wait_for_completion,
+                source_ref=source_ref,
             )
 
         body = RunAgentBody.from_dict(
             {
                 **({"input": input} if input is not None else {}),
+                **({"sourceRef": source_ref} if source_ref is not None else {}),
             }
         )
         response = agents_run.sync_detailed(
             agent_id=agent_id,
             client=self._client,
             body=body,
+            source_ref=_opt(source_ref),
             wait_for_completion=_opt(wait_for_completion),
         )
         return _check_response(response)

@@ -29,10 +29,13 @@ class RunAgentBody:
         Attributes:
             input_ (RunAgentBodyInput | Unset):
             field_metadata (RunAgentBodyMetadata | Unset):
+            source_ref (str | Unset): Git source ref to resolve for this run. Defaults to latest. Supports latest, main,
+                exact versions/tags such as 1.2.3, semver ranges such as 1.2.x or 1.x, and exact commit SHAs. Example: latest.
      """
 
     input_: RunAgentBodyInput | Unset = UNSET
     field_metadata: RunAgentBodyMetadata | Unset = UNSET
+    source_ref: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -50,6 +53,8 @@ class RunAgentBody:
         if not isinstance(self.field_metadata, Unset):
             field_metadata = self.field_metadata.to_dict()
 
+        source_ref = self.source_ref
+
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -59,6 +64,8 @@ class RunAgentBody:
             field_dict["input"] = input_
         if field_metadata is not UNSET:
             field_dict["_metadata"] = field_metadata
+        if source_ref is not UNSET:
+            field_dict["sourceRef"] = source_ref
 
         return field_dict
 
@@ -89,9 +96,12 @@ class RunAgentBody:
 
 
 
+        source_ref = d.pop("sourceRef", UNSET)
+
         run_agent_body = cls(
             input_=input_,
             field_metadata=field_metadata,
+            source_ref=source_ref,
         )
 
 

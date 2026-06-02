@@ -8,8 +8,8 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.agent_files_body import AgentFilesBody
-from ...models.agents_files_upload_batch_response_200 import AgentsFilesUploadBatchResponse200
+from ...models.agents_files_upload_batch_body import AgentsFilesUploadBatchBody
+from ...models.agents_files_upload_batch_response_409 import AgentsFilesUploadBatchResponse409
 from ...models.api_error_envelope import ApiErrorEnvelope
 from typing import cast
 
@@ -18,7 +18,7 @@ from typing import cast
 def _get_kwargs(
     agent_id: str,
     *,
-    body: AgentFilesBody,
+    body: AgentsFilesUploadBatchBody,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -43,14 +43,7 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope | None:
-    if response.status_code == 200:
-        response_200 = AgentsFilesUploadBatchResponse200.from_dict(response.json())
-
-
-
-        return response_200
-
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope | None:
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -79,6 +72,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 409:
+        response_409 = AgentsFilesUploadBatchResponse409.from_dict(response.json())
+
+
+
+        return response_409
+
     if response.status_code == 429:
         response_429 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -99,7 +99,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -112,23 +112,23 @@ def sync_detailed(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFilesBody,
+    body: AgentsFilesUploadBatchBody,
 
-) -> Response[AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope]:
-    """ Upload agent files
+) -> Response[AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope]:
+    """ Upload agent files (deprecated)
 
-     Uploads multiple files into the live agent namespace.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
-        body (AgentFilesBody):
+        body (AgentsFilesUploadBatchBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope]
+        Response[AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope]
      """
 
 
@@ -148,23 +148,23 @@ def sync(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFilesBody,
+    body: AgentsFilesUploadBatchBody,
 
-) -> AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope | None:
-    """ Upload agent files
+) -> AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope | None:
+    """ Upload agent files (deprecated)
 
-     Uploads multiple files into the live agent namespace.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
-        body (AgentFilesBody):
+        body (AgentsFilesUploadBatchBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope
+        AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope
      """
 
 
@@ -179,23 +179,23 @@ async def asyncio_detailed(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFilesBody,
+    body: AgentsFilesUploadBatchBody,
 
-) -> Response[AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope]:
-    """ Upload agent files
+) -> Response[AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope]:
+    """ Upload agent files (deprecated)
 
-     Uploads multiple files into the live agent namespace.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
-        body (AgentFilesBody):
+        body (AgentsFilesUploadBatchBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope]
+        Response[AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope]
      """
 
 
@@ -215,23 +215,23 @@ async def asyncio(
     agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: AgentFilesBody,
+    body: AgentsFilesUploadBatchBody,
 
-) -> AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope | None:
-    """ Upload agent files
+) -> AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope | None:
+    """ Upload agent files (deprecated)
 
-     Uploads multiple files into the live agent namespace.
+     Agent source is Git-backed. Use Git push or the builder instead.
 
     Args:
         agent_id (str): Agent id or slug
-        body (AgentFilesBody):
+        body (AgentsFilesUploadBatchBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AgentsFilesUploadBatchResponse200 | ApiErrorEnvelope
+        AgentsFilesUploadBatchResponse409 | ApiErrorEnvelope
      """
 
 

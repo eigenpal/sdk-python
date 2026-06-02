@@ -22,6 +22,7 @@ def _get_kwargs(
     *,
     body:    RunAgentBody  |     AgentsRunFilesBody  | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
+    source_ref: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -32,6 +33,8 @@ def _get_kwargs(
     params: dict[str, Any] = {}
 
     params["wait_for_completion"] = wait_for_completion
+
+    params["sourceRef"] = source_ref
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -60,6 +63,13 @@ def _get_kwargs(
 
 
 def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunAgentResponse | None:
+    if response.status_code == 200:
+        response_200 = RunAgentResponse.from_dict(response.json())
+
+
+
+        return response_200
+
     if response.status_code == 202:
         response_202 = RunAgentResponse.from_dict(response.json())
 
@@ -130,18 +140,22 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body:    RunAgentBody  |     AgentsRunFilesBody  | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
+    source_ref: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunAgentResponse]:
-    """ Execute an agent
+    """ Run an agent
 
-     Enqueues an agent execution. Returns 202 with `{ executionId }` by default. Pass
-    `wait_for_completion=<seconds>` to hold the connection until the execution reaches a terminal state.
-    File inputs are uploaded as multipart/form-data.
+     Enqueues an agent run. Returns 202 with `{ runId }` by default. Pass `wait_for_completion=<seconds>`
+    to hold the connection until the run reaches a terminal state. File inputs are uploaded as
+    multipart/form-data.
 
     Args:
         agent_id (str): Agent id or slug
         wait_for_completion (int | Unset): Seconds to hold the connection waiting for completion
             (max 600). Omit for async.
+        source_ref (str | Unset): Git source ref to resolve for this run. Defaults to latest.
+            Supports latest, main, exact versions/tags such as 1.2.3, semver ranges such as 1.2.x or
+            1.x, and exact commit SHAs. Example: latest.
         body (RunAgentBody):
         body (AgentsRunFilesBody): Multipart upload. Each file field becomes an input file;
             `_json` carries scalar inputs as JSON.
@@ -159,6 +173,7 @@ def sync_detailed(
         agent_id=agent_id,
 body=body,
 wait_for_completion=wait_for_completion,
+source_ref=source_ref,
 
     )
 
@@ -174,18 +189,22 @@ def sync(
     client: AuthenticatedClient | Client,
     body:    RunAgentBody  |     AgentsRunFilesBody  | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
+    source_ref: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunAgentResponse | None:
-    """ Execute an agent
+    """ Run an agent
 
-     Enqueues an agent execution. Returns 202 with `{ executionId }` by default. Pass
-    `wait_for_completion=<seconds>` to hold the connection until the execution reaches a terminal state.
-    File inputs are uploaded as multipart/form-data.
+     Enqueues an agent run. Returns 202 with `{ runId }` by default. Pass `wait_for_completion=<seconds>`
+    to hold the connection until the run reaches a terminal state. File inputs are uploaded as
+    multipart/form-data.
 
     Args:
         agent_id (str): Agent id or slug
         wait_for_completion (int | Unset): Seconds to hold the connection waiting for completion
             (max 600). Omit for async.
+        source_ref (str | Unset): Git source ref to resolve for this run. Defaults to latest.
+            Supports latest, main, exact versions/tags such as 1.2.3, semver ranges such as 1.2.x or
+            1.x, and exact commit SHAs. Example: latest.
         body (RunAgentBody):
         body (AgentsRunFilesBody): Multipart upload. Each file field becomes an input file;
             `_json` carries scalar inputs as JSON.
@@ -204,6 +223,7 @@ def sync(
 client=client,
 body=body,
 wait_for_completion=wait_for_completion,
+source_ref=source_ref,
 
     ).parsed
 
@@ -213,18 +233,22 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body:    RunAgentBody  |     AgentsRunFilesBody  | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
+    source_ref: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunAgentResponse]:
-    """ Execute an agent
+    """ Run an agent
 
-     Enqueues an agent execution. Returns 202 with `{ executionId }` by default. Pass
-    `wait_for_completion=<seconds>` to hold the connection until the execution reaches a terminal state.
-    File inputs are uploaded as multipart/form-data.
+     Enqueues an agent run. Returns 202 with `{ runId }` by default. Pass `wait_for_completion=<seconds>`
+    to hold the connection until the run reaches a terminal state. File inputs are uploaded as
+    multipart/form-data.
 
     Args:
         agent_id (str): Agent id or slug
         wait_for_completion (int | Unset): Seconds to hold the connection waiting for completion
             (max 600). Omit for async.
+        source_ref (str | Unset): Git source ref to resolve for this run. Defaults to latest.
+            Supports latest, main, exact versions/tags such as 1.2.3, semver ranges such as 1.2.x or
+            1.x, and exact commit SHAs. Example: latest.
         body (RunAgentBody):
         body (AgentsRunFilesBody): Multipart upload. Each file field becomes an input file;
             `_json` carries scalar inputs as JSON.
@@ -242,6 +266,7 @@ async def asyncio_detailed(
         agent_id=agent_id,
 body=body,
 wait_for_completion=wait_for_completion,
+source_ref=source_ref,
 
     )
 
@@ -257,18 +282,22 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body:    RunAgentBody  |     AgentsRunFilesBody  | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
+    source_ref: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunAgentResponse | None:
-    """ Execute an agent
+    """ Run an agent
 
-     Enqueues an agent execution. Returns 202 with `{ executionId }` by default. Pass
-    `wait_for_completion=<seconds>` to hold the connection until the execution reaches a terminal state.
-    File inputs are uploaded as multipart/form-data.
+     Enqueues an agent run. Returns 202 with `{ runId }` by default. Pass `wait_for_completion=<seconds>`
+    to hold the connection until the run reaches a terminal state. File inputs are uploaded as
+    multipart/form-data.
 
     Args:
         agent_id (str): Agent id or slug
         wait_for_completion (int | Unset): Seconds to hold the connection waiting for completion
             (max 600). Omit for async.
+        source_ref (str | Unset): Git source ref to resolve for this run. Defaults to latest.
+            Supports latest, main, exact versions/tags such as 1.2.3, semver ranges such as 1.2.x or
+            1.x, and exact commit SHAs. Example: latest.
         body (RunAgentBody):
         body (AgentsRunFilesBody): Multipart upload. Each file field becomes an input file;
             `_json` carries scalar inputs as JSON.
@@ -287,5 +316,6 @@ async def asyncio(
 client=client,
 body=body,
 wait_for_completion=wait_for_completion,
+source_ref=source_ref,
 
     )).parsed

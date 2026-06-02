@@ -19,6 +19,7 @@ def _get_kwargs(
     *,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
     
@@ -30,6 +31,8 @@ def _get_kwargs(
     params["path"] = path
 
     params["prefix"] = prefix
+
+    params["ref"] = ref
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -114,16 +117,19 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
 ) -> Response[Any | ApiErrorEnvelope]:
-    """ List or download agent files
+    """ List or download agent source files
 
-     Lists live agent files, or returns one file when `path` is provided.
+     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
+    artifacts (runs, dataset) are not served here.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
+        ref (str | Unset): Git ref (default main)
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -138,6 +144,7 @@ def sync_detailed(
         agent_id=agent_id,
 path=path,
 prefix=prefix,
+ref=ref,
 
     )
 
@@ -153,16 +160,19 @@ def sync(
     client: AuthenticatedClient | Client,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
 ) -> Any | ApiErrorEnvelope | None:
-    """ List or download agent files
+    """ List or download agent source files
 
-     Lists live agent files, or returns one file when `path` is provided.
+     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
+    artifacts (runs, dataset) are not served here.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
+        ref (str | Unset): Git ref (default main)
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -178,6 +188,7 @@ def sync(
 client=client,
 path=path,
 prefix=prefix,
+ref=ref,
 
     ).parsed
 
@@ -187,16 +198,19 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
 ) -> Response[Any | ApiErrorEnvelope]:
-    """ List or download agent files
+    """ List or download agent source files
 
-     Lists live agent files, or returns one file when `path` is provided.
+     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
+    artifacts (runs, dataset) are not served here.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
+        ref (str | Unset): Git ref (default main)
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -211,6 +225,7 @@ async def asyncio_detailed(
         agent_id=agent_id,
 path=path,
 prefix=prefix,
+ref=ref,
 
     )
 
@@ -226,16 +241,19 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     path: str | Unset = UNSET,
     prefix: str | Unset = UNSET,
+    ref: str | Unset = UNSET,
 
 ) -> Any | ApiErrorEnvelope | None:
-    """ List or download agent files
+    """ List or download agent source files
 
-     Lists live agent files, or returns one file when `path` is provided.
+     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
+    artifacts (runs, dataset) are not served here.
 
     Args:
         agent_id (str): Agent id or slug
         path (str | Unset):
         prefix (str | Unset):
+        ref (str | Unset): Git ref (default main)
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -251,5 +269,6 @@ async def asyncio(
 client=client,
 path=path,
 prefix=prefix,
+ref=ref,
 
     )).parsed

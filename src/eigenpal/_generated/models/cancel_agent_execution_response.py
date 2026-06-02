@@ -25,10 +25,10 @@ T = TypeVar("T", bound="CancelAgentExecutionResponse")
 class CancelAgentExecutionResponse:
     """ 
         Attributes:
-            execution (AgentExecutionSummary):
+            run (AgentExecutionSummary):
      """
 
-    execution: AgentExecutionSummary
+    run: AgentExecutionSummary
 
 
 
@@ -36,13 +36,13 @@ class CancelAgentExecutionResponse:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.agent_execution_summary import AgentExecutionSummary
-        execution = self.execution.to_dict()
+        run = self.run.to_dict()
 
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "execution": execution,
+            "run": run,
         })
 
         return field_dict
@@ -53,13 +53,13 @@ class CancelAgentExecutionResponse:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.agent_execution_summary import AgentExecutionSummary
         d = dict(src_dict)
-        execution = AgentExecutionSummary.from_dict(d.pop("execution"))
+        run = AgentExecutionSummary.from_dict(d.pop("run"))
 
 
 
 
         cancel_agent_execution_response = cls(
-            execution=execution,
+            run=run,
         )
 
         return cancel_agent_execution_response

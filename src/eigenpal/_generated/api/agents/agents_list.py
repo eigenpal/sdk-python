@@ -18,6 +18,7 @@ from typing import cast
 def _get_kwargs(
     *,
     search: str | Unset = UNSET,
+    slug: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
     include_archived: bool | Unset = UNSET,
@@ -30,6 +31,8 @@ def _get_kwargs(
     params: dict[str, Any] = {}
 
     params["search"] = search
+
+    params["slug"] = slug
 
     params["limit"] = limit
 
@@ -121,6 +124,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
+    slug: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
     include_archived: bool | Unset = UNSET,
@@ -128,10 +132,12 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     """ List agents
 
-     Returns agents the API key has access to, with pagination and basic execution stats.
+     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
+    cookies or API keys.
 
     Args:
         search (str | Unset): Substring match against agent fields
+        slug (str | Unset): Return a single agent by slug
         limit (int | Unset):
         offset (int | Unset):
         include_archived (bool | Unset):
@@ -147,6 +153,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         search=search,
+slug=slug,
 limit=limit,
 offset=offset,
 include_archived=include_archived,
@@ -163,6 +170,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
+    slug: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
     include_archived: bool | Unset = UNSET,
@@ -170,10 +178,12 @@ def sync(
 ) -> ApiErrorEnvelope | ListAgentsResponse | None:
     """ List agents
 
-     Returns agents the API key has access to, with pagination and basic execution stats.
+     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
+    cookies or API keys.
 
     Args:
         search (str | Unset): Substring match against agent fields
+        slug (str | Unset): Return a single agent by slug
         limit (int | Unset):
         offset (int | Unset):
         include_archived (bool | Unset):
@@ -190,6 +200,7 @@ def sync(
     return sync_detailed(
         client=client,
 search=search,
+slug=slug,
 limit=limit,
 offset=offset,
 include_archived=include_archived,
@@ -200,6 +211,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
+    slug: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
     include_archived: bool | Unset = UNSET,
@@ -207,10 +219,12 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     """ List agents
 
-     Returns agents the API key has access to, with pagination and basic execution stats.
+     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
+    cookies or API keys.
 
     Args:
         search (str | Unset): Substring match against agent fields
+        slug (str | Unset): Return a single agent by slug
         limit (int | Unset):
         offset (int | Unset):
         include_archived (bool | Unset):
@@ -226,6 +240,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         search=search,
+slug=slug,
 limit=limit,
 offset=offset,
 include_archived=include_archived,
@@ -242,6 +257,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
+    slug: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
     include_archived: bool | Unset = UNSET,
@@ -249,10 +265,12 @@ async def asyncio(
 ) -> ApiErrorEnvelope | ListAgentsResponse | None:
     """ List agents
 
-     Returns agents the API key has access to, with pagination and basic execution stats.
+     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
+    cookies or API keys.
 
     Args:
         search (str | Unset): Substring match against agent fields
+        slug (str | Unset): Return a single agent by slug
         limit (int | Unset):
         offset (int | Unset):
         include_archived (bool | Unset):
@@ -269,6 +287,7 @@ async def asyncio(
     return (await asyncio_detailed(
         client=client,
 search=search,
+slug=slug,
 limit=limit,
 offset=offset,
 include_archived=include_archived,

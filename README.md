@@ -150,8 +150,8 @@ result = client.agents.run("invoice-agent", input={
     "invoice": Path("invoice.pdf"),
 })
 
-client.agents.executions.get(result.execution_id)
-client.agents.executions.cancel(result.execution_id)
+client.agents.runs.get(result.run_id)
+client.agents.runs.cancel(result.run_id)
 ```
 
 ## Errors
