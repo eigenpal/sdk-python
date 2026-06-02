@@ -37,6 +37,8 @@ class ExecutionSummary:
             error (None | str | Unset): Error message (status=failed).
             started_at (None | str | Unset):
             completed_at (None | str | Unset):
+            duration_ms (int | None | Unset): Total wall-clock duration in milliseconds. Only set after the execution
+                reaches a terminal status.
             workflow (ExecutionSummaryWorkflowType0 | None | Unset): Owning workflow (null when the workflow has been
                 deleted)
      """
@@ -51,6 +53,7 @@ class ExecutionSummary:
     error: None | str | Unset = UNSET
     started_at: None | str | Unset = UNSET
     completed_at: None | str | Unset = UNSET
+    duration_ms: int | None | Unset = UNSET
     workflow: ExecutionSummaryWorkflowType0 | None | Unset = UNSET
 
 
@@ -104,6 +107,12 @@ class ExecutionSummary:
         else:
             completed_at = self.completed_at
 
+        duration_ms: int | None | Unset
+        if isinstance(self.duration_ms, Unset):
+            duration_ms = UNSET
+        else:
+            duration_ms = self.duration_ms
+
         workflow: dict[str, Any] | None | Unset
         if isinstance(self.workflow, Unset):
             workflow = UNSET
@@ -133,6 +142,8 @@ class ExecutionSummary:
             field_dict["startedAt"] = started_at
         if completed_at is not UNSET:
             field_dict["completedAt"] = completed_at
+        if duration_ms is not UNSET:
+            field_dict["durationMs"] = duration_ms
         if workflow is not UNSET:
             field_dict["workflow"] = workflow
 
@@ -219,6 +230,16 @@ class ExecutionSummary:
         completed_at = _parse_completed_at(d.pop("completedAt", UNSET))
 
 
+        def _parse_duration_ms(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        duration_ms = _parse_duration_ms(d.pop("durationMs", UNSET))
+
+
         def _parse_workflow(data: object) -> ExecutionSummaryWorkflowType0 | None | Unset:
             if data is None:
                 return data
@@ -250,6 +271,7 @@ class ExecutionSummary:
             error=error,
             started_at=started_at,
             completed_at=completed_at,
+            duration_ms=duration_ms,
             workflow=workflow,
         )
 

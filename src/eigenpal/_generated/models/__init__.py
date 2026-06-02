@@ -72,6 +72,7 @@ from .update_agent_execution_feedback_body_feedback_rating_type_0 import UpdateA
 from .update_agent_execution_feedback_body_feedback_status_type_0 import UpdateAgentExecutionFeedbackBodyFeedbackStatusType0
 from .update_agent_execution_feedback_body_rating_type_0 import UpdateAgentExecutionFeedbackBodyRatingType0
 from .update_agent_execution_feedback_body_status_type_0 import UpdateAgentExecutionFeedbackBodyStatusType0
+from .workflow_detail import WorkflowDetail
 from .workflow_execution_status_response import WorkflowExecutionStatusResponse
 from .workflow_summary import WorkflowSummary
 from .workflow_version import WorkflowVersion
@@ -152,6 +153,7 @@ __all__ = (
     "UpdateAgentExecutionFeedbackBodyFeedbackStatusType0",
     "UpdateAgentExecutionFeedbackBodyRatingType0",
     "UpdateAgentExecutionFeedbackBodyStatusType0",
+    "WorkflowDetail",
     "WorkflowExecutionStatusResponse",
     "WorkflowsExecutionsGetIncludeSteps",
     "WorkflowsListKind",

@@ -90,6 +90,7 @@ from eigenpal._generated.models.run_workflow_response import RunWorkflowResponse
 from eigenpal._generated.models.update_agent_execution_feedback_body import (
     UpdateAgentExecutionFeedbackBody,
 )
+from eigenpal._generated.models.workflow_detail import WorkflowDetail
 from eigenpal._generated.models.workflow_execution_status_response import (
     WorkflowExecutionStatusResponse,
 )
@@ -407,7 +408,8 @@ class WorkflowsResource:
         )
         return _check_response(response)
 
-    def get(self, workflow_id: str) -> WorkflowSummary:
+    def get(self, workflow_id: str) -> WorkflowDetail:
+        """Get a single workflow by id. Includes the current version's YAML."""
         response = workflows_get.sync_detailed(id=workflow_id, client=self._client)
         return _check_response(response)
 

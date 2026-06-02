@@ -9,7 +9,7 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.workflow_summary import WorkflowSummary
+from ...models.workflow_detail import WorkflowDetail
 from typing import cast
 
 
@@ -34,9 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | WorkflowSummary | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | WorkflowDetail | None:
     if response.status_code == 200:
-        response_200 = WorkflowSummary.from_dict(response.json())
+        response_200 = WorkflowDetail.from_dict(response.json())
 
 
 
@@ -90,7 +90,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | WorkflowSummary]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | WorkflowDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -104,10 +104,10 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | WorkflowSummary]:
+) -> Response[ApiErrorEnvelope | WorkflowDetail]:
     """ Get a workflow by id
 
-     Returns the workflow with its current version (definition + YAML content).
+     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -117,7 +117,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | WorkflowSummary]
+        Response[ApiErrorEnvelope | WorkflowDetail]
      """
 
 
@@ -137,10 +137,10 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | WorkflowSummary | None:
+) -> ApiErrorEnvelope | WorkflowDetail | None:
     """ Get a workflow by id
 
-     Returns the workflow with its current version (definition + YAML content).
+     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -150,7 +150,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | WorkflowSummary
+        ApiErrorEnvelope | WorkflowDetail
      """
 
 
@@ -165,10 +165,10 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | WorkflowSummary]:
+) -> Response[ApiErrorEnvelope | WorkflowDetail]:
     """ Get a workflow by id
 
-     Returns the workflow with its current version (definition + YAML content).
+     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -178,7 +178,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | WorkflowSummary]
+        Response[ApiErrorEnvelope | WorkflowDetail]
      """
 
 
@@ -198,10 +198,10 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | WorkflowSummary | None:
+) -> ApiErrorEnvelope | WorkflowDetail | None:
     """ Get a workflow by id
 
-     Returns the workflow with its current version (definition + YAML content).
+     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -211,7 +211,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | WorkflowSummary
+        ApiErrorEnvelope | WorkflowDetail
      """
 
 
