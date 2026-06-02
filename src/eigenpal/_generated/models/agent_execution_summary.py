@@ -15,6 +15,7 @@ from typing import cast
 if TYPE_CHECKING:
   from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
   from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
+  from ..models.agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
 
 
 
@@ -31,6 +32,10 @@ class AgentExecutionSummary:
             id (str):
             status (ExecutionStatus):
             created_at (str):
+            trigger_type (None | str | Unset):
+            triggered_by (AgentExecutionSummaryTriggeredByType0 | None | Unset):
+            email_subject (None | str | Unset):
+            email_from (None | str | Unset):
             model (None | str | Unset):
             output (Any | None | Unset):
             schema_valid (bool | None | Unset):
@@ -51,6 +56,10 @@ class AgentExecutionSummary:
     id: str
     status: ExecutionStatus
     created_at: str
+    trigger_type: None | str | Unset = UNSET
+    triggered_by: AgentExecutionSummaryTriggeredByType0 | None | Unset = UNSET
+    email_subject: None | str | Unset = UNSET
+    email_from: None | str | Unset = UNSET
     model: None | str | Unset = UNSET
     output: Any | None | Unset = UNSET
     schema_valid: bool | None | Unset = UNSET
@@ -75,12 +84,39 @@ class AgentExecutionSummary:
     def to_dict(self) -> dict[str, Any]:
         from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
         from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
+        from ..models.agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
         id = self.id
 
         status = self.status.value
 
         created_at: str
         created_at = self.created_at
+
+        trigger_type: None | str | Unset
+        if isinstance(self.trigger_type, Unset):
+            trigger_type = UNSET
+        else:
+            trigger_type = self.trigger_type
+
+        triggered_by: dict[str, Any] | None | Unset
+        if isinstance(self.triggered_by, Unset):
+            triggered_by = UNSET
+        elif isinstance(self.triggered_by, AgentExecutionSummaryTriggeredByType0):
+            triggered_by = self.triggered_by.to_dict()
+        else:
+            triggered_by = self.triggered_by
+
+        email_subject: None | str | Unset
+        if isinstance(self.email_subject, Unset):
+            email_subject = UNSET
+        else:
+            email_subject = self.email_subject
+
+        email_from: None | str | Unset
+        if isinstance(self.email_from, Unset):
+            email_from = UNSET
+        else:
+            email_from = self.email_from
 
         model: None | str | Unset
         if isinstance(self.model, Unset):
@@ -185,6 +221,14 @@ class AgentExecutionSummary:
             "status": status,
             "createdAt": created_at,
         })
+        if trigger_type is not UNSET:
+            field_dict["triggerType"] = trigger_type
+        if triggered_by is not UNSET:
+            field_dict["triggeredBy"] = triggered_by
+        if email_subject is not UNSET:
+            field_dict["emailSubject"] = email_subject
+        if email_from is not UNSET:
+            field_dict["emailFrom"] = email_from
         if model is not UNSET:
             field_dict["model"] = model
         if output is not UNSET:
@@ -224,6 +268,7 @@ class AgentExecutionSummary:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
         from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
+        from ..models.agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
         d = dict(src_dict)
         id = d.pop("id")
 
@@ -236,6 +281,56 @@ class AgentExecutionSummary:
             return cast(str, data)
 
         created_at = _parse_created_at(d.pop("createdAt"))
+
+
+        def _parse_trigger_type(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        trigger_type = _parse_trigger_type(d.pop("triggerType", UNSET))
+
+
+        def _parse_triggered_by(data: object) -> AgentExecutionSummaryTriggeredByType0 | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                triggered_by_type_0 = AgentExecutionSummaryTriggeredByType0.from_dict(data)
+
+
+
+                return triggered_by_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(AgentExecutionSummaryTriggeredByType0 | None | Unset, data)
+
+        triggered_by = _parse_triggered_by(d.pop("triggeredBy", UNSET))
+
+
+        def _parse_email_subject(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        email_subject = _parse_email_subject(d.pop("emailSubject", UNSET))
+
+
+        def _parse_email_from(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        email_from = _parse_email_from(d.pop("emailFrom", UNSET))
 
 
         def _parse_model(data: object) -> None | str | Unset:
@@ -404,6 +499,10 @@ class AgentExecutionSummary:
             id=id,
             status=status,
             created_at=created_at,
+            trigger_type=trigger_type,
+            triggered_by=triggered_by,
+            email_subject=email_subject,
+            email_from=email_from,
             model=model,
             output=output,
             schema_valid=schema_valid,

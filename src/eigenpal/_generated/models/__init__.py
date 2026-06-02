@@ -12,6 +12,7 @@ from .agent_execution_summary_expected_files_item import AgentExecutionSummaryEx
 from .agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
 from .agent_execution_summary_feedback_type_0_rating_type_0 import AgentExecutionSummaryFeedbackType0RatingType0
 from .agent_execution_summary_feedback_type_0_status_type_0 import AgentExecutionSummaryFeedbackType0StatusType0
+from .agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
 from .agent_run_response import AgentRunResponse
 from .agent_summary import AgentSummary
 from .agent_summary_config import AgentSummaryConfig
@@ -116,6 +117,7 @@ __all__ = (
     "AgentExecutionSummaryFeedbackType0",
     "AgentExecutionSummaryFeedbackType0RatingType0",
     "AgentExecutionSummaryFeedbackType0StatusType0",
+    "AgentExecutionSummaryTriggeredByType0",
     "AgentRunResponse",
     "AgentsFilesPutBody",
     "AgentsFilesPutResponse409",
