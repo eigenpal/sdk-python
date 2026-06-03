@@ -25,11 +25,22 @@ from .agents_files_upload_batch_response_409 import AgentsFilesUploadBatchRespon
 from .agents_run_files_body import AgentsRunFilesBody
 from .agents_runs_expected_create_files_body import AgentsRunsExpectedCreateFilesBody
 from .agents_runs_expected_create_response_201 import AgentsRunsExpectedCreateResponse201
-from .agents_runs_files_download_kind import AgentsRunsFilesDownloadKind
 from .agents_runs_list_feedback_rating import AgentsRunsListFeedbackRating
 from .agents_runs_list_feedback_status import AgentsRunsListFeedbackStatus
 from .agents_runs_list_order import AgentsRunsListOrder
 from .agents_runs_list_sort import AgentsRunsListSort
+from .agents_triggers_email_create_alias_body import AgentsTriggersEmailCreateAliasBody
+from .agents_triggers_email_create_alias_body_reply_config import AgentsTriggersEmailCreateAliasBodyReplyConfig
+from .agents_triggers_email_create_alias_response_201 import AgentsTriggersEmailCreateAliasResponse201
+from .agents_triggers_email_delete_alias_response_200 import AgentsTriggersEmailDeleteAliasResponse200
+from .agents_triggers_email_get_response_200 import AgentsTriggersEmailGetResponse200
+from .agents_triggers_email_list_response_200 import AgentsTriggersEmailListResponse200
+from .agents_triggers_email_update_alias_body import AgentsTriggersEmailUpdateAliasBody
+from .agents_triggers_email_update_alias_body_reply_config import AgentsTriggersEmailUpdateAliasBodyReplyConfig
+from .agents_triggers_email_update_alias_body_status import AgentsTriggersEmailUpdateAliasBodyStatus
+from .agents_triggers_email_update_alias_response_200 import AgentsTriggersEmailUpdateAliasResponse200
+from .agents_triggers_email_update_body import AgentsTriggersEmailUpdateBody
+from .agents_triggers_email_update_response_200 import AgentsTriggersEmailUpdateResponse200
 from .api_error_envelope import ApiErrorEnvelope
 from .api_error_issue import ApiErrorIssue
 from .api_error_issue_severity import ApiErrorIssueSeverity
@@ -126,11 +137,22 @@ __all__ = (
     "AgentsRunFilesBody",
     "AgentsRunsExpectedCreateFilesBody",
     "AgentsRunsExpectedCreateResponse201",
-    "AgentsRunsFilesDownloadKind",
     "AgentsRunsListFeedbackRating",
     "AgentsRunsListFeedbackStatus",
     "AgentsRunsListOrder",
     "AgentsRunsListSort",
+    "AgentsTriggersEmailCreateAliasBody",
+    "AgentsTriggersEmailCreateAliasBodyReplyConfig",
+    "AgentsTriggersEmailCreateAliasResponse201",
+    "AgentsTriggersEmailDeleteAliasResponse200",
+    "AgentsTriggersEmailGetResponse200",
+    "AgentsTriggersEmailListResponse200",
+    "AgentsTriggersEmailUpdateAliasBody",
+    "AgentsTriggersEmailUpdateAliasBodyReplyConfig",
+    "AgentsTriggersEmailUpdateAliasBodyStatus",
+    "AgentsTriggersEmailUpdateAliasResponse200",
+    "AgentsTriggersEmailUpdateBody",
+    "AgentsTriggersEmailUpdateResponse200",
     "AgentSummary",
     "AgentSummaryConfig",
     "AgentSummarySourceIntegrity",

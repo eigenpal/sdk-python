@@ -18,6 +18,12 @@ import httpx
 from eigenpal._files import has_file_input, is_file_input, to_upload_tuple
 from eigenpal._generated.api.agents import (
     agents_create,
+    agents_triggers_email_create_alias,
+    agents_triggers_email_delete_alias,
+    agents_triggers_email_get,
+    agents_triggers_email_list,
+    agents_triggers_email_update,
+    agents_triggers_email_update_alias,
     agents_runs_cancel,
     agents_runs_rerun,
     agents_runs_expected_create,
@@ -44,6 +50,7 @@ from eigenpal._generated.api.source import (
     source_releases,
     source_repository,
     source_secrets_decrypt,
+    source_secrets_encrypt,
 )
 from eigenpal._generated.api.workflows import (
     workflows_get,
@@ -56,6 +63,33 @@ from eigenpal._generated.api.workflows import (
 )
 from eigenpal._generated.client import AuthenticatedClient
 from eigenpal._generated.models.agent_run_response import AgentRunResponse
+from eigenpal._generated.models.agents_triggers_email_create_alias_body import (
+    AgentsTriggersEmailCreateAliasBody,
+)
+from eigenpal._generated.models.agents_triggers_email_create_alias_response_201 import (
+    AgentsTriggersEmailCreateAliasResponse201,
+)
+from eigenpal._generated.models.agents_triggers_email_delete_alias_response_200 import (
+    AgentsTriggersEmailDeleteAliasResponse200,
+)
+from eigenpal._generated.models.agents_triggers_email_get_response_200 import (
+    AgentsTriggersEmailGetResponse200,
+)
+from eigenpal._generated.models.agents_triggers_email_list_response_200 import (
+    AgentsTriggersEmailListResponse200,
+)
+from eigenpal._generated.models.agents_triggers_email_update_alias_body import (
+    AgentsTriggersEmailUpdateAliasBody,
+)
+from eigenpal._generated.models.agents_triggers_email_update_alias_response_200 import (
+    AgentsTriggersEmailUpdateAliasResponse200,
+)
+from eigenpal._generated.models.agents_triggers_email_update_body import (
+    AgentsTriggersEmailUpdateBody,
+)
+from eigenpal._generated.models.agents_triggers_email_update_response_200 import (
+    AgentsTriggersEmailUpdateResponse200,
+)
 from eigenpal._generated.models.agents_files_put_body import AgentsFilesPutBody
 from eigenpal._generated.models.agents_files_upload_batch_body import AgentsFilesUploadBatchBody
 from eigenpal._generated.models.agent_execution_expected_artifacts import (
@@ -71,6 +105,8 @@ from eigenpal._generated.models.cancel_workflow_execution_response import (
     CancelWorkflowExecutionResponse,
 )
 from eigenpal._generated.models.source_secrets_decrypt_body import SourceSecretsDecryptBody
+from eigenpal._generated.models.source_secrets_encrypt_body import SourceSecretsEncryptBody
+from eigenpal._generated.models.source_secrets_encrypt_response import SourceSecretsEncryptResponse
 from eigenpal._generated.models.create_agent_body import CreateAgentBody
 from eigenpal._generated.models.create_agent_response import CreateAgentResponse
 from eigenpal._generated.models.get_agent_response import GetAgentResponse
@@ -163,6 +199,16 @@ def _csv(value: Optional[Union[str, list[str]]]) -> Optional[str]:
     if isinstance(value, list):
         return ",".join(value)
     return value
+
+
+def _agent_artifact_path(kind: str, filename: str) -> str:
+    if kind in {"issues", "trace", "lockfile"}:
+        return filename
+    return f"{kind}/{filename}"
+
+
+def _quote_artifact_path(artifact_path: str) -> str:
+    return "/".join(quote(segment, safe="") for segment in artifact_path.split("/"))
 
 
 def _check_response(response: Response[Any]) -> Any:
@@ -384,6 +430,15 @@ class SourceResource:
             else SourceSecretsDecryptBody.from_dict(body)
         )
         response = source_secrets_decrypt.sync_detailed(client=self._client, body=payload)
+        return _check_response(response)
+
+    def encrypt_secrets(self, body: dict[str, Any] | SourceSecretsEncryptBody) -> SourceSecretsEncryptResponse:
+        payload = (
+            body
+            if isinstance(body, SourceSecretsEncryptBody)
+            else SourceSecretsEncryptBody.from_dict(body)
+        )
+        response = source_secrets_encrypt.sync_detailed(client=self._client, body=payload)
         return _check_response(response)
 
 
@@ -824,22 +879,116 @@ class AgentRunsResource:
             return raw_response.content
         return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
 
-    def download_file(self, run_id: str, kind: str, filename: str) -> bytes:
+    def download_file(
+        self,
+        run_id: str,
+        artifact_path_or_kind: str,
+        filename: Optional[str] = None,
+    ) -> bytes:
+        artifact_path = (
+            _agent_artifact_path(artifact_path_or_kind, filename)
+            if filename is not None
+            else artifact_path_or_kind
+        )
         raw_response = self._client.get_httpx_client().get(
             "/api/v1/agents/runs/"
-            f"{quote(run_id, safe='')}/files/{quote(kind, safe='')}/{quote(filename, safe='')}"
+            f"{quote(run_id, safe='')}/files/{_quote_artifact_path(artifact_path)}"
         )
         if 200 <= raw_response.status_code < 300:
             return raw_response.content
         return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
 
 
+class AgentEmailTriggersResource:
+    """Agent email trigger operations: list, get, update, create aliases, and remove aliases."""
+
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def list(self) -> AgentsTriggersEmailListResponse200:
+        response = agents_triggers_email_list.sync_detailed(client=self._client)
+        return _check_response(response)
+
+    def get(self, agent_id: str) -> AgentsTriggersEmailGetResponse200:
+        response = agents_triggers_email_get.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+    def update(
+        self,
+        agent_id: str,
+        body: dict[str, Any] | AgentsTriggersEmailUpdateBody,
+    ) -> AgentsTriggersEmailUpdateResponse200:
+        payload = (
+            body
+            if isinstance(body, AgentsTriggersEmailUpdateBody)
+            else AgentsTriggersEmailUpdateBody.from_dict(body)
+        )
+        response = agents_triggers_email_update.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            body=payload,
+        )
+        return _check_response(response)
+
+    def create_alias(
+        self,
+        agent_id: str,
+        body: dict[str, Any] | AgentsTriggersEmailCreateAliasBody,
+    ) -> AgentsTriggersEmailCreateAliasResponse201:
+        payload = (
+            body
+            if isinstance(body, AgentsTriggersEmailCreateAliasBody)
+            else AgentsTriggersEmailCreateAliasBody.from_dict(body)
+        )
+        response = agents_triggers_email_create_alias.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
+            body=payload,
+        )
+        return _check_response(response)
+
+    def update_alias(
+        self,
+        agent_id: str,
+        email_id: str,
+        body: dict[str, Any] | AgentsTriggersEmailUpdateAliasBody,
+    ) -> AgentsTriggersEmailUpdateAliasResponse200:
+        payload = (
+            body
+            if isinstance(body, AgentsTriggersEmailUpdateAliasBody)
+            else AgentsTriggersEmailUpdateAliasBody.from_dict(body)
+        )
+        response = agents_triggers_email_update_alias.sync_detailed(
+            agent_id=agent_id,
+            email_id=email_id,
+            client=self._client,
+            body=payload,
+        )
+        return _check_response(response)
+
+    def delete_alias(
+        self,
+        agent_id: str,
+        email_id: str,
+    ) -> AgentsTriggersEmailDeleteAliasResponse200:
+        response = agents_triggers_email_delete_alias.sync_detailed(
+            agent_id=agent_id,
+            email_id=email_id,
+            client=self._client,
+        )
+        return _check_response(response)
+
+
 class AgentsResource:
-    """Agent operations: list, get, create, run, and runs."""
+    """Agent operations: list, get, create, run, runs, and email triggers."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
         self.runs = AgentRunsResource(client)
+        self.email_triggers = AgentEmailTriggersResource(client)
 
     def list(
         self,

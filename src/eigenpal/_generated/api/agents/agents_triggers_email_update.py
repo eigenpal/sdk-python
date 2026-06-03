@@ -8,35 +8,47 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
+from ...models.agents_triggers_email_update_body import AgentsTriggersEmailUpdateBody
+from ...models.agents_triggers_email_update_response_200 import AgentsTriggersEmailUpdateResponse200
 from ...models.api_error_envelope import ApiErrorEnvelope
 from typing import cast
 
 
 
 def _get_kwargs(
-    run_id: str,
-    path: list[str],
+    agent_id: str,
+    *,
+    body: AgentsTriggersEmailUpdateBody,
 
 ) -> dict[str, Any]:
-    
+    headers: dict[str, Any] = {}
+
 
     
 
     
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/api/v1/agents/runs/{run_id}/files/{path}".format(run_id=quote(str(run_id), safe=""),path=quote(str(path), safe=""),),
+        "method": "patch",
+        "url": "/api/v1/agents/{agent_id}/triggers/email".format(agent_id=quote(str(agent_id), safe=""),),
     }
 
+    _kwargs["json"] = body.to_dict()
 
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = cast(Any, None)
+        response_200 = AgentsTriggersEmailUpdateResponse200.from_dict(response.json())
+
+
+
         return response_200
 
     if response.status_code == 400:
@@ -87,7 +99,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -97,33 +109,32 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    run_id: str,
-    path: list[str],
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: AgentsTriggersEmailUpdateBody,
 
-) -> Response[Any | ApiErrorEnvelope]:
-    """ Download a run file
+) -> Response[AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope]:
+    """ Update an agent email trigger
 
-     Downloads an artifact path attached to an agent run, such as input.json, output/result.json,
-    output.json, issues.md, trace.jsonl, or eigenpal.lock.
+     Enables or disables the email trigger for one agent.
 
     Args:
-        run_id (str):
-        path (list[str]):
+        agent_id (str): Agent id or slug
+        body (AgentsTriggersEmailUpdateBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any | ApiErrorEnvelope]
+        Response[AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
-        run_id=run_id,
-path=path,
+        agent_id=agent_id,
+body=body,
 
     )
 
@@ -134,65 +145,63 @@ path=path,
     return _build_response(client=client, response=response)
 
 def sync(
-    run_id: str,
-    path: list[str],
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: AgentsTriggersEmailUpdateBody,
 
-) -> Any | ApiErrorEnvelope | None:
-    """ Download a run file
+) -> AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope | None:
+    """ Update an agent email trigger
 
-     Downloads an artifact path attached to an agent run, such as input.json, output/result.json,
-    output.json, issues.md, trace.jsonl, or eigenpal.lock.
+     Enables or disables the email trigger for one agent.
 
     Args:
-        run_id (str):
-        path (list[str]):
+        agent_id (str): Agent id or slug
+        body (AgentsTriggersEmailUpdateBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Any | ApiErrorEnvelope
+        AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
-        run_id=run_id,
-path=path,
+        agent_id=agent_id,
 client=client,
+body=body,
 
     ).parsed
 
 async def asyncio_detailed(
-    run_id: str,
-    path: list[str],
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: AgentsTriggersEmailUpdateBody,
 
-) -> Response[Any | ApiErrorEnvelope]:
-    """ Download a run file
+) -> Response[AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope]:
+    """ Update an agent email trigger
 
-     Downloads an artifact path attached to an agent run, such as input.json, output/result.json,
-    output.json, issues.md, trace.jsonl, or eigenpal.lock.
+     Enables or disables the email trigger for one agent.
 
     Args:
-        run_id (str):
-        path (list[str]):
+        agent_id (str): Agent id or slug
+        body (AgentsTriggersEmailUpdateBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any | ApiErrorEnvelope]
+        Response[AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
-        run_id=run_id,
-path=path,
+        agent_id=agent_id,
+body=body,
 
     )
 
@@ -203,33 +212,32 @@ path=path,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    run_id: str,
-    path: list[str],
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: AgentsTriggersEmailUpdateBody,
 
-) -> Any | ApiErrorEnvelope | None:
-    """ Download a run file
+) -> AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope | None:
+    """ Update an agent email trigger
 
-     Downloads an artifact path attached to an agent run, such as input.json, output/result.json,
-    output.json, issues.md, trace.jsonl, or eigenpal.lock.
+     Enables or disables the email trigger for one agent.
 
     Args:
-        run_id (str):
-        path (list[str]):
+        agent_id (str): Agent id or slug
+        body (AgentsTriggersEmailUpdateBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Any | ApiErrorEnvelope
+        AgentsTriggersEmailUpdateResponse200 | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
-        run_id=run_id,
-path=path,
+        agent_id=agent_id,
 client=client,
+body=body,
 
     )).parsed
