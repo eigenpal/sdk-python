@@ -35,6 +35,7 @@ from eigenpal._generated.api.agents import (
     agents_runs_feedback_update,
     agents_runs_get,
     agents_runs_list,
+    agents_versions_list,
     agents_files_list_or_get,
     agents_files_put,
     agents_files_upload_batch,
@@ -111,6 +112,7 @@ from eigenpal._generated.models.create_agent_body import CreateAgentBody
 from eigenpal._generated.models.create_agent_response import CreateAgentResponse
 from eigenpal._generated.models.get_agent_response import GetAgentResponse
 from eigenpal._generated.models.list_agent_runs_response import ListAgentRunsResponse
+from eigenpal._generated.models.list_agent_versions_response import ListAgentVersionsResponse
 from eigenpal._generated.models.list_agents_response import ListAgentsResponse
 from eigenpal._generated.models.list_versions_response import ListVersionsResponse
 from eigenpal._generated.models.list_workflow_executions_response import (
@@ -123,6 +125,7 @@ from eigenpal._generated.models.copy_agent_execution_output_to_expected_body imp
     CopyAgentExecutionOutputToExpectedBody,
 )
 from eigenpal._generated.models.rename_expected_file_body import RenameExpectedFileBody
+from eigenpal._generated.models.rerun_agent_run_body import RerunAgentRunBody
 from eigenpal._generated.models.rerun_agent_run_response import RerunAgentRunResponse
 from eigenpal._generated.models.run_agent_body import RunAgentBody
 from eigenpal._generated.models.run_agent_response import RunAgentResponse
@@ -758,10 +761,13 @@ class AgentRunsResource:
         )
         return _check_response(response)
 
-    def rerun(self, run_id: str) -> RerunAgentRunResponse:
+    def rerun(self, run_id: str, *, source_ref: Optional[str] = None) -> RerunAgentRunResponse:
         response = agents_runs_rerun.sync_detailed(
             run_id=run_id,
             client=self._client,
+            body=RerunAgentRunBody(
+                source_ref=_opt(source_ref),
+            ),
         )
         return _check_response(response)
 
@@ -1042,6 +1048,13 @@ class AgentsResource:
             agent_id=agent_id,
             client=self._client,
             body=AgentsFilesUploadBatchBody.from_dict({"files": files}),
+        )
+        return _check_response(response)
+
+    def versions(self, agent_id: str) -> ListAgentVersionsResponse:
+        response = agents_versions_list.sync_detailed(
+            agent_id=agent_id,
+            client=self._client,
         )
         return _check_response(response)
 

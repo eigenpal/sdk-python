@@ -30,6 +30,7 @@ client
 │   ├── list_files
 │   ├── put_file
 │   ├── upload_files
+│   ├── versions
 │   ├── email_triggers.list
 │   ├── email_triggers.get
 │   ├── email_triggers.create_alias
@@ -431,6 +432,26 @@ Creates an email trigger alias for one agent.
 // dict[str, Any]
 ```
 
+### `client.agents.versions`
+
+**`GET /api/v1/agents/{agentId}/versions`**
+
+List agent Git versions
+
+Lists Git-backed release versions for an agent. Release notes are included when a matching legacy published-version message exists.
+
+**Path parameters**
+
+| Name       | Type  | Description      |
+| ---------- | ----- | ---------------- |
+| `agent_id` | `str` | Agent id or slug |
+
+**Response**
+
+```python
+// ListAgentVersionsResponse
+```
+
 ### `client.agents.list`
 
 **`GET /api/v1/agents`**
@@ -692,6 +713,12 @@ Creates a new run for the same agent using a previous run's stored input snapsho
 | Name     | Type  | Description   |
 | -------- | ----- | ------------- |
 | `run_id` | `str` | Source run id |
+
+**Request body**
+
+```python
+// RerunAgentRunBody
+```
 
 **Response**
 

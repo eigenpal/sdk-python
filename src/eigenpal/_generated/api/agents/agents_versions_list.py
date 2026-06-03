@@ -9,47 +9,38 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.rerun_agent_run_body import RerunAgentRunBody
-from ...models.rerun_agent_run_response import RerunAgentRunResponse
+from ...models.list_agent_versions_response import ListAgentVersionsResponse
 from typing import cast
 
 
 
 def _get_kwargs(
-    run_id: str,
-    *,
-    body: RerunAgentRunBody,
+    agent_id: str,
 
 ) -> dict[str, Any]:
-    headers: dict[str, Any] = {}
-
+    
 
     
 
     
 
     _kwargs: dict[str, Any] = {
-        "method": "post",
-        "url": "/api/v1/agents/runs/{run_id}/rerun".format(run_id=quote(str(run_id), safe=""),),
+        "method": "get",
+        "url": "/api/v1/agents/{agent_id}/versions".format(agent_id=quote(str(agent_id), safe=""),),
     }
 
-    _kwargs["json"] = body.to_dict()
 
-
-    headers["Content-Type"] = "application/json"
-
-    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RerunAgentRunResponse | None:
-    if response.status_code == 202:
-        response_202 = RerunAgentRunResponse.from_dict(response.json())
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListAgentVersionsResponse | None:
+    if response.status_code == 200:
+        response_200 = ListAgentVersionsResponse.from_dict(response.json())
 
 
 
-        return response_202
+        return response_200
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -99,7 +90,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RerunAgentRunResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListAgentVersionsResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -109,32 +100,30 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    run_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RerunAgentRunBody,
 
-) -> Response[ApiErrorEnvelope | RerunAgentRunResponse]:
-    """ Rerun agent run
+) -> Response[ApiErrorEnvelope | ListAgentVersionsResponse]:
+    """ List agent Git versions
 
-     Creates a new run for the same agent using a previous run's stored input snapshot.
+     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
+    published-version message exists.
 
     Args:
-        run_id (str): Source run id
-        body (RerunAgentRunBody):
+        agent_id (str): Agent id or slug
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RerunAgentRunResponse]
+        Response[ApiErrorEnvelope | ListAgentVersionsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        run_id=run_id,
-body=body,
+        agent_id=agent_id,
 
     )
 
@@ -145,63 +134,59 @@ body=body,
     return _build_response(client=client, response=response)
 
 def sync(
-    run_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RerunAgentRunBody,
 
-) -> ApiErrorEnvelope | RerunAgentRunResponse | None:
-    """ Rerun agent run
+) -> ApiErrorEnvelope | ListAgentVersionsResponse | None:
+    """ List agent Git versions
 
-     Creates a new run for the same agent using a previous run's stored input snapshot.
+     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
+    published-version message exists.
 
     Args:
-        run_id (str): Source run id
-        body (RerunAgentRunBody):
+        agent_id (str): Agent id or slug
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RerunAgentRunResponse
+        ApiErrorEnvelope | ListAgentVersionsResponse
      """
 
 
     return sync_detailed(
-        run_id=run_id,
+        agent_id=agent_id,
 client=client,
-body=body,
 
     ).parsed
 
 async def asyncio_detailed(
-    run_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RerunAgentRunBody,
 
-) -> Response[ApiErrorEnvelope | RerunAgentRunResponse]:
-    """ Rerun agent run
+) -> Response[ApiErrorEnvelope | ListAgentVersionsResponse]:
+    """ List agent Git versions
 
-     Creates a new run for the same agent using a previous run's stored input snapshot.
+     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
+    published-version message exists.
 
     Args:
-        run_id (str): Source run id
-        body (RerunAgentRunBody):
+        agent_id (str): Agent id or slug
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RerunAgentRunResponse]
+        Response[ApiErrorEnvelope | ListAgentVersionsResponse]
      """
 
 
     kwargs = _get_kwargs(
-        run_id=run_id,
-body=body,
+        agent_id=agent_id,
 
     )
 
@@ -212,32 +197,30 @@ body=body,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    run_id: str,
+    agent_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RerunAgentRunBody,
 
-) -> ApiErrorEnvelope | RerunAgentRunResponse | None:
-    """ Rerun agent run
+) -> ApiErrorEnvelope | ListAgentVersionsResponse | None:
+    """ List agent Git versions
 
-     Creates a new run for the same agent using a previous run's stored input snapshot.
+     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
+    published-version message exists.
 
     Args:
-        run_id (str): Source run id
-        body (RerunAgentRunBody):
+        agent_id (str): Agent id or slug
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RerunAgentRunResponse
+        ApiErrorEnvelope | ListAgentVersionsResponse
      """
 
 
     return (await asyncio_detailed(
-        run_id=run_id,
+        agent_id=agent_id,
 client=client,
-body=body,
 
     )).parsed

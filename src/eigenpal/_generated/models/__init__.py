@@ -62,6 +62,8 @@ from .execution_summary import ExecutionSummary
 from .execution_summary_workflow_type_0 import ExecutionSummaryWorkflowType0
 from .get_agent_response import GetAgentResponse
 from .list_agent_runs_response import ListAgentRunsResponse
+from .list_agent_versions_response import ListAgentVersionsResponse
+from .list_agent_versions_response_versions_item import ListAgentVersionsResponseVersionsItem
 from .list_agents_response import ListAgentsResponse
 from .list_versions_response import ListVersionsResponse
 from .list_workflow_executions_response import ListWorkflowExecutionsResponse
@@ -72,6 +74,7 @@ from .patch_agent_response import PatchAgentResponse
 from .raw_source_response import RawSourceResponse
 from .rename_expected_file_body import RenameExpectedFileBody
 from .rename_expected_file_response import RenameExpectedFileResponse
+from .rerun_agent_run_body import RerunAgentRunBody
 from .rerun_agent_run_response import RerunAgentRunResponse
 from .run_agent_body import RunAgentBody
 from .run_agent_body_input import RunAgentBodyInput
@@ -179,6 +182,8 @@ __all__ = (
     "GetAgentResponse",
     "ListAgentRunsResponse",
     "ListAgentsResponse",
+    "ListAgentVersionsResponse",
+    "ListAgentVersionsResponseVersionsItem",
     "ListVersionsResponse",
     "ListWorkflowExecutionsResponse",
     "ListWorkflowsResponse",
@@ -188,6 +193,7 @@ __all__ = (
     "RawSourceResponse",
     "RenameExpectedFileBody",
     "RenameExpectedFileResponse",
+    "RerunAgentRunBody",
     "RerunAgentRunResponse",
     "RunAgentBody",
     "RunAgentBodyInput",
