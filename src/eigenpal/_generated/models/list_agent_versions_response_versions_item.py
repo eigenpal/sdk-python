@@ -10,6 +10,8 @@ from ..types import UNSET, Unset
 
 from typing import cast
 
+if TYPE_CHECKING:
+  from ..models.list_agent_versions_response_versions_item_created_by_user_type_0 import ListAgentVersionsResponseVersionsItemCreatedByUserType0
 
 
 
@@ -29,6 +31,7 @@ class ListAgentVersionsResponseVersionsItem:
             commit (str):
             notes (None | str):
             created_at (None | str):
+            created_by_user (ListAgentVersionsResponseVersionsItemCreatedByUserType0 | None):
             latest (bool):
      """
 
@@ -38,6 +41,7 @@ class ListAgentVersionsResponseVersionsItem:
     commit: str
     notes: None | str
     created_at: None | str
+    created_by_user: ListAgentVersionsResponseVersionsItemCreatedByUserType0 | None
     latest: bool
 
 
@@ -45,6 +49,7 @@ class ListAgentVersionsResponseVersionsItem:
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.list_agent_versions_response_versions_item_created_by_user_type_0 import ListAgentVersionsResponseVersionsItemCreatedByUserType0
         version = self.version
 
         source_ref = self.source_ref
@@ -59,6 +64,12 @@ class ListAgentVersionsResponseVersionsItem:
         created_at: None | str
         created_at = self.created_at
 
+        created_by_user: dict[str, Any] | None
+        if isinstance(self.created_by_user, ListAgentVersionsResponseVersionsItemCreatedByUserType0):
+            created_by_user = self.created_by_user.to_dict()
+        else:
+            created_by_user = self.created_by_user
+
         latest = self.latest
 
 
@@ -71,6 +82,7 @@ class ListAgentVersionsResponseVersionsItem:
             "commit": commit,
             "notes": notes,
             "createdAt": created_at,
+            "createdByUser": created_by_user,
             "latest": latest,
         })
 
@@ -80,6 +92,7 @@ class ListAgentVersionsResponseVersionsItem:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.list_agent_versions_response_versions_item_created_by_user_type_0 import ListAgentVersionsResponseVersionsItemCreatedByUserType0
         d = dict(src_dict)
         version = d.pop("version")
 
@@ -105,6 +118,24 @@ class ListAgentVersionsResponseVersionsItem:
         created_at = _parse_created_at(d.pop("createdAt"))
 
 
+        def _parse_created_by_user(data: object) -> ListAgentVersionsResponseVersionsItemCreatedByUserType0 | None:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                created_by_user_type_0 = ListAgentVersionsResponseVersionsItemCreatedByUserType0.from_dict(data)
+
+
+
+                return created_by_user_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(ListAgentVersionsResponseVersionsItemCreatedByUserType0 | None, data)
+
+        created_by_user = _parse_created_by_user(d.pop("createdByUser"))
+
+
         latest = d.pop("latest")
 
         list_agent_versions_response_versions_item = cls(
@@ -114,6 +145,7 @@ class ListAgentVersionsResponseVersionsItem:
             commit=commit,
             notes=notes,
             created_at=created_at,
+            created_by_user=created_by_user,
             latest=latest,
         )
 

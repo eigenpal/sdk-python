@@ -12,6 +12,8 @@ from ..models.execution_status import ExecutionStatus
 from ..types import UNSET, Unset
 from typing import cast
 
+if TYPE_CHECKING:
+  from ..models.execution_observability import ExecutionObservability
 
 
 
@@ -31,6 +33,7 @@ class WorkflowExecutionStatusResponse:
             completed_at (None | str | Unset): ISO-8601 completion timestamp; only set in terminal states
             result (Any | None | Unset): Workflow output (status=completed)
             error (None | str | Unset): Error message (status=failed)
+            observability (ExecutionObservability | Unset):
      """
 
     execution_id: str
@@ -39,12 +42,14 @@ class WorkflowExecutionStatusResponse:
     completed_at: None | str | Unset = UNSET
     result: Any | None | Unset = UNSET
     error: None | str | Unset = UNSET
+    observability: ExecutionObservability | Unset = UNSET
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.execution_observability import ExecutionObservability
         execution_id = self.execution_id
 
         status = self.status.value
@@ -69,6 +74,10 @@ class WorkflowExecutionStatusResponse:
         else:
             error = self.error
 
+        observability: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.observability, Unset):
+            observability = self.observability.to_dict()
+
 
         field_dict: dict[str, Any] = {}
 
@@ -83,6 +92,8 @@ class WorkflowExecutionStatusResponse:
             field_dict["result"] = result
         if error is not UNSET:
             field_dict["error"] = error
+        if observability is not UNSET:
+            field_dict["observability"] = observability
 
         return field_dict
 
@@ -90,6 +101,7 @@ class WorkflowExecutionStatusResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.execution_observability import ExecutionObservability
         d = dict(src_dict)
         execution_id = d.pop("executionId")
 
@@ -130,6 +142,16 @@ class WorkflowExecutionStatusResponse:
         error = _parse_error(d.pop("error", UNSET))
 
 
+        _observability = d.pop("observability", UNSET)
+        observability: ExecutionObservability | Unset
+        if isinstance(_observability,  Unset):
+            observability = UNSET
+        else:
+            observability = ExecutionObservability.from_dict(_observability)
+
+
+
+
         workflow_execution_status_response = cls(
             execution_id=execution_id,
             status=status,
@@ -137,6 +159,7 @@ class WorkflowExecutionStatusResponse:
             completed_at=completed_at,
             result=result,
             error=error,
+            observability=observability,
         )
 
         return workflow_execution_status_response

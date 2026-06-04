@@ -16,6 +16,7 @@ if TYPE_CHECKING:
   from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
   from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
   from ..models.agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
+  from ..models.execution_observability import ExecutionObservability
 
 
 
@@ -51,6 +52,7 @@ class AgentExecutionSummary:
             feedback (AgentExecutionSummaryFeedbackType0 | None | Unset):
             expected (Any | None | Unset):
             expected_files (list[AgentExecutionSummaryExpectedFilesItem] | Unset):
+            observability (ExecutionObservability | Unset):
      """
 
     id: str
@@ -75,6 +77,7 @@ class AgentExecutionSummary:
     feedback: AgentExecutionSummaryFeedbackType0 | None | Unset = UNSET
     expected: Any | None | Unset = UNSET
     expected_files: list[AgentExecutionSummaryExpectedFilesItem] | Unset = UNSET
+    observability: ExecutionObservability | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -85,6 +88,7 @@ class AgentExecutionSummary:
         from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
         from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
         from ..models.agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
+        from ..models.execution_observability import ExecutionObservability
         id = self.id
 
         status = self.status.value
@@ -213,6 +217,10 @@ class AgentExecutionSummary:
 
 
 
+        observability: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.observability, Unset):
+            observability = self.observability.to_dict()
+
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -259,6 +267,8 @@ class AgentExecutionSummary:
             field_dict["expected"] = expected
         if expected_files is not UNSET:
             field_dict["expectedFiles"] = expected_files
+        if observability is not UNSET:
+            field_dict["observability"] = observability
 
         return field_dict
 
@@ -269,6 +279,7 @@ class AgentExecutionSummary:
         from ..models.agent_execution_summary_expected_files_item import AgentExecutionSummaryExpectedFilesItem
         from ..models.agent_execution_summary_feedback_type_0 import AgentExecutionSummaryFeedbackType0
         from ..models.agent_execution_summary_triggered_by_type_0 import AgentExecutionSummaryTriggeredByType0
+        from ..models.execution_observability import ExecutionObservability
         d = dict(src_dict)
         id = d.pop("id")
 
@@ -495,6 +506,16 @@ class AgentExecutionSummary:
                 expected_files.append(expected_files_item)
 
 
+        _observability = d.pop("observability", UNSET)
+        observability: ExecutionObservability | Unset
+        if isinstance(_observability,  Unset):
+            observability = UNSET
+        else:
+            observability = ExecutionObservability.from_dict(_observability)
+
+
+
+
         agent_execution_summary = cls(
             id=id,
             status=status,
@@ -518,6 +539,7 @@ class AgentExecutionSummary:
             feedback=feedback,
             expected=expected,
             expected_files=expected_files,
+            observability=observability,
         )
 
 

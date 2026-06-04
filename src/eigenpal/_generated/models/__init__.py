@@ -57,6 +57,14 @@ from .create_agent_body import CreateAgentBody
 from .create_agent_body_config import CreateAgentBodyConfig
 from .create_agent_response import CreateAgentResponse
 from .create_agent_response_recovery_kind import CreateAgentResponseRecoveryKind
+from .execution_observability import ExecutionObservability
+from .execution_observability_current_phase import ExecutionObservabilityCurrentPhase
+from .execution_observability_failure import ExecutionObservabilityFailure
+from .execution_observability_failure_category import ExecutionObservabilityFailureCategory
+from .execution_observability_failure_phase import ExecutionObservabilityFailurePhase
+from .execution_observability_phases_item import ExecutionObservabilityPhasesItem
+from .execution_observability_phases_item_phase import ExecutionObservabilityPhasesItemPhase
+from .execution_observability_phases_item_status import ExecutionObservabilityPhasesItemStatus
 from .execution_status import ExecutionStatus
 from .execution_summary import ExecutionSummary
 from .execution_summary_workflow_type_0 import ExecutionSummaryWorkflowType0
@@ -64,6 +72,7 @@ from .get_agent_response import GetAgentResponse
 from .list_agent_runs_response import ListAgentRunsResponse
 from .list_agent_versions_response import ListAgentVersionsResponse
 from .list_agent_versions_response_versions_item import ListAgentVersionsResponseVersionsItem
+from .list_agent_versions_response_versions_item_created_by_user_type_0 import ListAgentVersionsResponseVersionsItemCreatedByUserType0
 from .list_agents_response import ListAgentsResponse
 from .list_versions_response import ListVersionsResponse
 from .list_workflow_executions_response import ListWorkflowExecutionsResponse
@@ -176,6 +185,14 @@ __all__ = (
     "CreateAgentBodyConfig",
     "CreateAgentResponse",
     "CreateAgentResponseRecoveryKind",
+    "ExecutionObservability",
+    "ExecutionObservabilityCurrentPhase",
+    "ExecutionObservabilityFailure",
+    "ExecutionObservabilityFailureCategory",
+    "ExecutionObservabilityFailurePhase",
+    "ExecutionObservabilityPhasesItem",
+    "ExecutionObservabilityPhasesItemPhase",
+    "ExecutionObservabilityPhasesItemStatus",
     "ExecutionStatus",
     "ExecutionSummary",
     "ExecutionSummaryWorkflowType0",
@@ -184,6 +201,7 @@ __all__ = (
     "ListAgentsResponse",
     "ListAgentVersionsResponse",
     "ListAgentVersionsResponseVersionsItem",
+    "ListAgentVersionsResponseVersionsItemCreatedByUserType0",
     "ListVersionsResponse",
     "ListWorkflowExecutionsResponse",
     "ListWorkflowsResponse",

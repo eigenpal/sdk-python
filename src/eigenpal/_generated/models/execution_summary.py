@@ -13,6 +13,7 @@ from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
+  from ..models.execution_observability import ExecutionObservability
   from ..models.execution_summary_workflow_type_0 import ExecutionSummaryWorkflowType0
 
 
@@ -41,6 +42,7 @@ class ExecutionSummary:
                 reaches a terminal status.
             workflow (ExecutionSummaryWorkflowType0 | None | Unset): Owning workflow (null when the workflow has been
                 deleted)
+            observability (ExecutionObservability | Unset):
      """
 
     id: str
@@ -55,12 +57,14 @@ class ExecutionSummary:
     completed_at: None | str | Unset = UNSET
     duration_ms: int | None | Unset = UNSET
     workflow: ExecutionSummaryWorkflowType0 | None | Unset = UNSET
+    observability: ExecutionObservability | Unset = UNSET
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.execution_observability import ExecutionObservability
         from ..models.execution_summary_workflow_type_0 import ExecutionSummaryWorkflowType0
         id = self.id
 
@@ -121,6 +125,10 @@ class ExecutionSummary:
         else:
             workflow = self.workflow
 
+        observability: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.observability, Unset):
+            observability = self.observability.to_dict()
+
 
         field_dict: dict[str, Any] = {}
 
@@ -146,6 +154,8 @@ class ExecutionSummary:
             field_dict["durationMs"] = duration_ms
         if workflow is not UNSET:
             field_dict["workflow"] = workflow
+        if observability is not UNSET:
+            field_dict["observability"] = observability
 
         return field_dict
 
@@ -153,6 +163,7 @@ class ExecutionSummary:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.execution_observability import ExecutionObservability
         from ..models.execution_summary_workflow_type_0 import ExecutionSummaryWorkflowType0
         d = dict(src_dict)
         id = d.pop("id")
@@ -260,6 +271,16 @@ class ExecutionSummary:
         workflow = _parse_workflow(d.pop("workflow", UNSET))
 
 
+        _observability = d.pop("observability", UNSET)
+        observability: ExecutionObservability | Unset
+        if isinstance(_observability,  Unset):
+            observability = UNSET
+        else:
+            observability = ExecutionObservability.from_dict(_observability)
+
+
+
+
         execution_summary = cls(
             id=id,
             workflow_id=workflow_id,
@@ -273,6 +294,7 @@ class ExecutionSummary:
             completed_at=completed_at,
             duration_ms=duration_ms,
             workflow=workflow,
+            observability=observability,
         )
 
         return execution_summary
