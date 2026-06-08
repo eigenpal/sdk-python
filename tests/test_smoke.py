@@ -126,7 +126,9 @@ def test_agents_update_hits_update_endpoint(client: EigenpalClient) -> None:
 
 
 @respx.mock
-def test_agents_run_with_wait_for_completion_accepts_200(client: EigenpalClient) -> None:
+def test_agents_run_with_wait_for_completion_accepts_200(
+    client: EigenpalClient,
+) -> None:
     route = respx.post("http://localhost:3000/api/v1/agents/invoice-agent/run").mock(
         return_value=httpx.Response(
             200,
@@ -154,23 +156,84 @@ def test_agents_run_with_wait_for_completion_accepts_200(client: EigenpalClient)
 
 
 @respx.mock
-def test_agents_runs_list_accepts_source_ref(client: EigenpalClient) -> None:
-    route = respx.get("http://localhost:3000/api/v1/agents/invoice-agent/runs").mock(
+def test_runs_list_accepts_agent_source_ref(client: EigenpalClient) -> None:
+    route = respx.get("http://localhost:3000/api/v1/runs").mock(
         return_value=httpx.Response(
             200,
             json={
                 "runs": [],
-                "total": 0,
-                "limit": 10,
-                "offset": 0,
+                "nextCursor": None,
             },
         )
     )
 
-    client.agents.runs.list("invoice-agent", source_ref="latest", limit=10)
+    client.runs.list(type="agent", source="invoice-agent", source_ref="latest", limit=10)
 
     assert route.called
-    assert "sourceRef=latest" in str(route.calls.last.request.url)
+    assert "type=agent" in str(route.calls.last.request.url)
+    assert "source=invoice-agent" in str(route.calls.last.request.url)
+
+
+@respx.mock
+def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
+    list_route = respx.get("http://localhost:3000/api/v1/runs").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "runs": [],
+                "nextCursor": None,
+            },
+        )
+    )
+    get_route = respx.get("http://localhost:3000/api/v1/runs/run_123").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "run": {
+                    "id": "run_123",
+                    "type": "workflow",
+                    "status": "completed",
+                    "source": {"id": "wf_123", "name": "Extract"},
+                    "createdAt": "2026-01-01T00:00:00.000Z",
+                }
+            },
+        )
+    )
+    cancel_route = respx.post("http://localhost:3000/api/v1/runs/run_123/cancel").mock(
+        return_value=httpx.Response(200, json={"ok": True})
+    )
+    rerun_route = respx.post("http://localhost:3000/api/v1/runs/run_123/rerun").mock(
+        return_value=httpx.Response(200, json={"executionId": "run_rerun", "status": "pending"})
+    )
+    resume_route = respx.post("http://localhost:3000/api/v1/runs/run_123/resume").mock(
+        return_value=httpx.Response(200, json={"id": "run_123", "status": "running"})
+    )
+    feedback_route = respx.patch("http://localhost:3000/api/v1/runs/run_123/feedback").mock(
+        return_value=httpx.Response(200, json={"ok": True})
+    )
+    expected_route = respx.get("http://localhost:3000/api/v1/runs/run_123/expected").mock(
+        return_value=httpx.Response(200, json={"expected": None, "files": []})
+    )
+
+    client.runs.list(type="workflow", source="wf_123", status="completed")
+    run = client.runs.get("run_123", include="detail")
+    client.runs.cancel("run_123")
+    client.runs.rerun("run_123")
+    client.runs.resume("run_123")
+    client.runs.feedback.update("run_123", status="open")
+    client.runs.expected.list("run_123")
+
+    assert list_route.called
+    assert "type=workflow" in str(list_route.calls.last.request.url)
+    assert "source=wf_123" in str(list_route.calls.last.request.url)
+    assert get_route.called
+    assert "include=detail" in str(get_route.calls.last.request.url)
+    assert (run.get("id") if isinstance(run, dict) else run["id"]) == "run_123"
+    assert cancel_route.called
+    assert rerun_route.called
+    assert resume_route.called
+    assert feedback_route.called
+    assert expected_route.called
 
 
 @respx.mock
@@ -180,7 +243,12 @@ def test_401_raises_auth_error(client: EigenpalClient) -> None:
             401,
             json={
                 "issues": [
-                    {"field": "<root>", "message": "invalid", "code": "unauthorized", "severity": "error"}
+                    {
+                        "field": "<root>",
+                        "message": "invalid",
+                        "code": "unauthorized",
+                        "severity": "error",
+                    }
                 ],
                 "requestId": "r1",
             },
@@ -198,7 +266,12 @@ def test_404_raises_not_found_error(client: EigenpalClient) -> None:
             404,
             json={
                 "issues": [
-                    {"field": "<root>", "message": "Workflow not found", "code": "not_found", "severity": "error"}
+                    {
+                        "field": "<root>",
+                        "message": "Workflow not found",
+                        "code": "not_found",
+                        "severity": "error",
+                    }
                 ],
                 "requestId": "r2",
             },
@@ -217,7 +290,12 @@ def test_429_raises_rate_limit_error_with_retry_after(client: EigenpalClient) ->
             headers={"retry-after": "12"},
             json={
                 "issues": [
-                    {"field": "<root>", "message": "rate limited", "code": "rate_limited", "severity": "error"}
+                    {
+                        "field": "<root>",
+                        "message": "rate limited",
+                        "code": "rate_limited",
+                        "severity": "error",
+                    }
                 ],
                 "requestId": "r3",
             },
@@ -256,23 +334,20 @@ def test_400_raises_validation_error_with_issues(client: EigenpalClient) -> None
 
 
 @respx.mock
-def test_executions_cancel(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/workflows/executions/exec_pq/cancel").mock(
+def test_runs_cancel_cancels_workflow_runs(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/runs/exec_pq/cancel").mock(
         return_value=httpx.Response(
             200,
             json={
-                "executionId": "exec_pq",
                 "status": "cancelled",
-                "wasStatus": "pending",
             },
         )
     )
 
-    result = client.workflows.executions.cancel("exec_pq")
+    result = client.runs.cancel("exec_pq")
 
     assert route.called
-    assert result.execution_id == "exec_pq"
-    assert str(result.status) == "cancelled" or result.status.value == "cancelled"
+    assert result["status"] == "cancelled"
 
 
 @respx.mock
@@ -281,24 +356,30 @@ def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
         return_value=httpx.Response(201, json={"executionId": "exec_pq"})
     )
     # First poll: running. Second: completed.
-    poll_route = respx.get("http://localhost:3000/api/v1/workflows/executions/exec_pq").mock(
+    poll_route = respx.get(
+        "http://localhost:3000/api/v1/runs/exec_pq", params={"include": "detail"}
+    ).mock(
         side_effect=[
             httpx.Response(
                 200,
                 json={
-                    "executionId": "exec_pq",
-                    "status": "running",
-                    "createdAt": "2025-01-01T00:00:00Z",
+                    "run": {
+                        "executionId": "exec_pq",
+                        "status": "running",
+                        "createdAt": "2025-01-01T00:00:00Z",
+                    }
                 },
             ),
             httpx.Response(
                 200,
                 json={
-                    "executionId": "exec_pq",
-                    "status": "completed",
-                    "result": {"total": 42},
-                    "createdAt": "2025-01-01T00:00:00Z",
-                    "completedAt": "2025-01-01T00:00:05Z",
+                    "run": {
+                        "executionId": "exec_pq",
+                        "status": "completed",
+                        "result": {"total": 42},
+                        "createdAt": "2025-01-01T00:00:00Z",
+                        "completedAt": "2025-01-01T00:00:05Z",
+                    }
                 },
             ),
         ]

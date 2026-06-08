@@ -36,7 +36,7 @@ result = client.workflows.run("extract-invoice", input={
 print(result.execution_id)
 ```
 
-For webhooks and fire-and-forget jobs. Poll status via [`client.workflows.executions.get`](./executions.md).
+For webhooks and fire-and-forget jobs. Poll status via [`client.runs.get`](./executions.md).
 
 ### Sync (server holds up to 60s)
 

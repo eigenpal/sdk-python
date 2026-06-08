@@ -1,14 +1,14 @@
 # Executions
 
-`client.workflows.executions` inspects and manages individual workflow executions.
+`client.workflows.executions` only exposes `run_and_wait`. Inspect and manage existing workflow runs through `client.runs`.
 
 ## Which polling option do I pick?
 
-| Run length   | Use                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------- |
-| 0–60s        | `client.workflows.run(id, input, wait_for_completion=60)` — server hold.              |
-| 60s–5min     | `client.workflows.executions.run_and_wait(id, input)` — client polls every 2s.        |
-| Driving a UI | `client.workflows.run(...)` then poll `client.workflows.executions.get(id)` yourself. |
+| Run length   | Use                                                                            |
+| ------------ | ------------------------------------------------------------------------------ |
+| 0–60s        | `client.workflows.run(id, input, wait_for_completion=60)` — server hold.       |
+| 60s–5min     | `client.workflows.executions.run_and_wait(id, input)` — client polls every 2s. |
+| Driving a UI | `client.workflows.run(...)` then poll `client.runs.get(id)` yourself.          |
 
 ## Statuses
 
@@ -24,7 +24,7 @@ The first five are non-terminal; the last four are terminal. Always check `statu
 ## Get
 
 ```python
-exec = client.workflows.executions.get(execution_id)
+exec = client.runs.get(execution_id)
 #   ExecutionStatusResponse(execution_id, status, created_at, completed_at?, result?, error?)
 ```
 
@@ -33,7 +33,7 @@ exec = client.workflows.executions.get(execution_id)
 ### Per-step detail
 
 ```python
-detail = client.workflows.executions.get(execution_id, include_steps=True)
+detail = client.runs.get(execution_id, include="detail")
 ```
 
 Returns the full per-step execution payload (heavier; intended for debugging, not happy-path UI).
@@ -51,13 +51,14 @@ final = client.workflows.executions.run_and_wait(
 )
 ```
 
-Triggers async, then polls `workflows.executions.get` until terminal or timeout. Raises `EigenpalTimeoutError` on timeout.
+Triggers async, then polls `client.runs.get` until terminal or timeout. Raises `EigenpalTimeoutError` on timeout.
 
 ## List
 
 ```python
-executions = client.workflows.executions.list(
-    "wf_abc123",
+executions = client.runs.list(
+    type="workflow",
+    source="wf_abc123",
     status=["failed", "cancelled"],                # str or list[str]
     from_date="now()-7d",                          # ISO-8601 or relative expression
     to_date="now()",
@@ -72,7 +73,7 @@ Item shape: `{ id, workflow_id, status, trigger_type, trigger_input, result, err
 ## Cancel
 
 ```python
-client.workflows.executions.cancel(execution_id)
+client.runs.cancel(execution_id)
 ```
 
 Idempotent. For runs not yet picked up by a worker (`created`/`pending`), transitions immediately to `cancelled`. For `running` executions, stamps `cancel_requested_at` so the worker honors the cancel at the next checkpoint.
@@ -89,7 +90,7 @@ TERMINAL = {"completed", "failed", "cancelled", "rejected"}
 triggered = client.workflows.run("extract-invoice", input=input)
 status = None
 while True:
-    status = client.workflows.executions.get(triggered.execution_id)
+    status = client.runs.get(triggered.execution_id)
     if status.status in TERMINAL:
         break
     time.sleep(2)

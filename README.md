@@ -119,18 +119,32 @@ client.workflows.run("extract-invoice", input={
 ## Execution polling
 
 ```python
-status = client.workflows.executions.get(execution_id)
+summaries = client.runs.list(
+    type="workflow",
+    source="extract-invoice",
+    status="failed,cancelled",
+)
+
+run = client.runs.get(execution_id, include="detail")
+client.runs.cancel(execution_id)
+
+status = client.runs.get(execution_id)
 #   ExecutionStatusResponse(execution_id=..., status=..., result=..., ...)
 
-executions = client.workflows.executions.list(
-    "extract-invoice",
+executions = client.runs.list(
+    type="workflow",
+    source="extract-invoice",
     status="failed",
     from_date="now()-7d",
     limit=50,
 )
 
-client.workflows.executions.cancel(execution_id)
+client.runs.cancel(execution_id)
 ```
+
+`/api/v1/runs` is the shared run API for workflow, agent, and eval runs. Use
+`type="workflow"|"agent"` and `source="<workflowId-or-agentId>"` to scope list
+calls.
 
 ## Workflows
 
@@ -150,9 +164,12 @@ result = client.agents.run("invoice-agent", input={
     "invoice": Path("invoice.pdf"),
 })
 
-client.agents.runs.get(result.run_id)
-client.agents.runs.cancel(result.run_id)
+client.runs.get(result.run_id)
+client.runs.cancel(result.run_id)
 ```
+
+Agent run listing uses the same shared runs API with `type_="agent"` and the
+agent id or slug as `source`.
 
 ## Errors
 

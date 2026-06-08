@@ -100,6 +100,39 @@ def test_no_files_uses_json(client: EigenpalClient) -> None:
 
 
 @respx.mock
+def test_runs_files_upload_uses_required_file_part(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/runs/run_123/files").mock(
+        return_value=httpx.Response(201, json={"id": "file_123", "filename": "input.txt"})
+    )
+
+    result = client.runs.files.upload(
+        "run_123",
+        {"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"},
+    )
+
+    assert route.called
+    assert result["id"] == "file_123"
+    request = route.calls.last.request
+    assert request.headers["content-type"].startswith("multipart/form-data; boundary=")
+    body = request.content.decode("utf-8", errors="replace")
+    assert 'name="file"' in body
+    assert 'filename="input.txt"' in body
+    assert "text/plain" in body
+
+
+@respx.mock
+def test_runs_files_delete_accepts_empty_204(client: EigenpalClient) -> None:
+    route = respx.delete("http://localhost:3000/api/v1/runs/run_123/files/file_123").mock(
+        return_value=httpx.Response(204)
+    )
+
+    result = client.runs.files.delete("run_123", "file_123")
+
+    assert route.called
+    assert result is None
+
+
+@respx.mock
 def test_multiple_files_all_present(tmp_path: Path, client: EigenpalClient) -> None:
     a = tmp_path / "a.pdf"
     a.write_bytes(b"a")

@@ -24,17 +24,6 @@ from eigenpal._generated.api.agents import (
     agents_triggers_email_list,
     agents_triggers_email_update,
     agents_triggers_email_update_alias,
-    agents_runs_cancel,
-    agents_runs_rerun,
-    agents_runs_expected_create,
-    agents_runs_expected_delete,
-    agents_runs_expected_list,
-    agents_runs_expected_rename,
-    agents_runs_feedback_delete,
-    agents_runs_feedback_get,
-    agents_runs_feedback_update,
-    agents_runs_get,
-    agents_runs_list,
     agents_versions_list,
     agents_files_list_or_get,
     agents_files_put,
@@ -43,6 +32,21 @@ from eigenpal._generated.api.agents import (
     agents_list,
     agents_run,
     agents_update,
+)
+from eigenpal._generated.api.runs import (
+    runs_cancel,
+    runs_expected_create,
+    runs_expected_file_delete,
+    runs_expected_file_get,
+    runs_expected_file_update,
+    runs_expected_get,
+    runs_feedback_clear,
+    runs_feedback_get,
+    runs_feedback_update,
+    runs_get,
+    runs_list,
+    runs_rerun,
+    runs_resume,
 )
 from eigenpal._generated.api.automations import automations_sync
 from eigenpal._generated.api.source import (
@@ -55,15 +59,11 @@ from eigenpal._generated.api.source import (
 )
 from eigenpal._generated.api.workflows import (
     workflows_get,
-    workflows_executions_cancel,
-    workflows_executions_get,
-    workflows_executions_list,
     workflows_list,
     workflows_run,
     workflows_versions_list,
 )
 from eigenpal._generated.client import AuthenticatedClient
-from eigenpal._generated.models.agent_run_response import AgentRunResponse
 from eigenpal._generated.models.agents_triggers_email_create_alias_body import (
     AgentsTriggersEmailCreateAliasBody,
 )
@@ -92,56 +92,60 @@ from eigenpal._generated.models.agents_triggers_email_update_response_200 import
     AgentsTriggersEmailUpdateResponse200,
 )
 from eigenpal._generated.models.agents_files_put_body import AgentsFilesPutBody
-from eigenpal._generated.models.agents_files_upload_batch_body import AgentsFilesUploadBatchBody
-from eigenpal._generated.models.agent_execution_expected_artifacts import (
-    AgentExecutionExpectedArtifacts,
+from eigenpal._generated.models.agents_files_upload_batch_body import (
+    AgentsFilesUploadBatchBody,
 )
-from eigenpal._generated.models.agent_execution_feedback_detail import AgentExecutionFeedbackDetail
-from eigenpal._generated.models.agents_runs_list_feedback_rating import AgentsRunsListFeedbackRating
-from eigenpal._generated.models.agents_runs_list_feedback_status import AgentsRunsListFeedbackStatus
-from eigenpal._generated.models.agents_runs_list_order import AgentsRunsListOrder
-from eigenpal._generated.models.agents_runs_list_sort import AgentsRunsListSort
-from eigenpal._generated.models.cancel_agent_execution_response import CancelAgentExecutionResponse
-from eigenpal._generated.models.cancel_workflow_execution_response import (
-    CancelWorkflowExecutionResponse,
+from eigenpal._generated.models.source_secrets_decrypt_body import (
+    SourceSecretsDecryptBody,
 )
-from eigenpal._generated.models.source_secrets_decrypt_body import SourceSecretsDecryptBody
-from eigenpal._generated.models.source_secrets_encrypt_body import SourceSecretsEncryptBody
-from eigenpal._generated.models.source_secrets_encrypt_response import SourceSecretsEncryptResponse
+from eigenpal._generated.models.source_secrets_encrypt_body import (
+    SourceSecretsEncryptBody,
+)
+from eigenpal._generated.models.source_secrets_encrypt_response import (
+    SourceSecretsEncryptResponse,
+)
 from eigenpal._generated.models.create_agent_body import CreateAgentBody
 from eigenpal._generated.models.create_agent_response import CreateAgentResponse
 from eigenpal._generated.models.get_agent_response import GetAgentResponse
-from eigenpal._generated.models.list_agent_runs_response import ListAgentRunsResponse
-from eigenpal._generated.models.list_agent_versions_response import ListAgentVersionsResponse
+from eigenpal._generated.models.list_agent_versions_response import (
+    ListAgentVersionsResponse,
+)
 from eigenpal._generated.models.list_agents_response import ListAgentsResponse
 from eigenpal._generated.models.list_versions_response import ListVersionsResponse
-from eigenpal._generated.models.list_workflow_executions_response import (
-    ListWorkflowExecutionsResponse,
-)
 from eigenpal._generated.models.list_workflows_response import ListWorkflowsResponse
 from eigenpal._generated.models.patch_agent_body import PatchAgentBody
 from eigenpal._generated.models.patch_agent_response import PatchAgentResponse
-from eigenpal._generated.models.copy_agent_execution_output_to_expected_body import (
-    CopyAgentExecutionOutputToExpectedBody,
+from eigenpal._generated.models.runs_cancel_response_200 import RunsCancelResponse200
+from eigenpal._generated.models.runs_expected_file_update_body import (
+    RunsExpectedFileUpdateBody,
 )
-from eigenpal._generated.models.rename_expected_file_body import RenameExpectedFileBody
-from eigenpal._generated.models.rerun_agent_run_body import RerunAgentRunBody
-from eigenpal._generated.models.rerun_agent_run_response import RerunAgentRunResponse
+from eigenpal._generated.models.runs_expected_file_update_response_200 import (
+    RunsExpectedFileUpdateResponse200,
+)
+from eigenpal._generated.models.runs_expected_get_response_200 import (
+    RunsExpectedGetResponse200,
+)
+from eigenpal._generated.models.runs_feedback_clear_response_200 import (
+    RunsFeedbackClearResponse200,
+)
+from eigenpal._generated.models.runs_feedback_get_response_200 import (
+    RunsFeedbackGetResponse200,
+)
+from eigenpal._generated.models.runs_feedback_update_response_200 import (
+    RunsFeedbackUpdateResponse200,
+)
+from eigenpal._generated.models.runs_list_response import RunsListResponse
+from eigenpal._generated.models.run_envelope import RunEnvelope
+from eigenpal._generated.models.run_rerun_request import RunRerunRequest
+from eigenpal._generated.models.run_rerun_response import RunRerunResponse
+from eigenpal._generated.models.run_resume_response import RunResumeResponse
+from eigenpal._generated.models.run_feedback_request import RunFeedbackRequest
 from eigenpal._generated.models.run_agent_body import RunAgentBody
 from eigenpal._generated.models.run_agent_response import RunAgentResponse
 from eigenpal._generated.models.run_workflow_body import RunWorkflowBody
 from eigenpal._generated.models.run_workflow_response import RunWorkflowResponse
-from eigenpal._generated.models.update_agent_execution_feedback_body import (
-    UpdateAgentExecutionFeedbackBody,
-)
 from eigenpal._generated.models.workflow_detail import WorkflowDetail
-from eigenpal._generated.models.workflow_execution_status_response import (
-    WorkflowExecutionStatusResponse,
-)
 from eigenpal._generated.models.workflow_summary import WorkflowSummary
-from eigenpal._generated.models.workflows_executions_get_include_steps import (
-    WorkflowsExecutionsGetIncludeSteps,
-)
 from eigenpal._generated.types import UNSET, Response, Unset
 from eigenpal._telemetry import build_telemetry_headers
 from eigenpal.errors import EigenpalError, EigenpalTimeoutError, error_from_response
@@ -152,6 +156,10 @@ DEFAULT_POLL_INTERVAL_SECONDS = 2.0
 DEFAULT_RUN_AND_WAIT_TIMEOUT_SECONDS = 5 * 60.0
 
 TERMINAL_STATUSES = frozenset({"completed", "failed", "cancelled", "rejected"})
+
+UpdateAgentExecutionFeedbackBody = dict[str, Any]
+CopyAgentExecutionOutputToExpectedBody = dict[str, Any]
+RenameExpectedFileBody = dict[str, Any]
 
 
 def _assert_json_response(response: httpx.Response) -> None:
@@ -183,7 +191,7 @@ def _assert_json_response(response: httpx.Response) -> None:
     raise EigenpalError(
         f'Expected a JSON response from the API but got Content-Type "{content_type}". '
         "This usually means `base_url` points at a non-API host (e.g. the marketing site or "
-        'a misconfigured proxy). Set `base_url` to your EigenPal instance root, '
+        "a misconfigured proxy). Set `base_url` to your EigenPal instance root, "
         'e.g. "https://app.eigenpal.com".',
         status=response.status_code,
     )
@@ -204,10 +212,16 @@ def _csv(value: Optional[Union[str, list[str]]]) -> Optional[str]:
     return value
 
 
-def _agent_artifact_path(kind: str, filename: str) -> str:
-    if kind in {"issues", "trace", "lockfile"}:
-        return filename
-    return f"{kind}/{filename}"
+def _run_prop(run: Any, key: str, default: Any = None) -> Any:
+    """Read fields from dicts, attrs models, or generated additional-property models."""
+    if isinstance(run, dict):
+        return run.get(key, default)
+    if hasattr(run, "__contains__") and key in run:
+        try:
+            return run[key]
+        except Exception:
+            return default
+    return getattr(run, key, default)
 
 
 def _quote_artifact_path(artifact_path: str) -> str:
@@ -258,7 +272,9 @@ class EigenpalClient:
                 "EIGENPAL_API_KEY environment variable."
             )
 
-        resolved_base_url = base_url or os.environ.get("EIGENPAL_BASE_URL") or DEFAULT_BASE_URL
+        resolved_base_url = (
+            base_url or os.environ.get("EIGENPAL_BASE_URL") or DEFAULT_BASE_URL
+        )
 
         self._client = AuthenticatedClient(
             base_url=resolved_base_url,
@@ -280,6 +296,12 @@ class EigenpalClient:
         self.agents = AgentsResource(self._client)
         self.source = SourceResource(self._client)
         self.automations = AutomationsResource(self._client)
+        self.runs = RunsResource(self._client)
+
+    @property
+    def raw_client(self) -> AuthenticatedClient:
+        """Expose the generated authenticated client for advanced/generated API calls."""
+        return self._client
 
     def __enter__(self) -> "EigenpalClient":
         return self
@@ -432,16 +454,22 @@ class SourceResource:
             if isinstance(body, SourceSecretsDecryptBody)
             else SourceSecretsDecryptBody.from_dict(body)
         )
-        response = source_secrets_decrypt.sync_detailed(client=self._client, body=payload)
+        response = source_secrets_decrypt.sync_detailed(
+            client=self._client, body=payload
+        )
         return _check_response(response)
 
-    def encrypt_secrets(self, body: dict[str, Any] | SourceSecretsEncryptBody) -> SourceSecretsEncryptResponse:
+    def encrypt_secrets(
+        self, body: dict[str, Any] | SourceSecretsEncryptBody
+    ) -> SourceSecretsEncryptResponse:
         payload = (
             body
             if isinstance(body, SourceSecretsEncryptBody)
             else SourceSecretsEncryptBody.from_dict(body)
         )
-        response = source_secrets_encrypt.sync_detailed(client=self._client, body=payload)
+        response = source_secrets_encrypt.sync_detailed(
+            client=self._client, body=payload
+        )
         return _check_response(response)
 
 
@@ -452,7 +480,9 @@ class AutomationsResource:
         self._client = client
 
     def sync(self, automation: str) -> Any:
-        response = automations_sync.sync_detailed(client=self._client, automation=automation)
+        response = automations_sync.sync_detailed(
+            client=self._client, automation=automation
+        )
         return _check_response(response)
 
 
@@ -548,48 +578,18 @@ class WorkflowsResource:
 
 
 class WorkflowExecutionsResource:
-    """Workflow execution operations: list, get, cancel, run_and_wait."""
+    """Workflow execution helper namespace; existing run retrieval lives on ``client.runs``."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
 
-    def get(self, execution_id: str, *, include_steps: bool = False) -> WorkflowExecutionStatusResponse:
-        include = WorkflowsExecutionsGetIncludeSteps.TRUE if include_steps else UNSET
-        response = workflows_executions_get.sync_detailed(
-            execution_id=execution_id,
+    def _get_status(self, execution_id: str) -> Any:
+        response = runs_get.sync_detailed(
+            id=execution_id,
             client=self._client,
-            include_steps=include,
+            include="detail",
         )
-        return _check_response(response)
-
-    def list(
-        self,
-        workflow_id: str,
-        *,
-        status: Optional[Union[str, list[str]]] = None,
-        from_date: Optional[str] = None,
-        to_date: Optional[str] = None,
-        example_id: Optional[str] = None,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
-    ) -> ListWorkflowExecutionsResponse:
-        response = workflows_executions_list.sync_detailed(
-            id=workflow_id,
-            client=self._client,
-            status=_opt(_csv(status)),
-            from_date=_opt(from_date),
-            to_date=_opt(to_date),
-            example_id=_opt(example_id),
-            limit=_opt(limit),
-            offset=_opt(offset),
-        )
-        return _check_response(response)
-
-    def cancel(self, execution_id: str) -> CancelWorkflowExecutionResponse:
-        response = workflows_executions_cancel.sync_detailed(
-            execution_id=execution_id, client=self._client
-        )
-        return _check_response(response)
+        return _check_response(response).run
 
     def run_and_wait(
         self,
@@ -642,32 +642,41 @@ class WorkflowExecutionsResource:
                     f"(execution_id={execution_id})"
                 )
 
-            status = self.get(execution_id)
-            status_value = getattr(status, "status", None)
+            status = self._get_status(execution_id)
+            status_value = _run_prop(status, "status")
             # Generated enums expose `.value`; plain strings pass through.
             status_str = getattr(status_value, "value", status_value)
             if status_str and str(status_str) in TERMINAL_STATUSES:
                 return {
                     "executionId": execution_id,
                     "status": str(status_str),
-                    "result": getattr(status, "result", None),
-                    "error": getattr(status, "error", None),
+                    "result": _run_prop(status, "result"),
+                    "error": _run_prop(status, "error"),
                 }
 
             time.sleep(poll_interval_seconds)
 
 
-class AgentRunsResource:
-    """Agent run operations: list, get, cancel, feedback, and expected artifacts."""
+class RunsResource:
+    """Tenant-wide run operations across workflow, agent, manual, and eval runs."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
+        self.feedback = RunsFeedbackResource(client)
+        self.expected = RunsExpectedResource(client)
+        self.files = RunsFilesResource(client)
+        self.artifacts = RunsArtifactsResource(client)
+        self.comparison = RunsComparisonResource(client)
+        self.trace = RunsTraceResource(client)
 
     def list(
         self,
-        agent_id: str,
         *,
-        status: Optional[str] = None,
+        type: Optional[str] = None,
+        source: Optional[str] = None,
+        status: Optional[Union[str, list[str]]] = None,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
         batch_id: Optional[str] = None,
         example_id: Optional[str] = None,
         example_id_contains: Optional[str] = None,
@@ -676,34 +685,16 @@ class AgentRunsResource:
         completed_after: Optional[str] = None,
         completed_before: Optional[str] = None,
         source_ref: Optional[str] = None,
-        feedback_status: Optional[str] = None,
-        feedback_rating: Optional[str] = None,
-        has_feedback: Optional[bool] = None,
-        no_feedback: Optional[bool] = None,
-        has_expected: Optional[bool] = None,
-        has_expected_json: Optional[bool] = None,
-        has_expected_files: Optional[bool] = None,
-        feedback_body_contains: Optional[str] = None,
-        feedback_created_after: Optional[str] = None,
-        feedback_created_before: Optional[str] = None,
-        feedback_updated_after: Optional[str] = None,
-        feedback_updated_before: Optional[str] = None,
-        feedback_resolved_after: Optional[str] = None,
-        feedback_resolved_before: Optional[str] = None,
-        promoted_to_example: Optional[bool] = None,
-        promoted_example_name: Optional[str] = None,
-        since_last_resolved: Optional[bool] = None,
-        include: Optional[str] = None,
-        sort: Optional[str] = None,
-        order: Optional[str] = None,
-        scan_limit: Optional[int] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
-    ) -> ListAgentRunsResponse:
-        response = agents_runs_list.sync_detailed(
-            agent_id=agent_id,
+    ) -> RunsListResponse:
+        response = runs_list.sync_detailed(
             client=self._client,
-            status=_opt(status),
+            type_=_opt(type),
+            source=_opt(source),
+            status=_opt(_csv(status)),
+            from_=_opt(from_date),
+            to=_opt(to_date),
             batch_id=_opt(batch_id),
             example_id=_opt(example_id),
             example_id_contains=_opt(example_id_contains),
@@ -712,73 +703,98 @@ class AgentRunsResource:
             completed_after=_opt(completed_after),
             completed_before=_opt(completed_before),
             source_ref=_opt(source_ref),
-            feedback_status=(
-                _opt(None)
-                if feedback_status is None
-                else AgentsRunsListFeedbackStatus(feedback_status)
-            ),
-            feedback_rating=(
-                _opt(None)
-                if feedback_rating is None
-                else AgentsRunsListFeedbackRating(feedback_rating)
-            ),
-            has_feedback=_opt(has_feedback),
-            no_feedback=_opt(no_feedback),
-            has_expected=_opt(has_expected),
-            has_expected_json=_opt(has_expected_json),
-            has_expected_files=_opt(has_expected_files),
-            feedback_body_contains=_opt(feedback_body_contains),
-            feedback_created_after=_opt(feedback_created_after),
-            feedback_created_before=_opt(feedback_created_before),
-            feedback_updated_after=_opt(feedback_updated_after),
-            feedback_updated_before=_opt(feedback_updated_before),
-            feedback_resolved_after=_opt(feedback_resolved_after),
-            feedback_resolved_before=_opt(feedback_resolved_before),
-            promoted_to_example=_opt(promoted_to_example),
-            promoted_example_name=_opt(promoted_example_name),
-            since_last_resolved=_opt(since_last_resolved),
-            include=_opt(include),
-            sort=_opt(None) if sort is None else AgentsRunsListSort(sort),
-            order=_opt(None) if order is None else AgentsRunsListOrder(order),
-            scan_limit=_opt(scan_limit),
             limit=_opt(limit),
             offset=_opt(offset),
         )
         return _check_response(response)
 
-    def get(self, run_id: str, *, include: Optional[str] = None) -> AgentRunResponse:
-        response = agents_runs_get.sync_detailed(
-            run_id=run_id,
+    def get(self, run_id: str, *, include: Optional[str] = None) -> Any:
+        response = runs_get.sync_detailed(
+            id=run_id,
             client=self._client,
             include=_opt(include),
         )
+        return _check_response(response).run
+
+    def resume(self, run_id: str) -> RunResumeResponse:
+        response = runs_resume.sync_detailed(id=run_id, client=self._client)
         return _check_response(response)
 
-    def cancel(self, run_id: str) -> CancelAgentExecutionResponse:
-        response = agents_runs_cancel.sync_detailed(
-            run_id=run_id,
+    def cancel(self, run_id: str) -> RunsCancelResponse200:
+        response = runs_cancel.sync_detailed(id=run_id, client=self._client)
+        return _check_response(response)
+
+    def rerun(
+        self, run_id: str, *, source_ref: Optional[str] = None
+    ) -> RunRerunResponse:
+        response = runs_rerun.sync_detailed(
+            id=run_id,
             client=self._client,
+            body=RunRerunRequest(source_ref=_opt(source_ref)),
         )
         return _check_response(response)
 
-    def rerun(self, run_id: str, *, source_ref: Optional[str] = None) -> RerunAgentRunResponse:
-        response = agents_runs_rerun.sync_detailed(
-            run_id=run_id,
-            client=self._client,
-            body=RerunAgentRunBody(
-                source_ref=_opt(source_ref),
-            ),
+    def compare(
+        self,
+        reference_run_id: str,
+        run_id: str,
+        *,
+        baseline: bool = False,
+        step: Optional[str] = None,
+        normalize_dates: bool = False,
+    ) -> dict[str, Any]:
+        mode = "baseline" if baseline else "expected"
+        reference = self.get(
+            reference_run_id,
+            include="detail,files,output" if baseline else "detail,expected",
         )
+        target = self.get(run_id, include="detail,files,output")
+        if _is_workflow_run(reference) and _is_workflow_run(target):
+            return _compare_workflow_runs(reference_run_id, reference, run_id, target, step)
+        if step:
+            raise EigenpalError(
+                "step is only supported when both runs are workflow runs. Agent runs do not have workflow steps.",
+                status=400,
+            )
+        if _is_workflow_run(reference) or _is_workflow_run(target):
+            raise EigenpalError(
+                "Mixed workflow/agent comparisons are not supported. Compare two workflow runs or two agent runs.",
+                status=400,
+            )
+        return _compare_artifact_runs(
+            reference_run_id,
+            reference,
+            run_id,
+            target,
+            mode=mode,
+            normalize_dates=normalize_dates,
+        )
+
+    def connect(self, run_id: str) -> Any:
+        raw_response = self._client.get_httpx_client().post(
+            f"/api/v1/runs/{quote(run_id, safe='')}/connect"
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.json()
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+
+class RunsFeedbackResource:
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def get(self, run_id: str) -> RunsFeedbackGetResponse200:
+        response = runs_feedback_get.sync_detailed(id=run_id, client=self._client)
         return _check_response(response)
 
-    def get_feedback(self, run_id: str) -> AgentExecutionFeedbackDetail:
-        response = agents_runs_feedback_get.sync_detailed(
-            run_id=run_id,
-            client=self._client,
-        )
-        return _check_response(response)
-
-    def update_feedback(
+    def update(
         self,
         run_id: str,
         *,
@@ -789,120 +805,420 @@ class AgentRunsResource:
         status: Optional[str] = None,
         feedback_status: Optional[str] = None,
         expected: Any | None | Unset = UNSET,
-    ) -> AgentExecutionFeedbackDetail:
-        payload = UpdateAgentExecutionFeedbackBody.from_dict(
-            {
-                **({ "body": body } if body is not None else {}),
-                **({ "feedback": feedback } if feedback is not None else {}),
-                **({ "rating": rating } if rating is not None else {}),
-                **({ "feedbackRating": feedback_rating } if feedback_rating is not None else {}),
-                **({ "status": status } if status is not None else {}),
-                **({ "feedbackStatus": feedback_status } if feedback_status is not None else {}),
-                **({ "expected": expected } if not isinstance(expected, Unset) else {}),
-            }
-        )
-        response = agents_runs_feedback_update.sync_detailed(
-            run_id=run_id,
+    ) -> RunsFeedbackUpdateResponse200:
+        payload = {
+            **({"body": body} if body is not None else {}),
+            **({"feedback": feedback} if feedback is not None else {}),
+            **({"rating": rating} if rating is not None else {}),
+            **(
+                {"feedbackRating": feedback_rating}
+                if feedback_rating is not None
+                else {}
+            ),
+            **({"status": status} if status is not None else {}),
+            **(
+                {"feedbackStatus": feedback_status}
+                if feedback_status is not None
+                else {}
+            ),
+            **({"expected": expected} if not isinstance(expected, Unset) else {}),
+        }
+        response = runs_feedback_update.sync_detailed(
+            id=run_id,
             client=self._client,
-            body=payload,
+            body=RunFeedbackRequest.from_dict(payload),
         )
         return _check_response(response)
 
-    def clear_feedback(self, run_id: str) -> AgentExecutionFeedbackDetail:
-        response = agents_runs_feedback_delete.sync_detailed(
-            run_id=run_id,
-            client=self._client,
-        )
+    def resolve(
+        self,
+        run_id: str,
+        *,
+        body: Optional[str] = None,
+        feedback: Optional[str] = None,
+    ) -> RunsFeedbackUpdateResponse200:
+        return self.update(run_id, status="resolved", body=body, feedback=feedback)
+
+    def clear(self, run_id: str) -> RunsFeedbackClearResponse200:
+        response = runs_feedback_clear.sync_detailed(id=run_id, client=self._client)
         return _check_response(response)
 
-    def list_expected(self, run_id: str) -> AgentExecutionExpectedArtifacts:
-        response = agents_runs_expected_list.sync_detailed(
-            run_id=run_id,
-            client=self._client,
-        )
+
+class RunsExpectedResource:
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def list(self, run_id: str) -> RunsExpectedGetResponse200:
+        response = runs_expected_get.sync_detailed(id=run_id, client=self._client)
         return _check_response(response)
 
-    def copy_output_to_expected(
+    def copy_output(
         self,
         run_id: str,
         *,
         output_file_name: str,
         expected_name: Optional[str] = None,
     ) -> Any:
-        response = agents_runs_expected_create.sync_detailed(
-            run_id=run_id,
+        response = runs_expected_create.sync_detailed(
+            id=run_id,
             client=self._client,
-            body=CopyAgentExecutionOutputToExpectedBody(
-                output_file_name=output_file_name,
-                expected_name=_opt(expected_name),
-            ),
+            body={
+                "outputFileName": output_file_name,
+                **(
+                    {"expectedName": expected_name} if expected_name is not None else {}
+                ),
+            },
         )
         return _check_response(response)
 
-    def rename_expected(self, run_id: str, filename: str, *, name: str) -> Any:
-        response = agents_runs_expected_rename.sync_detailed(
-            run_id=run_id,
-            filename=filename,
-            client=self._client,
-            body=RenameExpectedFileBody(name=name),
-        )
-        return _check_response(response)
-
-    def delete_expected(self, run_id: str, filename: str) -> None:
-        response = agents_runs_expected_delete.sync_detailed(
-            run_id=run_id,
-            filename=filename,
-            client=self._client,
-        )
-        _check_response(response)
-        return None
-
-    def upload_expected(
+    def upload(
         self,
         run_id: str,
-        *,
         file: bytes | BinaryIO,
-        filename: str,
+        *,
+        filename: str = "expected.bin",
         name: Optional[str] = None,
     ) -> Any:
-        files = {"file": (filename, file)}
-        data = {"name": name} if name is not None else None
         raw_response = self._client.get_httpx_client().post(
-            f"/api/v1/agents/runs/{quote(run_id, safe='')}/expected",
-            files=files,
-            data=data,
+            f"/api/v1/runs/{quote(run_id, safe='')}/expected",
+            files={"file": (filename, file)},
+            data={**({"name": name} if name is not None else {})},
         )
         if 200 <= raw_response.status_code < 300:
             return raw_response.json()
-        return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
 
-    def download_expected(self, run_id: str, filename: str) -> bytes:
+    def rename(self, run_id: str, filename: str, *, name: str) -> Any:
+        response = runs_expected_file_update.sync_detailed(
+            id=run_id,
+            filename=filename,
+            client=self._client,
+            body=RunsExpectedFileUpdateBody(name=name),
+        )
+        return _check_response(response)
+
+    def delete(self, run_id: str, filename: str) -> None:
+        response = runs_expected_file_delete.sync_detailed(
+            id=run_id,
+            filename=filename,
+            client=self._client,
+        )
+        return _check_response(response)
+
+    def download(self, run_id: str, filename: str) -> bytes:
+        response = runs_expected_file_get.sync_detailed(
+            id=run_id,
+            filename=filename,
+            client=self._client,
+        )
+        return _check_response(response)
+
+
+class RunsFilesResource:
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def list(self, run_id: str) -> Any:
         raw_response = self._client.get_httpx_client().get(
-            "/api/v1/agents/runs/"
-            f"{quote(run_id, safe='')}/expected/{quote(filename, safe='')}"
+            f"/api/v1/runs/{quote(run_id, safe='')}/files"
         )
         if 200 <= raw_response.status_code < 300:
-            return raw_response.content
-        return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
+            return raw_response.json()
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
 
-    def download_file(
+    def upload(
         self,
         run_id: str,
-        artifact_path_or_kind: str,
-        filename: Optional[str] = None,
-    ) -> bytes:
-        artifact_path = (
-            _agent_artifact_path(artifact_path_or_kind, filename)
-            if filename is not None
-            else artifact_path_or_kind
+        file: Any,
+        *,
+        filename: str = "file",
+        mime_type: Optional[str] = None,
+    ) -> Any:
+        upload_file = (
+            (filename, bytes(file), mime_type or "application/octet-stream")
+            if isinstance(file, (bytes, bytearray))
+            else to_upload_tuple(file)
         )
+        raw_response = self._client.get_httpx_client().post(
+            f"/api/v1/runs/{quote(run_id, safe='')}/files",
+            files={"file": upload_file},
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.json()
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+    def delete(self, run_id: str, file_id: str) -> Any:
+        raw_response = self._client.get_httpx_client().delete(
+            f"/api/v1/runs/{quote(run_id, safe='')}/files/{quote(file_id, safe='')}"
+        )
+        if 200 <= raw_response.status_code < 300:
+            if raw_response.status_code == 204:
+                return None
+            return raw_response.json()
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+
+class RunsComparisonResource:
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def get(self, run_id: str) -> Any:
         raw_response = self._client.get_httpx_client().get(
-            "/api/v1/agents/runs/"
-            f"{quote(run_id, safe='')}/files/{_quote_artifact_path(artifact_path)}"
+            f"/api/v1/runs/{quote(run_id, safe='')}/comparison"
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.json()
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+
+class RunsTraceResource:
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def get(self, run_id: str) -> Any:
+        raw_response = self._client.get_httpx_client().get(
+            f"/api/v1/runs/{quote(run_id, safe='')}/trace"
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.json()
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+
+class RunsArtifactsResource:
+    def __init__(self, client: AuthenticatedClient) -> None:
+        self._client = client
+
+    def download(self, run_id: str, artifact_path: str) -> bytes:
+        raw_response = self._client.get_httpx_client().get(
+            f"/api/v1/runs/{quote(run_id, safe='')}/artifact/{_quote_artifact_path(artifact_path)}"
         )
         if 200 <= raw_response.status_code < 300:
             return raw_response.content
-        return _check_response(Response(raw_response.status_code, raw_response.content, raw_response.headers, None))
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+    def download_zip(
+        self,
+        run_id: str,
+        *,
+        files: Optional[str] = None,
+        token: Optional[str] = None,
+    ) -> bytes:
+        params = {
+            **({"files": files} if files is not None else {}),
+            **({"token": token} if token is not None else {}),
+        }
+        raw_response = self._client.get_httpx_client().get(
+            f"/api/v1/runs/{quote(run_id, safe='')}/files-zip",
+            params=params,
+        )
+        if 200 <= raw_response.status_code < 300:
+            return raw_response.content
+        return _check_response(
+            Response(
+                raw_response.status_code,
+                raw_response.content,
+                raw_response.headers,
+                None,
+            )
+        )
+
+
+def _is_workflow_run(run: Any) -> bool:
+    return isinstance(run, dict) and isinstance(run.get("stepExecutions"), list)
+
+
+def _step_name(step: dict[str, Any]) -> str:
+    return str(step.get("stepName") or step.get("name") or step.get("id") or "")
+
+
+def _compare_workflow_runs(
+    reference_run_id: str,
+    reference: dict[str, Any],
+    run_id: str,
+    target: dict[str, Any],
+    step: Optional[str],
+) -> dict[str, Any]:
+    wanted = [s.strip() for s in step.split(",") if s.strip()] if step else []
+    target_steps = {
+        _step_name(s): s for s in target.get("stepExecutions", []) if isinstance(s, dict)
+    }
+    steps = []
+    for ref_step in reference.get("stepExecutions", []):
+        if not isinstance(ref_step, dict):
+            continue
+        name = _step_name(ref_step)
+        if wanted and name not in wanted:
+            continue
+        target_step = target_steps.get(name)
+        ref_output = ref_step.get("outputData", ref_step.get("output"))
+        target_output = (
+            target_step.get("outputData", target_step.get("output"))
+            if isinstance(target_step, dict)
+            else None
+        )
+        steps.append(
+            {
+                "stepName": name,
+                "referenceStatus": str(ref_step.get("status") or ""),
+                "targetStatus": str(target_step.get("status") if target_step else "missing"),
+                "outputState": "match" if ref_output == target_output else "diff",
+            }
+        )
+    return {
+        "status": (
+            "pass"
+            if all(s["targetStatus"] != "missing" and s["outputState"] == "match" for s in steps)
+            else "fail"
+        ),
+        "runId": run_id,
+        "comparedWithRunId": reference_run_id,
+        "steps": steps,
+    }
+
+
+def _names(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [
+        str(item.get("name"))
+        for item in value
+        if isinstance(item, dict) and item.get("name")
+    ]
+
+
+def _comparable_name(value: str, normalize_dates: bool) -> str:
+    if not normalize_dates:
+        return value
+    import re
+
+    return re.sub(r"\d{8}", "<date>", re.sub(r"\d{4}-\d{2}-\d{2}", "<date>", value))
+
+
+def _diff_json(expected: Any, actual: Any, base_path: str = "$") -> list[dict[str, str]]:
+    if expected is None or expected == actual:
+        return []
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        diffs: list[dict[str, str]] = []
+        for key in sorted(set(expected.keys()) | set(actual.keys())):
+            path = f"{base_path}.{key}"
+            if key not in actual:
+                diffs.append({"path": path, "type": "missing"})
+            elif key not in expected:
+                diffs.append({"path": path, "type": "extra"})
+            else:
+                diffs.extend(_diff_json(expected[key], actual[key], path))
+        return diffs
+    return [{"path": base_path, "type": "changed"}]
+
+
+def _compare_artifact_runs(
+    reference_run_id: str,
+    reference: Any,
+    run_id: str,
+    target: Any,
+    *,
+    mode: str,
+    normalize_dates: bool,
+) -> dict[str, Any]:
+    reference_run = reference if isinstance(reference, dict) else {}
+    target_run = target if isinstance(target, dict) else {}
+    expected_value = reference_run.get("output") if mode == "baseline" else reference_run.get("expected")
+    expected_files = _names(
+        reference_run.get("resultFiles") if mode == "baseline" else reference_run.get("expectedFiles")
+    )
+    output_files = _names(target_run.get("resultFiles"))
+    missing = [
+        name
+        for name in expected_files
+        if not any(
+            _comparable_name(out, normalize_dates) == _comparable_name(name, normalize_dates)
+            for out in output_files
+        )
+    ]
+    extra = [
+        name
+        for name in output_files
+        if not any(
+            _comparable_name(exp, normalize_dates) == _comparable_name(name, normalize_dates)
+            for exp in expected_files
+        )
+    ]
+    matched = [
+        {
+            "expected": name,
+            "actual": next(
+                (
+                    out
+                    for out in output_files
+                    if _comparable_name(out, normalize_dates)
+                    == _comparable_name(name, normalize_dates)
+                ),
+                name,
+            ),
+        }
+        for name in expected_files
+        if name not in missing
+    ]
+    json_differences = _diff_json(expected_value, target_run.get("output"))
+    return {
+        "status": "pass" if not json_differences and not missing and not extra else "fail",
+        "runId": run_id,
+        "comparedWithRunId": reference_run_id,
+        "mode": mode,
+        "jsonDifferences": json_differences,
+        "matchedFiles": matched,
+        "missingFiles": missing,
+        "extraFiles": extra,
+    }
 
 
 class AgentEmailTriggersResource:
@@ -989,11 +1305,10 @@ class AgentEmailTriggersResource:
 
 
 class AgentsResource:
-    """Agent operations: list, get, create, run, runs, and email triggers."""
+    """Agent operations: list, get, create, run, and email triggers."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
-        self.runs = AgentRunsResource(client)
         self.email_triggers = AgentEmailTriggersResource(client)
 
     def list(
@@ -1092,7 +1407,9 @@ class AgentsResource:
                 **({"config": config} if config is not None else {}),
             }
         )
-        response = agents_update.sync_detailed(agent_id=agent_id, client=self._client, body=body)
+        response = agents_update.sync_detailed(
+            agent_id=agent_id, client=self._client, body=body
+        )
         return _check_response(response)
 
     def run(

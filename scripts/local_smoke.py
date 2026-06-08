@@ -98,11 +98,15 @@ def main() -> int:
             else f"version={getattr(fetched, 'version', None)}",
         )
 
-    # 3. workflows.executions.list → public shape
-    execs = client.workflows.executions.list(workflow_id, limit=5) if workflow_id else None
-    exec_items = execs.data if hasattr(execs, "data") else []
+    # 3. runs.list → public shape
+    execs = (
+        client.runs.list(type="workflow", source=workflow_id, limit=5)
+        if workflow_id
+        else None
+    )
+    exec_items = execs.runs if hasattr(execs, "runs") else []
     pass_(
-        "workflows.executions.list responds",
+        "runs.list responds",
         isinstance(exec_items, list),
         f"data.length={len(exec_items)}",
     )
@@ -110,7 +114,7 @@ def main() -> int:
         keys = model_keys(exec_items[0])
         leaked = keys - PUBLIC_EXECUTION_FIELDS
         pass_(
-            "workflows.executions[0] only public fields",
+            "runs[0] only public fields",
             not leaked,
             f"leaked: {sorted(leaked)}" if leaked else f"keys: {sorted(keys)}",
         )
