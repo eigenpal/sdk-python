@@ -1,5 +1,5 @@
 """Tests for multipart file uploads — exercises the ``-F``-style path the
-SDK takes whenever ``workflows.run``'s input contains a Path / file-like /
+SDK takes whenever ``client.run``'s input contains a Path / file-like /
 explicit dict descriptor."""
 
 from __future__ import annotations
@@ -25,16 +25,16 @@ def test_path_input_uploads_as_multipart(tmp_path: Path, client: EigenpalClient)
     pdf = tmp_path / "contract.pdf"
     pdf.write_bytes(b"%PDF-1.4 fake content")
 
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
-    result = client.workflows.run(
-        "wf_xyz",
+    result = client.run(
+        {"type": "workflow", "id": "wf_xyz"},
         input={"contract_document": pdf, "language": "en"},
     )
 
-    assert result.execution_id == "exec_abc"
+    assert result.run_id == "exec_abc"
     request = route.calls.last.request
     content_type = request.headers["content-type"]
     assert content_type.startswith("multipart/form-data; boundary=")
@@ -44,17 +44,18 @@ def test_path_input_uploads_as_multipart(tmp_path: Path, client: EigenpalClient)
     assert 'filename="contract.pdf"' in body
     # Scalar input rides in the _json sidecar
     assert 'name="_json"' in body
+    assert '"target"' not in body
     assert '"language": "en"' in body or '"language":"en"' in body
 
 
 @respx.mock
 def test_explicit_descriptor_with_raw_bytes(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
-    client.workflows.run(
-        "wf_xyz",
+    client.run(
+        {"type": "workflow", "id": "wf_xyz"},
         input={
             "contract": {
                 "content": b"%PDF",
@@ -74,12 +75,12 @@ def test_file_like_object_uploads(tmp_path: Path, client: EigenpalClient) -> Non
     fpath = tmp_path / "policy.txt"
     fpath.write_bytes(b"hello world")
 
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
     with fpath.open("rb") as f:
-        client.workflows.run("wf_xyz", input={"policy": f})
+        client.run("workflows.wf_xyz", input={"policy": f})
 
     body = route.calls.last.request.content.decode("utf-8", errors="replace")
     assert 'name="policy"' in body
@@ -88,15 +89,15 @@ def test_file_like_object_uploads(tmp_path: Path, client: EigenpalClient) -> Non
 
 @respx.mock
 def test_no_files_uses_json(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
-    client.workflows.run("wf_xyz", input={"language": "en"})
+    client.run("workflows.wf_xyz", input={"language": "en"})
 
     request = route.calls.last.request
     assert request.headers["content-type"] == "application/json"
-    assert json.loads(request.content) == {"input": {"language": "en"}}
+    assert json.loads(request.content) == {"language": "en"}
 
 
 @respx.mock
@@ -139,11 +140,11 @@ def test_multiple_files_all_present(tmp_path: Path, client: EigenpalClient) -> N
     b = tmp_path / "b.pdf"
     b.write_bytes(b"b")
 
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
-    client.workflows.run("wf_xyz", input={"primary": a, "secondary": b})
+    client.run({"type": "workflow", "id": "wf_xyz"}, input={"primary": a, "secondary": b})
 
     body = route.calls.last.request.content.decode("utf-8", errors="replace")
     assert 'filename="a.pdf"' in body
@@ -152,14 +153,14 @@ def test_multiple_files_all_present(tmp_path: Path, client: EigenpalClient) -> N
 
 @respx.mock
 def test_bytesio_uploads_with_default_filename(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
     buf = BytesIO(b"data")
     # BytesIO has no .name → falls back to "file"
-    client.workflows.run(
-        "wf_xyz",
+    client.run(
+        {"type": "workflow", "id": "wf_xyz"},
         input={"contract": {"content": buf.getvalue(), "filename": "named.bin"}},
     )
 

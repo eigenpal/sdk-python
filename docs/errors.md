@@ -16,7 +16,7 @@ Every non-2xx response raises a typed subclass of `EigenpalError`.
 from eigenpal import EigenpalClient, EigenpalValidationError
 
 try:
-    client.workflows.run("extract-invoice")
+    client.run("workflows.extract-invoice")
 except EigenpalValidationError as e:
     for issue in e.issues:
         print(f"{issue['field']}: {issue['message']}")
@@ -31,7 +31,7 @@ Every error carries `request_id` from the server's response header. Forward it t
 from eigenpal import EigenpalError
 
 try:
-    client.workflows.run("extract-invoice", input=input)
+    client.run("workflows.extract-invoice", input=input)
 except EigenpalError as e:
     log.error("eigenpal call failed", extra={"request_id": e.request_id, "status": e.status})
     raise

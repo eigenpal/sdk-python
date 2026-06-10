@@ -14,60 +14,67 @@ result = client.workflows.executions.run_and_wait(
     "extract-invoice",
     input={"contract": Path("contract.pdf")},
 )
-print(result["status"], result["result"])
+print(result["status"], result["output"])
 ```
 
 ## Surface
 
 ```
 client
+├── run
+├── rerun
 ├── agents
 │   ├── list
 │   ├── get
 │   ├── create
 │   ├── update
-│   ├── run
 │   ├── list_files
 │   ├── put_file
 │   ├── upload_files
 │   ├── versions
-│   ├── email_triggers.list
-│   ├── email_triggers.get
-│   ├── email_triggers.create_alias
-│   ├── email_triggers.delete_alias
-│   ├── email_triggers.update
-│   └── email_triggers.update_alias
+│   └── email_triggers
+│       ├── list
+│       ├── get
+│       ├── create_alias
+│       ├── delete_alias
+│       ├── update
+│       └── update_alias
 ├── workflows
 │   ├── list
 │   ├── get
-│   ├── run
 │   ├── versions
-│   └── executions.run_and_wait
+│   └── executions
+│       └── run_and_wait
 ├── runs
 │   ├── list
 │   ├── get
-│   ├── artifacts.download
-│   ├── artifacts.download_zip
+│   ├── artifacts
+│   │   ├── download
+│   │   └── download_zip
 │   ├── cancel
 │   ├── compare
-│   ├── comparison.get
+│   ├── comparison
+│   │   └── get
 │   ├── connect
-│   ├── expected.list
-│   ├── expected.copy_output
-│   ├── expected.delete
-│   ├── expected.download
-│   ├── expected.rename
-│   ├── expected.upload
-│   ├── feedback.get
-│   ├── feedback.clear
-│   ├── feedback.resolve
-│   ├── feedback.update
-│   ├── files.list
-│   ├── files.delete
-│   ├── files.upload
-│   ├── rerun
+│   ├── expected
+│   │   ├── list
+│   │   ├── copy_output
+│   │   ├── delete
+│   │   ├── download
+│   │   ├── rename
+│   │   └── upload
+│   ├── feedback
+│   │   ├── get
+│   │   ├── clear
+│   │   ├── resolve
+│   │   └── update
+│   ├── files
+│   │   ├── list
+│   │   ├── delete
+│   │   └── upload
 │   ├── resume
-│   └── trace.get
+│   └── trace
+│       └── get
 ├── source
 │   ├── decrypt_secrets
 │   ├── encrypt_secrets
@@ -79,7 +86,9 @@ client
     └── sync
 ```
 
-Run inspection and mutation is canonical under `client.runs.*`, which maps to `/api/v1/runs`.
+Start runs with `client.run(...)` and create a new run from a previous snapshot with `client.rerun(...)`.
+
+Run inspection and artifact/feedback/file mutation lives under `client.runs.*`, which maps to `/api/v1/runs`.
 
 `client.runs.files.*` is currently for DB-backed workflow run files. `client.runs.artifacts.*` is currently for agent run artifacts such as traces, metadata, and output files; workflow artifacts will be unified in a future refactor.
 
@@ -235,39 +244,6 @@ Updates mutable agent metadata and configuration.
 
 ```python
 // PatchAgentResponse
-```
-
-### `client.agents.run`
-
-**`POST /api/v1/agents/{agentId}/run`**
-
-Run an agent
-
-Enqueues an agent run. Returns 202 with `{ runId }` by default. Pass `wait_for_completion=<seconds>` to hold the connection until the run reaches a terminal state. File inputs are uploaded as multipart/form-data.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Query parameters**
-
-| Name                  | Type  | Description                                                                                                                                                                                |
-| --------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `wait_for_completion` | `int` | (optional)Seconds to hold the connection waiting for completion (max 600). Omit for async.                                                                                                 |
-| `source_ref`          | `str` | (optional)Git source ref to resolve for this run. Defaults to latest. Supports latest, main, exact versions/tags such as 1.2.3, semver ranges such as 1.2.x or 1.x, and exact commit SHAs. |
-
-**Request body**
-
-```python
-// RunAgentBody
-```
-
-**Response**
-
-```python
-// RunAgentResponse
 ```
 
 ### `client.agents.email_triggers.update_alias`
@@ -491,6 +467,39 @@ Reconciles lightweight automation metadata from the latest released Git source p
 ```
 
 ## Runs
+
+### `client.run`
+
+**`POST /api/v1/run/{target}`**
+
+Start a workflow or agent run
+
+Starts a run for a workflow or agent target. The target lives in the URL path; the optional `version` query parameter selects a release/ref and defaults to `latest`. The request body is the input object; a reserved `_overrides` key (workflow targets only) carries per-step output overrides for replay. Run provenance may be declared with the `X-Eigenpal-Trigger` header (`api` or `cli`).
+
+**Path parameters**
+
+| Name     | Type  | Description                                 |
+| -------- | ----- | ------------------------------------------- |
+| `target` | `str` | Automation target without a version suffix. |
+
+**Query parameters**
+
+| Name                  | Type  | Description                                                   |
+| --------------------- | ----- | ------------------------------------------------------------- |
+| `version`             | `str` | (optional)Optional version or source ref. Defaults to latest. |
+| `wait_for_completion` | `int` | (optional)                                                    |
+
+**Request body**
+
+```python
+// RunTargetInputBody
+```
+
+**Response**
+
+```python
+// RunStartResponse
+```
 
 ### `client.runs.artifacts.download`
 
@@ -788,7 +797,7 @@ Upload a DB-backed workflow run input file. This endpoint is for workflow runs b
 // dict[str, Any]
 ```
 
-### `client.runs.rerun`
+### `client.rerun`
 
 **`POST /api/v1/runs/{id}/rerun`**
 
@@ -799,6 +808,12 @@ Rerun run
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
 | `id` | `str` |             |
+
+**Query parameters**
+
+| Name                  | Type  | Description |
+| --------------------- | ----- | ----------- |
+| `wait_for_completion` | `int` | (optional)  |
 
 **Request body**
 
@@ -1052,39 +1067,6 @@ Returns the workflow summary plus the current version YAML. Use `versions list` 
 
 ```python
 // WorkflowDetail
-```
-
-### `client.workflows.run`
-
-**`POST /api/v1/workflows/{id}/run`**
-
-Execute a workflow (async or sync)
-
-Enqueues a workflow execution. Returns 201 with `{ executionId }` by default. Pass `wait_for_completion=<seconds>` (max 60) to hold the connection until the run reaches a terminal state; the body then also includes `status`, `result`, and `error`. File inputs are uploaded as `multipart/form-data` (each file as a top-level form field; `_json` field carries scalar inputs).
-
-**Path parameters**
-
-| Name | Type  | Description                                                                           |
-| ---- | ----- | ------------------------------------------------------------------------------------- |
-| `id` | `str` | Workflow id (e.g. `wf_abc123`) or slug (e.g. `extract-invoice`, the workflow `name`). |
-
-**Query parameters**
-
-| Name                  | Type  | Description                                                                               |
-| --------------------- | ----- | ----------------------------------------------------------------------------------------- |
-| `version`             | `str` | (optional)Version id, or "latest" (default)                                               |
-| `wait_for_completion` | `int` | (optional)Seconds to hold the connection waiting for completion (max 60). Omit for async. |
-
-**Request body**
-
-```python
-// RunWorkflowBody
-```
-
-**Response**
-
-```python
-// RunWorkflowResponse
 ```
 
 ### `client.workflows.versions`

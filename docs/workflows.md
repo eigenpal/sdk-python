@@ -1,6 +1,6 @@
 # Workflows
 
-`client.workflows` is the entry point for listing, fetching, and running workflows.
+`client.workflows` is the entry point for listing and fetching workflows. Start workflow runs with root `client.run()`.
 
 ## List
 
@@ -30,10 +30,10 @@ Three ways to run, depending on how long you want to wait.
 ```python
 from pathlib import Path
 
-result = client.workflows.run("extract-invoice", input={
+result = client.run("workflows.extract-invoice", input={
     "contract_document": Path("contract.pdf"),
 })
-print(result.execution_id)
+print(result.run_id)
 ```
 
 For webhooks and fire-and-forget jobs. Poll status via [`client.runs.get`](./executions.md).
@@ -41,15 +41,15 @@ For webhooks and fire-and-forget jobs. Poll status via [`client.runs.get`](./exe
 ### Sync (server holds up to 60s)
 
 ```python
-result = client.workflows.run(
-    "extract-invoice",
+result = client.run(
+    "workflows.extract-invoice",
     input={"contract_document": Path("contract.pdf")},
     wait_for_completion=60,
 )
-print(result.status, result.result)
+print(result.status, result.output)
 ```
 
-If the run completes within `wait_for_completion` seconds, `status`/`result` are populated. Otherwise just `execution_id`.
+If the run completes within `wait_for_completion` seconds, `status`/`output` are populated. Otherwise the response includes `run_id`.
 
 ### Long-running (client polls)
 
@@ -65,7 +65,7 @@ Default 5 min cap; tune with `poll_interval_seconds` and `timeout_seconds`. See 
 ## Pin a version
 
 ```python
-client.workflows.run("extract-invoice", input=input, version="1.2.3")
+client.run("workflows.extract-invoice@1.2.3", input=input)
 ```
 
 If omitted, the run picks up the workflow's current published version at trigger time.
@@ -73,7 +73,7 @@ If omitted, the run picks up the workflow's current published version at trigger
 ## Override step output
 
 ```python
-client.workflows.run("extract-invoice", input=input, overrides={
+client.run("workflows.extract-invoice", input=input, overrides={
     "parse-contract": {"text": "pre-extracted..."},
 })
 ```

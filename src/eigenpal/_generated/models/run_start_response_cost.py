@@ -14,12 +14,12 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunAgentResponseCost")
+T = TypeVar("T", bound="RunStartResponseCost")
 
 
 
 @_attrs_define
-class RunAgentResponseCost:
+class RunStartResponseCost:
     """ 
      """
 
@@ -41,12 +41,12 @@ class RunAgentResponseCost:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_agent_response_cost = cls(
+        run_start_response_cost = cls(
         )
 
 
-        run_agent_response_cost.additional_properties = d
-        return run_agent_response_cost
+        run_start_response_cost.additional_properties = d
+        return run_start_response_cost
 
     @property
     def additional_keys(self) -> list[str]:

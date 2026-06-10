@@ -1,8 +1,8 @@
 from enum import Enum
 
-class RunWorkflowBodyTrigger(str, Enum):
-    API = "api"
-    CLI = "cli"
+class RunStartResponseType(str, Enum):
+    AGENT = "agent"
+    WORKFLOW = "workflow"
 
     def __str__(self) -> str:
         return str(self.value)

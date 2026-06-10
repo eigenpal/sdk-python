@@ -11,6 +11,7 @@ from ... import errors
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.run_rerun_request import RunRerunRequest
 from ...models.run_rerun_response import RunRerunResponse
+from ...types import UNSET, Unset
 from typing import cast
 
 
@@ -19,6 +20,7 @@ def _get_kwargs(
     id: str,
     *,
     body: RunRerunRequest,
+    wait_for_completion: int | Unset = UNSET,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -26,11 +28,18 @@ def _get_kwargs(
 
     
 
-    
+    params: dict[str, Any] = {}
+
+    params["wait_for_completion"] = wait_for_completion
+
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
 
     _kwargs: dict[str, Any] = {
         "method": "post",
         "url": "/api/v1/runs/{id}/rerun".format(id=quote(str(id), safe=""),),
+        "params": params,
     }
 
     _kwargs["json"] = body.to_dict()
@@ -57,6 +66,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
         return response_201
+
+    if response.status_code == 202:
+        response_202 = RunRerunResponse.from_dict(response.json())
+
+
+
+        return response_202
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -120,12 +136,14 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: RunRerunRequest,
+    wait_for_completion: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunRerunResponse]:
     """ Rerun run
 
     Args:
         id (str):
+        wait_for_completion (int | Unset):
         body (RunRerunRequest):
 
     Raises:
@@ -140,6 +158,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         id=id,
 body=body,
+wait_for_completion=wait_for_completion,
 
     )
 
@@ -154,12 +173,14 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: RunRerunRequest,
+    wait_for_completion: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunRerunResponse | None:
     """ Rerun run
 
     Args:
         id (str):
+        wait_for_completion (int | Unset):
         body (RunRerunRequest):
 
     Raises:
@@ -175,6 +196,7 @@ def sync(
         id=id,
 client=client,
 body=body,
+wait_for_completion=wait_for_completion,
 
     ).parsed
 
@@ -183,12 +205,14 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: RunRerunRequest,
+    wait_for_completion: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunRerunResponse]:
     """ Rerun run
 
     Args:
         id (str):
+        wait_for_completion (int | Unset):
         body (RunRerunRequest):
 
     Raises:
@@ -203,6 +227,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         id=id,
 body=body,
+wait_for_completion=wait_for_completion,
 
     )
 
@@ -217,12 +242,14 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: RunRerunRequest,
+    wait_for_completion: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunRerunResponse | None:
     """ Rerun run
 
     Args:
         id (str):
+        wait_for_completion (int | Unset):
         body (RunRerunRequest):
 
     Raises:
@@ -238,5 +265,6 @@ async def asyncio(
         id=id,
 client=client,
 body=body,
+wait_for_completion=wait_for_completion,
 
     )).parsed

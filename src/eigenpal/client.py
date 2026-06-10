@@ -30,7 +30,6 @@ from eigenpal._generated.api.agents import (
     agents_files_upload_batch,
     agents_get,
     agents_list,
-    agents_run,
     agents_update,
 )
 from eigenpal._generated.api.runs import (
@@ -60,7 +59,6 @@ from eigenpal._generated.api.source import (
 from eigenpal._generated.api.workflows import (
     workflows_get,
     workflows_list,
-    workflows_run,
     workflows_versions_list,
 )
 from eigenpal._generated.client import AuthenticatedClient
@@ -139,11 +137,8 @@ from eigenpal._generated.models.run_envelope import RunEnvelope
 from eigenpal._generated.models.run_rerun_request import RunRerunRequest
 from eigenpal._generated.models.run_rerun_response import RunRerunResponse
 from eigenpal._generated.models.run_resume_response import RunResumeResponse
+from eigenpal._generated.models.run_start_response import RunStartResponse
 from eigenpal._generated.models.run_feedback_request import RunFeedbackRequest
-from eigenpal._generated.models.run_agent_body import RunAgentBody
-from eigenpal._generated.models.run_agent_response import RunAgentResponse
-from eigenpal._generated.models.run_workflow_body import RunWorkflowBody
-from eigenpal._generated.models.run_workflow_response import RunWorkflowResponse
 from eigenpal._generated.models.workflow_detail import WorkflowDetail
 from eigenpal._generated.models.workflow_summary import WorkflowSummary
 from eigenpal._generated.types import UNSET, Response, Unset
@@ -303,6 +298,46 @@ class EigenpalClient:
         """Expose the generated authenticated client for advanced/generated API calls."""
         return self._client
 
+    def run(
+        self,
+        target: Union[str, dict[str, Any]],
+        input: Optional[dict[str, Any]] = None,
+        *,
+        wait_for_completion: Optional[int] = None,
+        overrides: Optional[dict[str, Any]] = None,
+    ) -> RunStartResponse:
+        """Start a workflow or agent run via ``POST /api/v1/run/{target}``.
+
+        ``overrides`` (workflow targets only) is sent under the reserved
+        ``_overrides`` body key as ``{"steps": {<stepName>: <output>}}``.
+        """
+        path_target, version = _path_target_from_run_target(target)
+        if has_file_input(input):
+            assert input is not None
+            return _run_multipart(
+                self._client,
+                input,
+                path_target=path_target,
+                version=version,
+                wait_for_completion=wait_for_completion,
+                overrides=overrides,
+            )
+
+        return _run_json(
+            self._client,
+            path_target=path_target,
+            version=version,
+            wait_for_completion=wait_for_completion,
+            input=input,
+            overrides=overrides,
+        )
+
+    def rerun(
+        self, run_id: str, *, source_ref: Optional[str] = None
+    ) -> RunRerunResponse:
+        """Create a new run from a previous run's input snapshot."""
+        return self.runs.rerun(run_id, source_ref=source_ref)
+
     def __enter__(self) -> "EigenpalClient":
         return self
 
@@ -310,19 +345,58 @@ class EigenpalClient:
         self._client.get_httpx_client().close()
 
 
-def _run_multipart(
+def _wrap_run_response(raw_response: Any) -> RunStartResponse:
+    """Wrap a raw httpx run-start response in the generated ``Response``
+    envelope and surface API errors through ``_check_response``."""
+    if 200 <= raw_response.status_code < 300:
+        parsed = RunStartResponse.from_dict(raw_response.json())
+    else:
+        parsed = None
+    return _check_response(
+        Response(
+            status_code=raw_response.status_code,
+            content=raw_response.content,
+            headers=raw_response.headers,
+            parsed=parsed,
+        )
+    )
+
+
+def _run_json(
     client: AuthenticatedClient,
-    workflow_id: str,
-    input: dict[str, Any],
     *,
+    path_target: str,
     version: Optional[str],
     wait_for_completion: Optional[int],
-    overrides: Optional[dict[str, Any]],
-    trigger: Optional[str],
-) -> RunWorkflowResponse:
-    """Send a workflow run as ``multipart/form-data``. Each file value in
-    ``input`` becomes a top-level form field; non-file inputs + overrides +
-    trigger ride along in the canonical ``_json`` text field."""
+    input: Optional[dict[str, Any]],
+    overrides: Optional[dict[str, Any]] = None,
+) -> RunStartResponse:
+    """Send a JSON-body run. Per-step overrides ride in the reserved
+    ``_overrides`` body key."""
+    body: dict[str, Any] = dict(input or {})
+    if overrides is not None:
+        body["_overrides"] = overrides
+    raw_response = client.get_httpx_client().post(
+        f"/api/v1/run/{quote(path_target, safe='')}",
+        params=_run_query(wait_for_completion=wait_for_completion, version=version),
+        json=body,
+    )
+    return _wrap_run_response(raw_response)
+
+
+def _run_multipart(
+    client: AuthenticatedClient,
+    input: dict[str, Any],
+    *,
+    path_target: str,
+    version: Optional[str],
+    wait_for_completion: Optional[int],
+    overrides: Optional[dict[str, Any]] = None,
+) -> RunStartResponse:
+    """Send a run as ``multipart/form-data``. Each file value in
+    ``input`` becomes a top-level form field; non-file inputs ride along
+    in the canonical ``_json`` text field, and per-step overrides in the
+    reserved ``_overrides`` text field."""
     files: list[tuple[str, tuple[str, bytes, str]]] = []
     scalars: dict[str, Any] = {}
     for key, value in input.items():
@@ -331,92 +405,46 @@ def _run_multipart(
         else:
             scalars[key] = value
 
-    sidecar: dict[str, Any] = {}
-    if scalars:
-        sidecar["input"] = scalars
+    data = {"_json": json.dumps(scalars)}
     if overrides is not None:
-        sidecar["overrides"] = overrides
-    if trigger is not None:
-        sidecar["trigger"] = trigger
-    data = {"_json": json.dumps(sidecar)} if sidecar else {}
-
-    params: dict[str, Any] = {}
-    if version is not None:
-        params["version"] = version
-    if wait_for_completion is not None:
-        params["wait_for_completion"] = wait_for_completion
+        data["_overrides"] = json.dumps(overrides)
 
     httpx_client = client.get_httpx_client()
     raw_response = httpx_client.post(
-        f"/api/v1/workflows/{workflow_id}/run",
-        params=params,
+        f"/api/v1/run/{quote(path_target, safe='')}",
+        params=_run_query(wait_for_completion=wait_for_completion, version=version),
         files=files,
         data=data,
     )
-
-    # Match the shape returned by ``workflows_run.sync_detailed`` so
-    # ``_check_response`` works the same way.
-    if 200 <= raw_response.status_code < 300:
-        parsed = RunWorkflowResponse.from_dict(raw_response.json())
-    else:
-        parsed = None
-    return _check_response(
-        Response(
-            status_code=raw_response.status_code,
-            content=raw_response.content,
-            headers=raw_response.headers,
-            parsed=parsed,
-        )
-    )
+    return _wrap_run_response(raw_response)
 
 
-def _run_agent_multipart(
-    client: AuthenticatedClient,
-    agent_id: str,
-    input: dict[str, Any],
-    *,
-    wait_for_completion: Optional[int],
-    source_ref: Optional[str],
-) -> RunAgentResponse:
-    """Send an agent execution as ``multipart/form-data``.
+def _path_target_from_run_target(target: Union[str, dict[str, Any]]) -> tuple[str, Optional[str]]:
+    if isinstance(target, str):
+        parts = target.split("@")
+        if len(parts) > 2 or not parts[0] or (len(parts) == 2 and not parts[1]):
+            raise EigenpalError("Run target strings must be <target> or <target>@<version>.", status=0)
+        version = parts[1] if len(parts) == 2 and parts[1] != "latest" else None
+        return parts[0], version
+    kind = target.get("type")
+    id_or_slug = target.get("slug") or target.get("id")
+    if kind not in {"workflow", "agent"} or not id_or_slug:
+        raise EigenpalError("Run target objects require type plus slug or id.", status=0)
+    root = "agents" if kind == "agent" else "workflows"
+    name = id_or_slug if "." in id_or_slug else f"{root}.{id_or_slug.replace('/', '.')}"
+    version = target.get("version")
+    return name, version if version and version != "latest" else None
 
-    Each file value in ``input`` becomes a top-level form field. Scalar inputs
-    ride in the ``_json`` field as the input object itself.
-    """
-    files: list[tuple[str, tuple[str, bytes, str]]] = []
-    scalars: dict[str, Any] = {}
-    for key, value in input.items():
-        if is_file_input(value):
-            files.append((key, to_upload_tuple(value)))
-        else:
-            scalars[key] = value
 
+def _run_query(
+    *, wait_for_completion: Optional[int], version: Optional[str]
+) -> Optional[dict[str, Any]]:
     params: dict[str, Any] = {}
     if wait_for_completion is not None:
         params["wait_for_completion"] = wait_for_completion
-    if source_ref is not None:
-        params["sourceRef"] = source_ref
-
-    data = {"_json": json.dumps(scalars)} if scalars else {}
-    raw_response = client.get_httpx_client().post(
-        f"/api/v1/agents/{agent_id}/run",
-        params=params,
-        files=files,
-        data=data,
-    )
-
-    if 200 <= raw_response.status_code < 300:
-        parsed = RunAgentResponse.from_dict(raw_response.json())
-    else:
-        parsed = None
-    return _check_response(
-        Response(
-            status_code=raw_response.status_code,
-            content=raw_response.content,
-            headers=raw_response.headers,
-            parsed=parsed,
-        )
-    )
+    if version:
+        params["version"] = version
+    return params or None
 
 
 class SourceResource:
@@ -487,50 +515,11 @@ class AutomationsResource:
 
 
 class WorkflowsResource:
-    """Workflow operations: list, get, run, versions."""
+    """Workflow operations: list, get, versions."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
         self.executions = WorkflowExecutionsResource(client)
-
-    def run(
-        self,
-        workflow_id: str,
-        input: Optional[dict[str, Any]] = None,
-        *,
-        version: Optional[str] = None,
-        wait_for_completion: Optional[int] = None,
-        overrides: Optional[dict[str, Any]] = None,
-        trigger: Optional[str] = None,
-    ) -> RunWorkflowResponse:
-        # File-bearing input → multipart/form-data (no base64 overhead).
-        if has_file_input(input):
-            assert input is not None
-            return _run_multipart(
-                self._client,
-                workflow_id,
-                input,
-                version=version,
-                wait_for_completion=wait_for_completion,
-                overrides=overrides,
-                trigger=trigger,
-            )
-
-        body = RunWorkflowBody.from_dict(
-            {
-                **({"input": input} if input is not None else {}),
-                **({"overrides": overrides} if overrides is not None else {}),
-                **({"trigger": trigger} if trigger is not None else {}),
-            }
-        )
-        response = workflows_run.sync_detailed(
-            id=workflow_id,
-            client=self._client,
-            body=body,
-            version=_opt(version),
-            wait_for_completion=_opt(wait_for_completion),
-        )
-        return _check_response(response)
 
     def list(
         self,
@@ -603,43 +592,39 @@ class WorkflowExecutionsResource:
     ) -> dict[str, Any]:
         """Trigger a workflow and poll client-side until terminal status.
 
-        Unlike ``workflows.run(wait_for_completion=60)``, this polls
+        Unlike ``client.run(wait_for_completion=60)``, this polls
         indefinitely (up to ``timeout_seconds``, default 5 min) so it
         works for runs that exceed the 60s server-side sync window.
         """
+        target = f"workflows.{workflow_id}"
+        run_version = version if version and version != "latest" else None
         if has_file_input(input):
             assert input is not None
             run_result = _run_multipart(
                 self._client,
-                workflow_id,
                 input,
-                version=version,
+                path_target=target,
+                version=run_version,
                 wait_for_completion=None,
                 overrides=overrides,
-                trigger=None,
             )
         else:
-            body = RunWorkflowBody.from_dict(
-                {
-                    **({"input": input} if input is not None else {}),
-                    **({"overrides": overrides} if overrides is not None else {}),
-                }
+            run_result = _run_json(
+                self._client,
+                path_target=target,
+                version=run_version,
+                wait_for_completion=None,
+                input=input,
+                overrides=overrides,
             )
-            run_response = workflows_run.sync_detailed(
-                id=workflow_id,
-                client=self._client,
-                body=body,
-                version=_opt(version),
-            )
-            run_result = _check_response(run_response)
-        execution_id = run_result.execution_id  # type: ignore[union-attr]
+        execution_id = run_result.run_id  # type: ignore[union-attr]
 
         deadline = time.monotonic() + timeout_seconds
         while True:
             if time.monotonic() >= deadline:
                 raise EigenpalTimeoutError(
                     f"run_and_wait timed out after {timeout_seconds}s "
-                    f"(execution_id={execution_id})"
+                    f"(run_id={execution_id})"
                 )
 
             status = self._get_status(execution_id)
@@ -648,9 +633,9 @@ class WorkflowExecutionsResource:
             status_str = getattr(status_value, "value", status_value)
             if status_str and str(status_str) in TERMINAL_STATUSES:
                 return {
-                    "executionId": execution_id,
+                    "runId": execution_id,
                     "status": str(status_str),
-                    "result": _run_prop(status, "result"),
+                    "output": _run_prop(status, "output"),
                     "error": _run_prop(status, "error"),
                 }
 
@@ -1305,7 +1290,7 @@ class AgentEmailTriggersResource:
 
 
 class AgentsResource:
-    """Agent operations: list, get, create, run, and email triggers."""
+    """Agent operations: list, get, create, update, versions, files, and email triggers."""
 
     def __init__(self, client: AuthenticatedClient) -> None:
         self._client = client
@@ -1412,35 +1397,3 @@ class AgentsResource:
         )
         return _check_response(response)
 
-    def run(
-        self,
-        agent_id: str,
-        input: Optional[dict[str, Any]] = None,
-        *,
-        wait_for_completion: Optional[int] = None,
-        source_ref: Optional[str] = None,
-    ) -> RunAgentResponse:
-        if has_file_input(input):
-            assert input is not None
-            return _run_agent_multipart(
-                self._client,
-                agent_id,
-                input,
-                wait_for_completion=wait_for_completion,
-                source_ref=source_ref,
-            )
-
-        body = RunAgentBody.from_dict(
-            {
-                **({"input": input} if input is not None else {}),
-                **({"sourceRef": source_ref} if source_ref is not None else {}),
-            }
-        )
-        response = agents_run.sync_detailed(
-            agent_id=agent_id,
-            client=self._client,
-            body=body,
-            source_ref=_opt(source_ref),
-            wait_for_completion=_opt(wait_for_completion),
-        )
-        return _check_response(response)

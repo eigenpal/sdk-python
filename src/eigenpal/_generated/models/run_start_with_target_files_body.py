@@ -5,6 +5,8 @@ from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+import json
+from .. import types
 
 from ..types import UNSET, Unset
 
@@ -14,13 +16,15 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunAgentBodyMetadata")
+T = TypeVar("T", bound="RunStartWithTargetFilesBody")
 
 
 
 @_attrs_define
-class RunAgentBodyMetadata:
-    """ 
+class RunStartWithTargetFilesBody:
+    """ Multipart upload. `_json` carries scalar input fields only; file form fields become run inputs; an optional
+    `_overrides` text field carries per-step output overrides as JSON.
+
      """
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -37,16 +41,27 @@ class RunAgentBodyMetadata:
         return field_dict
 
 
+    def to_multipart(self) -> types.RequestFiles:
+        files: types.RequestFiles = []
+
+
+        for prop_name, prop in self.additional_properties.items():
+            files.append((prop_name, (None, str(prop).encode(), "text/plain")))
+
+
+
+        return files
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_agent_body_metadata = cls(
+        run_start_with_target_files_body = cls(
         )
 
 
-        run_agent_body_metadata.additional_properties = d
-        return run_agent_body_metadata
+        run_start_with_target_files_body.additional_properties = d
+        return run_start_with_target_files_body
 
     @property
     def additional_keys(self) -> list[str]:

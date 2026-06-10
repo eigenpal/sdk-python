@@ -31,7 +31,7 @@ EigenpalClient(
 
 ## Timeouts
 
-`timeout_seconds` applies per-request via `httpx.Timeout`. For workflow runs longer than the timeout, prefer `workflows.executions.run_and_wait` (client-side polling) over `workflows.run(wait_for_completion=...)` (server-side hold).
+`timeout_seconds` applies per-request via `httpx.Timeout`. For workflow runs longer than the timeout, prefer `workflows.executions.run_and_wait` (client-side polling) over `client.run(..., wait_for_completion=...)` (server-side hold).
 
 ## Connection lifetime
 
@@ -39,7 +39,7 @@ The client owns an httpx connection pool. Use as a context manager so the pool i
 
 ```python
 with EigenpalClient() as client:
-    client.workflows.run("extract-invoice", input=input)
+    client.run("workflows.extract-invoice", input=input)
 ```
 
 Outside a `with`, the pool is closed when the client is garbage-collected.

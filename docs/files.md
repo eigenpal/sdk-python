@@ -7,7 +7,7 @@ When a workflow input is a file, the SDK uploads it as `multipart/form-data` (th
 ```python
 from pathlib import Path
 
-client.workflows.run("extract-invoice", input={
+client.run("workflows.extract-invoice", input={
     "contract_document": Path("contract.pdf"),
 })
 ```
@@ -18,7 +18,7 @@ Filename and MIME type are inferred automatically.
 
 ```python
 with open("contract.pdf", "rb") as f:
-    client.workflows.run("extract-invoice", input={"contract_document": f})
+    client.run("workflows.extract-invoice", input={"contract_document": f})
 ```
 
 Filename inferred from `f.name`.
@@ -26,7 +26,7 @@ Filename inferred from `f.name`.
 ## From raw bytes
 
 ```python
-client.workflows.run("extract-invoice", input={
+client.run("workflows.extract-invoice", input={
     "contract_document": {
         "content": data,
         "filename": "contract.pdf",
@@ -38,7 +38,7 @@ client.workflows.run("extract-invoice", input={
 ## Multiple files
 
 ```python
-client.workflows.run("compare-versions", input={
+client.run("workflows.compare-versions", input={
     "original": Path("v1.pdf"),
     "revised": Path("v2.pdf"),
     "reference": Path("ref.pdf"),
@@ -53,10 +53,10 @@ Only top-level file values become multipart fields. Files inside lists or nested
 
 ```python
 # DON'T — `documents` becomes a JSON list, no upload.
-client.workflows.run("compare", input={"documents": [Path("a.pdf"), Path("b.pdf")]})
+client.run("workflows.compare", input={"documents": [Path("a.pdf"), Path("b.pdf")]})
 
 # DO — flatten to top-level keys, your workflow accepts them by name.
-client.workflows.run("compare", input={"document_0": Path("a.pdf"), "document_1": Path("b.pdf")})
+client.run("workflows.compare", input={"document_0": Path("a.pdf"), "document_1": Path("b.pdf")})
 ```
 
 ## Don't base64 yourself
@@ -64,7 +64,7 @@ client.workflows.run("compare", input={"document_0": Path("a.pdf"), "document_1"
 ```python
 # Don't do this. Doubles the payload size and skips the optimised path.
 import base64
-client.workflows.run("extract-invoice", input={
+client.run("workflows.extract-invoice", input={
     "contract_document": base64.b64encode(data).decode(),
 })
 ```

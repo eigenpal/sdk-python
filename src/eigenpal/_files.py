@@ -1,4 +1,4 @@
-"""File-input helpers for ``client.workflows.run()``.
+"""File-input helpers for ``client.run()``.
 
 The Eigenpal API accepts file inputs two ways: inline base64 in JSON, or
 ``multipart/form-data`` (the same shape as ``curl -F``). The SDK auto-detects

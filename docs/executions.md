@@ -6,9 +6,9 @@
 
 | Run length   | Use                                                                            |
 | ------------ | ------------------------------------------------------------------------------ |
-| 0–60s        | `client.workflows.run(id, input, wait_for_completion=60)` — server hold.       |
+| 0–60s        | `client.run("workflows.<slug>", input, wait_for_completion=60)` — server hold. |
 | 60s–5min     | `client.workflows.executions.run_and_wait(id, input)` — client polls every 2s. |
-| Driving a UI | `client.workflows.run(...)` then poll `client.runs.get(id)` yourself.          |
+| Driving a UI | `client.run(...)` then poll `client.runs.get(id)` yourself.                    |
 
 ## Statuses
 
@@ -24,8 +24,8 @@ The first five are non-terminal; the last four are terminal. Always check `statu
 ## Get
 
 ```python
-exec = client.runs.get(execution_id)
-#   ExecutionStatusResponse(execution_id, status, created_at, completed_at?, result?, error?)
+run = client.runs.get(run_id)
+#   RunEnvelope(run=...)
 ```
 
 `result` is set on `status == "completed"`. `error` is set on `status == "failed"`.
@@ -33,7 +33,7 @@ exec = client.runs.get(execution_id)
 ### Per-step detail
 
 ```python
-detail = client.runs.get(execution_id, include="detail")
+detail = client.runs.get(run_id, include="detail")
 ```
 
 Returns the full per-step execution payload (heavier; intended for debugging, not happy-path UI).
@@ -73,7 +73,7 @@ Item shape: `{ id, workflow_id, status, trigger_type, trigger_input, result, err
 ## Cancel
 
 ```python
-client.runs.cancel(execution_id)
+client.runs.cancel(run_id)
 ```
 
 Idempotent. For runs not yet picked up by a worker (`created`/`pending`), transitions immediately to `cancelled`. For `running` executions, stamps `cancel_requested_at` so the worker honors the cancel at the next checkpoint.
@@ -87,15 +87,15 @@ import time
 
 TERMINAL = {"completed", "failed", "cancelled", "rejected"}
 
-triggered = client.workflows.run("extract-invoice", input=input)
+triggered = client.run("workflows.extract-invoice", input=input)
 status = None
 while True:
-    status = client.runs.get(triggered.execution_id)
+    status = client.runs.get(triggered.run_id)
     if status.status in TERMINAL:
         break
     time.sleep(2)
 
-print(status.status, status.result, status.error)
+print(status.status, status.output, status.error)
 ```
 
 ## Context manager
@@ -104,5 +104,5 @@ The client owns an httpx connection pool. Use a `with` block to close it determi
 
 ```python
 with EigenpalClient(api_key=api_key) as client:
-    client.workflows.run("extract-invoice", input=input)
+    client.run("workflows.extract-invoice", input=input)
 ```

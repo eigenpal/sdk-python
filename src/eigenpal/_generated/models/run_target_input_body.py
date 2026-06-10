@@ -14,12 +14,12 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunAgentBodyInput")
+T = TypeVar("T", bound="RunTargetInputBody")
 
 
 
 @_attrs_define
-class RunAgentBodyInput:
+class RunTargetInputBody:
     """ 
      """
 
@@ -41,12 +41,12 @@ class RunAgentBodyInput:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_agent_body_input = cls(
+        run_target_input_body = cls(
         )
 
 
-        run_agent_body_input.additional_properties = d
-        return run_agent_body_input
+        run_target_input_body.additional_properties = d
+        return run_target_input_body
 
     @property
     def additional_keys(self) -> list[str]:

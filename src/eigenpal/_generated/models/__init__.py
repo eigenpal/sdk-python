@@ -8,7 +8,6 @@ from .agents_files_put_body import AgentsFilesPutBody
 from .agents_files_put_response_409 import AgentsFilesPutResponse409
 from .agents_files_upload_batch_body import AgentsFilesUploadBatchBody
 from .agents_files_upload_batch_response_409 import AgentsFilesUploadBatchResponse409
-from .agents_run_files_body import AgentsRunFilesBody
 from .agents_triggers_email_create_alias_body import AgentsTriggersEmailCreateAliasBody
 from .agents_triggers_email_create_alias_body_reply_config import AgentsTriggersEmailCreateAliasBodyReplyConfig
 from .agents_triggers_email_create_alias_response_201 import AgentsTriggersEmailCreateAliasResponse201
@@ -45,11 +44,6 @@ from .patch_agent_body import PatchAgentBody
 from .patch_agent_body_config import PatchAgentBodyConfig
 from .patch_agent_response import PatchAgentResponse
 from .raw_source_response import RawSourceResponse
-from .run_agent_body import RunAgentBody
-from .run_agent_body_input import RunAgentBodyInput
-from .run_agent_body_metadata import RunAgentBodyMetadata
-from .run_agent_response import RunAgentResponse
-from .run_agent_response_cost import RunAgentResponseCost
 from .run_envelope import RunEnvelope
 from .run_envelope_run_type_1 import RunEnvelopeRunType1
 from .run_feedback_request import RunFeedbackRequest
@@ -64,17 +58,15 @@ from .run_files_response_outputs_by_step_additional_property_item import RunFile
 from .run_rerun_request import RunRerunRequest
 from .run_rerun_response import RunRerunResponse
 from .run_resume_response import RunResumeResponse
+from .run_start_response import RunStartResponse
+from .run_start_response_cost import RunStartResponseCost
+from .run_start_response_type import RunStartResponseType
+from .run_start_with_target_files_body import RunStartWithTargetFilesBody
 from .run_summary import RunSummary
 from .run_summary_status import RunSummaryStatus
 from .run_summary_triggered_by_type_0 import RunSummaryTriggeredByType0
 from .run_summary_type import RunSummaryType
-from .run_workflow_body import RunWorkflowBody
-from .run_workflow_body_input import RunWorkflowBodyInput
-from .run_workflow_body_overrides_type_0 import RunWorkflowBodyOverridesType0
-from .run_workflow_body_overrides_type_0_steps import RunWorkflowBodyOverridesType0Steps
-from .run_workflow_body_overrides_type_0_steps_additional_property import RunWorkflowBodyOverridesType0StepsAdditionalProperty
-from .run_workflow_body_trigger import RunWorkflowBodyTrigger
-from .run_workflow_response import RunWorkflowResponse
+from .run_target_input_body import RunTargetInputBody
 from .runs_cancel_response_200 import RunsCancelResponse200
 from .runs_comparison_get_response_200 import RunsComparisonGetResponse200
 from .runs_connect_response_200 import RunsConnectResponse200
@@ -112,14 +104,12 @@ from .workflow_detail import WorkflowDetail
 from .workflow_summary import WorkflowSummary
 from .workflow_version import WorkflowVersion
 from .workflows_list_kind import WorkflowsListKind
-from .workflows_run_files_body import WorkflowsRunFilesBody
 
 __all__ = (
     "AgentsFilesPutBody",
     "AgentsFilesPutResponse409",
     "AgentsFilesUploadBatchBody",
     "AgentsFilesUploadBatchResponse409",
-    "AgentsRunFilesBody",
     "AgentsTriggersEmailCreateAliasBody",
     "AgentsTriggersEmailCreateAliasBodyReplyConfig",
     "AgentsTriggersEmailCreateAliasResponse201",
@@ -160,11 +150,6 @@ __all__ = (
     "PatchAgentBodyConfig",
     "PatchAgentResponse",
     "RawSourceResponse",
-    "RunAgentBody",
-    "RunAgentBodyInput",
-    "RunAgentBodyMetadata",
-    "RunAgentResponse",
-    "RunAgentResponseCost",
     "RunEnvelope",
     "RunEnvelopeRunType1",
     "RunFeedbackRequest",
@@ -194,18 +179,16 @@ __all__ = (
     "RunsFilesUploadBody",
     "RunsFilesUploadResponse201",
     "RunsListResponse",
+    "RunStartResponse",
+    "RunStartResponseCost",
+    "RunStartResponseType",
+    "RunStartWithTargetFilesBody",
     "RunsTraceGetResponse200",
     "RunSummary",
     "RunSummaryStatus",
     "RunSummaryTriggeredByType0",
     "RunSummaryType",
-    "RunWorkflowBody",
-    "RunWorkflowBodyInput",
-    "RunWorkflowBodyOverridesType0",
-    "RunWorkflowBodyOverridesType0Steps",
-    "RunWorkflowBodyOverridesType0StepsAdditionalProperty",
-    "RunWorkflowBodyTrigger",
-    "RunWorkflowResponse",
+    "RunTargetInputBody",
     "Schema0",
     "SourceLockfileResponse",
     "SourceReleasesResponse",
@@ -225,7 +208,6 @@ __all__ = (
     "SourceSecretsEncryptResponseSecretsAdditionalProperty",
     "WorkflowDetail",
     "WorkflowsListKind",
-    "WorkflowsRunFilesBody",
     "WorkflowSummary",
     "WorkflowVersion",
 )

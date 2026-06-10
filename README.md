@@ -56,27 +56,27 @@ client = EigenpalClient(
 
 `base_url` likewise wins over the `EIGENPAL_BASE_URL` env fallback. Defaults to `https://app.eigenpal.com` (the hosted cloud).
 
-## Triggering workflows
+## Starting runs
 
-`client.workflows.run(workflow_id, input=None, **options)` enqueues a workflow execution.
+`client.run(target, input=None, **options)` starts a workflow or agent run. Targets can be strings like `"workflows.extract-invoice"` / `"agents.invoice-agent"` or structured objects like `{"type": "workflow", "slug": "extract-invoice"}`.
 
 ```python
 from pathlib import Path
 
-# Async: returns immediately with { execution_id }.
-result = client.workflows.run(
-    "extract-invoice",
+# Async: returns immediately with { run_id }.
+result = client.run(
+    "workflows.extract-invoice",
     input={"contract_document": Path("contract.pdf")},
 )
-print(result.execution_id)
+print(result.run_id)
 
 # Sync: server holds the connection up to 60 seconds.
-result = client.workflows.run(
-    "extract-invoice",
+result = client.run(
+    "workflows.extract-invoice",
     input={"contract_document": Path("contract.pdf")},
     wait_for_completion=60,
 )
-print(result.status, result.result)
+print(result.status, result.output)
 
 # Long-running: client-side polling (default 5min cap).
 final = client.workflows.executions.run_and_wait(
@@ -86,7 +86,7 @@ final = client.workflows.executions.run_and_wait(
 print(final["status"])
 ```
 
-The `input` argument is the workflow input map keyed by input name (as declared in the workflow). Omit it for inputs-less workflows. Other keyword args: `version`, `overrides`, `wait_for_completion`.
+The `input` argument is the input map keyed by input name. Omit it for inputs-less runs. Put the workflow version or agent source ref in the target; other keyword args include `overrides` and `wait_for_completion`.
 
 ## File inputs
 
@@ -96,16 +96,16 @@ Pass a `pathlib.Path`, an open file handle, or an explicit `{"content": bytes, "
 from pathlib import Path
 
 # Path: filename + mime type inferred.
-client.workflows.run("extract-invoice", input={
+client.run("workflows.extract-invoice", input={
     "contract_document": Path("contract.pdf"),
 })
 
 # File handle: filename inferred from .name.
 with open("contract.pdf", "rb") as f:
-    client.workflows.run("extract-invoice", input={"contract_document": f})
+    client.run("workflows.extract-invoice", input={"contract_document": f})
 
 # Explicit dict: required for raw bytes.
-client.workflows.run("extract-invoice", input={
+client.run("workflows.extract-invoice", input={
     "contract_document": {
         "content": data,
         "filename": "contract.pdf",
@@ -125,11 +125,11 @@ summaries = client.runs.list(
     status="failed,cancelled",
 )
 
-run = client.runs.get(execution_id, include="detail")
-client.runs.cancel(execution_id)
+run = client.runs.get(run_id, include="detail")
+client.runs.cancel(run_id)
 
-status = client.runs.get(execution_id)
-#   ExecutionStatusResponse(execution_id=..., status=..., result=..., ...)
+status = client.runs.get(run_id)
+#   RunEnvelope(run=...)
 
 executions = client.runs.list(
     type="workflow",
@@ -139,7 +139,7 @@ executions = client.runs.list(
     limit=50,
 )
 
-client.runs.cancel(execution_id)
+client.runs.cancel(run_id)
 ```
 
 `/api/v1/runs` is the shared run API for workflow, agent, and eval runs. Use
@@ -160,7 +160,7 @@ client.workflows.versions("extract-invoice")
 client.agents.list(search="invoice")
 client.agents.get("invoice-agent")
 
-result = client.agents.run("invoice-agent", input={
+result = client.run("agents.invoice-agent", input={
     "invoice": Path("invoice.pdf"),
 })
 

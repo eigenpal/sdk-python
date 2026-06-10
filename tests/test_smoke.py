@@ -59,35 +59,50 @@ def test_attaches_sdk_telemetry_headers(client: EigenpalClient) -> None:
 
 
 @respx.mock
-def test_workflows_run_returns_execution_id(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_abc"})
+def test_run_returns_run_id(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
     )
 
-    result = client.workflows.run("wf_xyz", input={"foo": "bar"})
+    result = client.run("workflows.wf_xyz", input={"foo": "bar"})
 
     assert route.called
-    assert result.execution_id == "exec_abc"
+    assert result.run_id == "exec_abc"
     body = json.loads(route.calls.last.request.content.decode())
-    assert body == {"input": {"foo": "bar"}}
+    assert body == {"foo": "bar"}
 
 
 @respx.mock
-def test_workflows_run_with_wait_for_completion(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
+def test_run_sends_overrides_under_reserved_body_key(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_ov", "type": "workflow"})
+    )
+
+    overrides = {"steps": {"extract": {"total": 42}}}
+    result = client.run("workflows.wf_xyz", input={"language": "en"}, overrides=overrides)
+
+    assert result.run_id == "exec_ov"
+    body = json.loads(route.calls.last.request.content.decode())
+    assert body == {"language": "en", "_overrides": overrides}
+
+
+@respx.mock
+def test_run_with_wait_for_completion(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
         return_value=httpx.Response(
-            201,
+            200,
             json={
-                "executionId": "exec_abc",
+                "runId": "exec_abc",
+                "type": "workflow",
                 "status": "completed",
-                "result": {"ok": True},
+                "output": {"ok": True},
             },
         )
     )
 
-    result = client.workflows.run("wf_xyz", input={"x": 1}, wait_for_completion=30)
+    result = client.run("workflows.wf_xyz", input={"x": 1}, wait_for_completion=30)
 
-    assert result.execution_id == "exec_abc"
+    assert result.run_id == "exec_abc"
     assert "wait_for_completion=30" in str(route.calls.last.request.url)
 
 
@@ -126,25 +141,27 @@ def test_agents_update_hits_update_endpoint(client: EigenpalClient) -> None:
 
 
 @respx.mock
-def test_agents_run_with_wait_for_completion_accepts_200(
+def test_agent_run_with_wait_for_completion_accepts_200(
     client: EigenpalClient,
 ) -> None:
-    route = respx.post("http://localhost:3000/api/v1/agents/invoice-agent/run").mock(
+    route = respx.post(
+        "http://localhost:3000/api/v1/run/agents.invoice-agent", params={"version": "1.2.3"}
+    ).mock(
         return_value=httpx.Response(
             200,
             json={
                 "runId": "aex_123",
+                "type": "agent",
                 "status": "completed",
                 "output": {"ok": True},
             },
         )
     )
 
-    result = client.agents.run(
-        "invoice-agent",
+    result = client.run(
+        {"type": "agent", "slug": "invoice-agent", "version": "1.2.3"},
         input={"prompt": "hello"},
         wait_for_completion=30,
-        source_ref="1.2.3",
     )
 
     assert route.called
@@ -152,7 +169,7 @@ def test_agents_run_with_wait_for_completion_accepts_200(
     assert result.status == "completed"
     assert result.output == {"ok": True}
     assert "wait_for_completion=30" in str(route.calls.last.request.url)
-    assert "sourceRef=1.2.3" in str(route.calls.last.request.url)
+    assert "version=1.2.3" in str(route.calls.last.request.url)
 
 
 @respx.mock
@@ -218,7 +235,7 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
     client.runs.list(type="workflow", source="wf_123", status="completed")
     run = client.runs.get("run_123", include="detail")
     client.runs.cancel("run_123")
-    client.runs.rerun("run_123")
+    client.rerun("run_123")
     client.runs.resume("run_123")
     client.runs.feedback.update("run_123", status="open")
     client.runs.expected.list("run_123")
@@ -310,7 +327,7 @@ def test_429_raises_rate_limit_error_with_retry_after(client: EigenpalClient) ->
 
 @respx.mock
 def test_400_raises_validation_error_with_issues(client: EigenpalClient) -> None:
-    respx.post("http://localhost:3000/api/v1/workflows/wf_xyz/run").mock(
+    respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
         return_value=httpx.Response(
             400,
             json={
@@ -328,7 +345,7 @@ def test_400_raises_validation_error_with_issues(client: EigenpalClient) -> None
     )
 
     with pytest.raises(EigenpalValidationError) as exc:
-        client.workflows.run("wf_xyz")
+        client.run({"type": "workflow", "id": "wf_xyz"})
 
     assert exc.value.issues[0]["field"] == "body.input"
 
@@ -352,8 +369,8 @@ def test_runs_cancel_cancels_workflow_runs(client: EigenpalClient) -> None:
 
 @respx.mock
 def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
-    respx.post("http://localhost:3000/api/v1/workflows/wf_abc/run").mock(
-        return_value=httpx.Response(201, json={"executionId": "exec_pq"})
+    respx.post("http://localhost:3000/api/v1/run/workflows.wf_abc").mock(
+        return_value=httpx.Response(201, json={"runId": "exec_pq", "type": "workflow"})
     )
     # First poll: running. Second: completed.
     poll_route = respx.get(
@@ -364,7 +381,7 @@ def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
                 200,
                 json={
                     "run": {
-                        "executionId": "exec_pq",
+                        "runId": "exec_pq",
                         "status": "running",
                         "createdAt": "2025-01-01T00:00:00Z",
                     }
@@ -374,9 +391,9 @@ def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
                 200,
                 json={
                     "run": {
-                        "executionId": "exec_pq",
+                        "runId": "exec_pq",
                         "status": "completed",
-                        "result": {"total": 42},
+                        "output": {"total": 42},
                         "createdAt": "2025-01-01T00:00:00Z",
                         "completedAt": "2025-01-01T00:00:05Z",
                     }
@@ -390,6 +407,6 @@ def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
     )
 
     assert poll_route.call_count == 2
-    assert result["executionId"] == "exec_pq"
+    assert result["runId"] == "exec_pq"
     assert result["status"] == "completed"
-    assert result["result"] == {"total": 42}
+    assert result["output"] == {"total": 42}
