@@ -29,7 +29,7 @@ class EigenpalError(Exception):
 class EigenpalAuthError(EigenpalError):
     def __init__(self, envelope: Optional[dict[str, Any]] = None) -> None:
         msg = _first_issue_message(envelope) or (
-            "Invalid or missing API key. Generate one at app.eigenpal.com → "
+            "Invalid or missing API key. Generate one at studio.eigenpal.com → "
             "Settings → API Keys; pass it as EigenpalClient(api_key=...) or "
             "set EIGENPAL_API_KEY."
         )

@@ -143,7 +143,7 @@ from eigenpal._generated.types import UNSET, Response, Unset
 from eigenpal._telemetry import build_telemetry_headers
 from eigenpal.errors import EigenpalError, EigenpalTimeoutError, error_from_response
 
-DEFAULT_BASE_URL = "https://app.eigenpal.com"
+DEFAULT_BASE_URL = "https://studio.eigenpal.com"
 DEFAULT_TIMEOUT_SECONDS = 60.0
 DEFAULT_POLL_INTERVAL_SECONDS = 2.0
 DEFAULT_RUN_AND_WAIT_TIMEOUT_SECONDS = 5 * 60.0
@@ -185,7 +185,7 @@ def _assert_json_response(response: httpx.Response) -> None:
         f'Expected a JSON response from the API but got Content-Type "{content_type}". '
         "This usually means `base_url` points at a non-API host (e.g. the marketing site or "
         "a misconfigured proxy). Set `base_url` to your EigenPal instance root, "
-        'e.g. "https://app.eigenpal.com".',
+        'e.g. "https://studio.eigenpal.com".',
         status=response.status_code,
     )
 

@@ -16,7 +16,7 @@ from eigenpal import EigenpalClient, EigenpalError
 def main() -> None:
     client = EigenpalClient(
         api_key=os.environ["EIGENPAL_API_KEY"],
-        # For self-hosted deployments; defaults to https://app.eigenpal.com.
+        # For self-hosted deployments; defaults to https://studio.eigenpal.com.
         base_url=os.environ.get("EIGENPAL_BASE_URL"),
     )
 

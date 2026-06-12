@@ -13,7 +13,7 @@ Trigger EigenPal workflows from Python.
 pip install eigenpal
 ```
 
-Requires Python 3.9+. Get an API key at **app.eigenpal.com → Settings → API Keys**.
+Requires Python 3.9+. Get an API key at **studio.eigenpal.com → Settings → API Keys**.
 
 ## Quick start
 
@@ -54,7 +54,7 @@ client = EigenpalClient(
 )
 ```
 
-`base_url` likewise wins over the `EIGENPAL_BASE_URL` env fallback. Defaults to `https://app.eigenpal.com` (the hosted cloud).
+`base_url` likewise wins over the `EIGENPAL_BASE_URL` env fallback. Defaults to `https://studio.eigenpal.com` (the hosted cloud).
 
 ## Starting runs
 

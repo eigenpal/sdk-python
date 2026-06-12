@@ -3,7 +3,7 @@
 ```python
 EigenpalClient(
     api_key="eg_...",                       # or EIGENPAL_API_KEY env var
-    base_url="https://app.eigenpal.com",    # or EIGENPAL_BASE_URL env var
+    base_url="https://studio.eigenpal.com",    # or EIGENPAL_BASE_URL env var
     timeout_seconds=60.0,                   # per-request timeout
     verify_ssl=True,                        # set False only for testing
 )
@@ -27,7 +27,7 @@ EigenpalClient(
 )
 ```
 
-`base_url` overrides `EIGENPAL_BASE_URL`. Defaults to `https://app.eigenpal.com`.
+`base_url` overrides `EIGENPAL_BASE_URL`. Defaults to `https://studio.eigenpal.com`.
 
 ## Timeouts
 
