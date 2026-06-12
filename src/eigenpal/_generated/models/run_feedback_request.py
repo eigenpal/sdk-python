@@ -26,7 +26,7 @@ T = TypeVar("T", bound="RunFeedbackRequest")
 
 @_attrs_define
 class RunFeedbackRequest:
-    """ 
+    """
         Attributes:
             body (None | str | Unset):
             feedback (None | str | Unset):

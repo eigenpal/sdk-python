@@ -21,9 +21,9 @@ def _get_kwargs(
     token: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
-    
 
-    
+
+
 
     params: dict[str, Any] = {}
 
@@ -118,8 +118,9 @@ def sync_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download run output files zip
 
-     Download agent run output artifacts as a zip. Workflow run files use /files and will be folded into
-    artifacts in a future refactor.
+     Download agent run output artifacts as a zip. Completed workflow output files are listed in top-
+    level `files` and downloaded individually through GET /api/v1/runs/:id/artifacts/:path; zip download
+    remains agent-only.
 
     Args:
         id (str):
@@ -158,8 +159,9 @@ def sync(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download run output files zip
 
-     Download agent run output artifacts as a zip. Workflow run files use /files and will be folded into
-    artifacts in a future refactor.
+     Download agent run output artifacts as a zip. Completed workflow output files are listed in top-
+    level `files` and downloaded individually through GET /api/v1/runs/:id/artifacts/:path; zip download
+    remains agent-only.
 
     Args:
         id (str):
@@ -193,8 +195,9 @@ async def asyncio_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download run output files zip
 
-     Download agent run output artifacts as a zip. Workflow run files use /files and will be folded into
-    artifacts in a future refactor.
+     Download agent run output artifacts as a zip. Completed workflow output files are listed in top-
+    level `files` and downloaded individually through GET /api/v1/runs/:id/artifacts/:path; zip download
+    remains agent-only.
 
     Args:
         id (str):
@@ -233,8 +236,9 @@ async def asyncio(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download run output files zip
 
-     Download agent run output artifacts as a zip. Workflow run files use /files and will be folded into
-    artifacts in a future refactor.
+     Download agent run output artifacts as a zip. Completed workflow output files are listed in top-
+    level `files` and downloaded individually through GET /api/v1/runs/:id/artifacts/:path; zip download
+    remains agent-only.
 
     Args:
         id (str):

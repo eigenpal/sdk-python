@@ -23,7 +23,7 @@ T = TypeVar("T", bound="SourceSecretsDecryptBodySecretsItem")
 
 @_attrs_define
 class SourceSecretsDecryptBodySecretsItem:
-    """ 
+    """
         Attributes:
             source_path (str):
             secret_name (str):

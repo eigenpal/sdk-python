@@ -20,7 +20,7 @@ T = TypeVar("T", bound="SourceRepositoryResponse")
 
 @_attrs_define
 class SourceRepositoryResponse:
-    """ 
+    """
         Attributes:
             git_repository_path (str):
             remote_url (str):
@@ -63,4 +63,3 @@ class SourceRepositoryResponse:
         )
 
         return source_repository_response
-

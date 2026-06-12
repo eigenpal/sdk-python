@@ -24,7 +24,7 @@ T = TypeVar("T", bound="ApiErrorEnvelope")
 
 @_attrs_define
 class ApiErrorEnvelope:
-    """ 
+    """
         Attributes:
             issues (list[ApiErrorIssue]):
             request_id (str): Request id echoed via the x-request-id header
@@ -100,4 +100,3 @@ class ApiErrorEnvelope:
         )
 
         return api_error_envelope
-

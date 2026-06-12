@@ -30,7 +30,7 @@ result = client.workflows.executions.run_and_wait(
     "extract-invoice",
     input={"contract_document": Path("contract.pdf")},
 )
-print(result["status"], result["result"])
+print(result["finished"], result["output"])
 ```
 
 ## Authentication
@@ -63,12 +63,12 @@ client = EigenpalClient(
 ```python
 from pathlib import Path
 
-# Async: returns immediately with { run_id }.
+# Async: returns immediately with the run id.
 result = client.run(
     "workflows.extract-invoice",
     input={"contract_document": Path("contract.pdf")},
 )
-print(result.run_id)
+print(result.id)
 
 # Sync: server holds the connection up to 60 seconds.
 result = client.run(
@@ -76,14 +76,14 @@ result = client.run(
     input={"contract_document": Path("contract.pdf")},
     wait_for_completion=60,
 )
-print(result.status, result.output)
+print(result.finished, result.output)
 
 # Long-running: client-side polling (default 5min cap).
 final = client.workflows.executions.run_and_wait(
     "extract-invoice",
     input={"contract_document": Path("contract.pdf")},
 )
-print(final["status"])
+print(final["finished"], final.get("output"))
 ```
 
 The `input` argument is the input map keyed by input name. Omit it for inputs-less runs. Put the workflow version or agent source ref in the target; other keyword args include `overrides` and `wait_for_completion`.
@@ -125,11 +125,14 @@ summaries = client.runs.list(
     status="failed,cancelled",
 )
 
-run = client.runs.get(run_id, include="detail")
-client.runs.cancel(run_id)
+run = client.runs.get(run_id)
+#   Run(id=..., type=..., finished=..., output=..., files=..., error=..., ...)
 
-status = client.runs.get(run_id)
-#   RunEnvelope(run=...)
+# Add heavier optional sections with `expand`.
+run = client.runs.get(run_id, expand=["usage", "execution"])
+print(run.output, run.files, run.error, run.usage, run.execution)
+
+client.runs.cancel(run_id)
 
 executions = client.runs.list(
     type="workflow",
@@ -164,8 +167,8 @@ result = client.run("agents.invoice-agent", input={
     "invoice": Path("invoice.pdf"),
 })
 
-client.runs.get(result.run_id)
-client.runs.cancel(result.run_id)
+client.runs.get(result.id)
+client.runs.cancel(result.id)
 ```
 
 Agent run listing uses the same shared runs API with `type_="agent"` and the
@@ -196,7 +199,7 @@ try:
         "extract-invoice",
         input={"language": "en"},
     )
-    print(result["status"], result["result"])
+    print(result["finished"], result["output"])
 except EigenpalValidationError as err:
     for issue in err.issues:
         print(f"{issue['field']}: {issue['message']}")

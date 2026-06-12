@@ -9,8 +9,8 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_rerun_request import RunRerunRequest
-from ...models.run_rerun_response import RunRerunResponse
+from ...models.run import Run
+from ...models.run_accepted import RunAccepted
 from ...types import UNSET, Unset
 from typing import cast
 
@@ -19,16 +19,17 @@ from typing import cast
 def _get_kwargs(
     id: str,
     *,
-    body: RunRerunRequest,
+    version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
 ) -> dict[str, Any]:
-    headers: dict[str, Any] = {}
 
 
-    
+
 
     params: dict[str, Any] = {}
+
+    params["version"] = version
 
     params["wait_for_completion"] = wait_for_completion
 
@@ -42,35 +43,81 @@ def _get_kwargs(
         "params": params,
     }
 
-    _kwargs["json"] = body.to_dict()
 
-
-    headers["Content-Type"] = "application/json"
-
-    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunRerunResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | Run | RunAccepted | None:
     if response.status_code == 200:
-        response_200 = RunRerunResponse.from_dict(response.json())
+        def _parse_response_200(data: object) -> Run | RunAccepted:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_run_rerun_response_type_0 = RunAccepted.from_dict(data)
 
 
+
+                return componentsschemas_run_rerun_response_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_run_rerun_response_type_1 = Run.from_dict(data)
+
+
+
+            return componentsschemas_run_rerun_response_type_1
+
+        response_200 = _parse_response_200(response.json())
 
         return response_200
 
     if response.status_code == 201:
-        response_201 = RunRerunResponse.from_dict(response.json())
+        def _parse_response_201(data: object) -> Run | RunAccepted:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_run_rerun_response_type_0 = RunAccepted.from_dict(data)
 
 
+
+                return componentsschemas_run_rerun_response_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_run_rerun_response_type_1 = Run.from_dict(data)
+
+
+
+            return componentsschemas_run_rerun_response_type_1
+
+        response_201 = _parse_response_201(response.json())
 
         return response_201
 
     if response.status_code == 202:
-        response_202 = RunRerunResponse.from_dict(response.json())
+        def _parse_response_202(data: object) -> Run | RunAccepted:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_run_rerun_response_type_0 = RunAccepted.from_dict(data)
 
 
+
+                return componentsschemas_run_rerun_response_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_run_rerun_response_type_1 = Run.from_dict(data)
+
+
+
+            return componentsschemas_run_rerun_response_type_1
+
+        response_202 = _parse_response_202(response.json())
 
         return response_202
 
@@ -122,7 +169,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunRerunResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -135,29 +182,31 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunRerunRequest,
+    version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | RunRerunResponse]:
+) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
     """ Rerun run
 
     Args:
         id (str):
-        wait_for_completion (int | Unset):
-        body (RunRerunRequest):
+        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
+            to latest.
+        wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
+            async.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunRerunResponse]
+        Response[ApiErrorEnvelope | Run | RunAccepted]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-body=body,
+version=version,
 wait_for_completion=wait_for_completion,
 
     )
@@ -172,30 +221,32 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunRerunRequest,
+    version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | RunRerunResponse | None:
+) -> ApiErrorEnvelope | Run | RunAccepted | None:
     """ Rerun run
 
     Args:
         id (str):
-        wait_for_completion (int | Unset):
-        body (RunRerunRequest):
+        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
+            to latest.
+        wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
+            async.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunRerunResponse
+        ApiErrorEnvelope | Run | RunAccepted
      """
 
 
     return sync_detailed(
         id=id,
 client=client,
-body=body,
+version=version,
 wait_for_completion=wait_for_completion,
 
     ).parsed
@@ -204,29 +255,31 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunRerunRequest,
+    version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | RunRerunResponse]:
+) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
     """ Rerun run
 
     Args:
         id (str):
-        wait_for_completion (int | Unset):
-        body (RunRerunRequest):
+        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
+            to latest.
+        wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
+            async.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunRerunResponse]
+        Response[ApiErrorEnvelope | Run | RunAccepted]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-body=body,
+version=version,
 wait_for_completion=wait_for_completion,
 
     )
@@ -241,30 +294,32 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunRerunRequest,
+    version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
-) -> ApiErrorEnvelope | RunRerunResponse | None:
+) -> ApiErrorEnvelope | Run | RunAccepted | None:
     """ Rerun run
 
     Args:
         id (str):
-        wait_for_completion (int | Unset):
-        body (RunRerunRequest):
+        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
+            to latest.
+        wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
+            async.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunRerunResponse
+        ApiErrorEnvelope | Run | RunAccepted
      """
 
 
     return (await asyncio_detailed(
         id=id,
 client=client,
-body=body,
+version=version,
 wait_for_completion=wait_for_completion,
 
     )).parsed

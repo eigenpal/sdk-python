@@ -14,6 +14,7 @@ import respx
 from eigenpal import (
     EigenpalClient,
     EigenpalAuthError,
+    EigenpalError,
     EigenpalNotFoundError,
     EigenpalRateLimitError,
     EigenpalValidationError,
@@ -23,6 +24,102 @@ from eigenpal import (
 @pytest.fixture
 def client() -> EigenpalClient:
     return EigenpalClient(api_key="eg_test_key", base_url="http://localhost:3000")
+
+
+_TERMINAL_STATUSES = frozenset({"completed", "failed", "cancelled", "rejected"})
+
+
+def run_accepted(**overrides: object) -> dict[str, object]:
+    """Async run-start / rerun acceptance body (201 or 202)."""
+    return {
+        "id": "run_123",
+        "type": "workflow",
+        "finished": False,
+        **overrides,
+    }
+
+
+def run_cancel_response(**overrides: object) -> dict[str, object]:
+    return {
+        "id": "run_123",
+        "type": "workflow",
+        "finished": True,
+        "execution": {"status": "cancelled"},
+        "cancellation": {"state": "cancelled", "wasStatus": "pending"},
+        **overrides,
+    }
+
+
+def run_summary(**overrides: object) -> dict[str, object]:
+    """Canonical grouped run body returned by GET /api/v1/runs/{id}."""
+    special = dict(overrides)
+    run_id = special.pop("id", "run_123")
+    type_ = special.pop("type", "workflow")
+    status = special.pop("status", "completed")
+    output = special.pop("output", None)
+    expected = special.pop("expected", None)
+    expected_files = special.pop("expectedFiles", [])
+    result_files = special.pop("resultFiles", [])
+    finished = special.pop("finished", status in _TERMINAL_STATUSES)
+    completed_at = special.pop(
+        "completedAt",
+        "2026-01-01T00:01:00.000Z" if finished else None,
+    )
+
+    execution: dict[str, object] = {
+        "status": status,
+        "schemaValid": None,
+        "batchId": None,
+        "annotation": None,
+        "retry": {"number": 0, "previousRunId": None, "nextRun": None},
+    }
+    if type_ == "workflow":
+        execution["steps"] = []
+        if expected is not None:
+            execution["expected"] = expected
+    else:
+        execution["files"] = {"output": result_files}
+        execution["feedback"] = None
+        if expected is not None or expected_files:
+            execution["expected"] = {"output": expected, "files": expected_files}
+
+    base: dict[str, object] = {
+        "id": run_id,
+        "type": type_,
+        "finished": finished,
+        "timing": {
+            "createdAt": "2026-01-01T00:00:00.000Z",
+            "startedAt": None,
+            "completedAt": completed_at,
+            "durationMs": 1200 if finished else None,
+            "cancelRequestedAt": None,
+        },
+        "source": {
+            "id": "awf_123" if type_ == "agent" else "wf_123",
+            "name": "Invoice Agent" if type_ == "agent" else "Extract",
+            "version": None,
+            **(
+                {
+                    "slug": "invoice-agent",
+                    "model": "claude-sonnet-4-5",
+                    "git": {
+                        "requestedRef": None,
+                        "resolvedRef": None,
+                        "resolvedTag": None,
+                        "commitSha": None,
+                    },
+                }
+                if type_ == "agent"
+                else {"versionId": None}
+            ),
+        },
+        "trigger": {"type": "api", "by": None},
+        "execution": execution,
+    }
+    if finished and output is not None:
+        base["output"] = output
+    base.update(special)
+    return base
 
 
 @respx.mock
@@ -59,50 +156,91 @@ def test_attaches_sdk_telemetry_headers(client: EigenpalClient) -> None:
 
 
 @respx.mock
-def test_run_returns_run_id(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
-        return_value=httpx.Response(201, json={"runId": "exec_abc", "type": "workflow"})
+def test_run_returns_id(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/runs").mock(
+        return_value=httpx.Response(202, json=run_accepted(id="exec_abc"))
     )
 
     result = client.run("workflows.wf_xyz", input={"foo": "bar"})
 
     assert route.called
-    assert result.run_id == "exec_abc"
+    assert result.id == "exec_abc"
     body = json.loads(route.calls.last.request.content.decode())
-    assert body == {"foo": "bar"}
+    assert body == {"target": "workflows.wf_xyz", "input": {"foo": "bar"}}
 
 
 @respx.mock
-def test_run_sends_overrides_under_reserved_body_key(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
-        return_value=httpx.Response(201, json={"runId": "exec_ov", "type": "workflow"})
+def test_run_sends_overrides_in_canonical_envelope_body(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/runs").mock(
+        return_value=httpx.Response(202, json=run_accepted(id="exec_ov"))
     )
 
     overrides = {"steps": {"extract": {"total": 42}}}
     result = client.run("workflows.wf_xyz", input={"language": "en"}, overrides=overrides)
 
-    assert result.run_id == "exec_ov"
+    assert result.id == "exec_ov"
     body = json.loads(route.calls.last.request.content.decode())
-    assert body == {"language": "en", "_overrides": overrides}
+    assert body == {
+        "target": "workflows.wf_xyz",
+        "input": {"language": "en"},
+        "overrides": overrides,
+    }
+
+
+@respx.mock
+def test_run_object_targets_mirror_canonical_run_target_grammar(client: EigenpalClient) -> None:
+    respx.post("http://localhost:3000/api/v1/runs").mock(
+        return_value=httpx.Response(202, json=run_accepted(id="exec_workflow"))
+    )
+
+    client.run(
+        {"type": "workflow", "slug": "finance/extract-invoice", "version": "1.2.3"},
+        input={},
+    )
+    client.run({"type": "agent", "slug": "finance/invoice-agent", "version": "main"}, input={})
+    client.run({"type": "agent", "slug": "agents.finance.invoice-agent"}, input={})
+
+    workflow_request = respx.calls[0].request
+    agent_request = respx.calls[1].request
+    rooted_agent_request = respx.calls[2].request
+    assert workflow_request.url.path.endswith("/api/v1/runs")
+    assert "version=1.2.3" in str(workflow_request.url)
+    assert json.loads(workflow_request.content.decode()) == {
+        "target": "workflows.finance.extract-invoice",
+        "input": {},
+    }
+    assert agent_request.url.path.endswith("/api/v1/runs")
+    assert "version=main" in str(agent_request.url)
+    assert json.loads(agent_request.content.decode()) == {
+        "target": "agents.finance.invoice-agent",
+        "input": {},
+    }
+    assert rooted_agent_request.url.path.endswith("/api/v1/runs")
+    assert json.loads(rooted_agent_request.content.decode()) == {
+        "target": "agents.finance.invoice-agent",
+        "input": {},
+    }
+
+
+def test_run_rejects_ambiguous_rooted_agent_object_targets(client: EigenpalClient) -> None:
+    with pytest.raises(EigenpalError, match='rooted at "agents\\."'):
+        client.run({"type": "agent", "slug": "workflows.extract-invoice"}, input={})
 
 
 @respx.mock
 def test_run_with_wait_for_completion(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+    route = respx.post("http://localhost:3000/api/v1/runs").mock(
         return_value=httpx.Response(
             200,
             json={
-                "runId": "exec_abc",
-                "type": "workflow",
-                "status": "completed",
-                "output": {"ok": True},
+                **run_summary(id="exec_abc", status="completed", output={"ok": True}),
             },
         )
     )
 
     result = client.run("workflows.wf_xyz", input={"x": 1}, wait_for_completion=30)
 
-    assert result.run_id == "exec_abc"
+    assert result.id == "exec_abc"
     assert "wait_for_completion=30" in str(route.calls.last.request.url)
 
 
@@ -145,16 +283,11 @@ def test_agent_run_with_wait_for_completion_accepts_200(
     client: EigenpalClient,
 ) -> None:
     route = respx.post(
-        "http://localhost:3000/api/v1/run/agents.invoice-agent", params={"version": "1.2.3"}
+        "http://localhost:3000/api/v1/runs", params={"version": "1.2.3"}
     ).mock(
         return_value=httpx.Response(
             200,
-            json={
-                "runId": "aex_123",
-                "type": "agent",
-                "status": "completed",
-                "output": {"ok": True},
-            },
+            json=run_summary(id="aex_123", type="agent", status="completed", output={"ok": True}),
         )
     )
 
@@ -165,9 +298,10 @@ def test_agent_run_with_wait_for_completion_accepts_200(
     )
 
     assert route.called
-    assert result.run_id == "aex_123"
-    assert result.status == "completed"
-    assert result.output == {"ok": True}
+    assert result.id == "aex_123"
+    assert result.finished is True
+    assert result.execution.status.value == "completed"
+    assert result.output.to_dict() == {"ok": True}
     assert "wait_for_completion=30" in str(route.calls.last.request.url)
     assert "version=1.2.3" in str(route.calls.last.request.url)
 
@@ -203,24 +337,13 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
         )
     )
     get_route = respx.get("http://localhost:3000/api/v1/runs/run_123").mock(
-        return_value=httpx.Response(
-            200,
-            json={
-                "run": {
-                    "id": "run_123",
-                    "type": "workflow",
-                    "status": "completed",
-                    "source": {"id": "wf_123", "name": "Extract"},
-                    "createdAt": "2026-01-01T00:00:00.000Z",
-                }
-            },
-        )
+        return_value=httpx.Response(200, json=run_summary())
     )
     cancel_route = respx.post("http://localhost:3000/api/v1/runs/run_123/cancel").mock(
-        return_value=httpx.Response(200, json={"ok": True})
+        return_value=httpx.Response(200, json=run_cancel_response(id="run_123"))
     )
     rerun_route = respx.post("http://localhost:3000/api/v1/runs/run_123/rerun").mock(
-        return_value=httpx.Response(200, json={"executionId": "run_rerun", "status": "pending"})
+        return_value=httpx.Response(200, json=run_accepted(id="run_rerun"))
     )
     feedback_route = respx.patch("http://localhost:3000/api/v1/runs/run_123/feedback").mock(
         return_value=httpx.Response(200, json={"ok": True})
@@ -230,7 +353,7 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
     )
 
     client.runs.list(type="workflow", source="wf_123", status="completed")
-    run = client.runs.get("run_123", include="detail")
+    run = client.runs.get("run_123", expand=["usage", "execution"])
     client.runs.cancel("run_123")
     client.rerun("run_123")
     client.runs.feedback.update("run_123", status="open")
@@ -240,12 +363,45 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
     assert "type=workflow" in str(list_route.calls.last.request.url)
     assert "source=wf_123" in str(list_route.calls.last.request.url)
     assert get_route.called
-    assert "include=detail" in str(get_route.calls.last.request.url)
-    assert (run.get("id") if isinstance(run, dict) else run["id"]) == "run_123"
+    assert "expand=usage%2Cexecution" in str(get_route.calls.last.request.url)
+    assert run.id == "run_123"
     assert cancel_route.called
     assert rerun_route.called
     assert feedback_route.called
     assert expected_route.called
+
+
+@respx.mock
+def test_runs_compare_unwraps_typed_run_models(client: EigenpalClient) -> None:
+    """compare must see expanded fields through the typed Run model, not always pass."""
+    respx.get("http://localhost:3000/api/v1/runs/run_ref").mock(
+        return_value=httpx.Response(
+            200,
+            json=run_summary(
+                id="run_ref",
+                type="agent",
+                expected={"total": 1},
+                expectedFiles=[{"name": "report.json"}],
+            ),
+        )
+    )
+    respx.get("http://localhost:3000/api/v1/runs/run_tgt").mock(
+        return_value=httpx.Response(
+            200,
+            json=run_summary(
+                id="run_tgt",
+                type="agent",
+                output={"ok": True},
+                resultFiles=[{"name": "other.json"}],
+            ),
+        )
+    )
+
+    result = client.runs.compare("run_ref", "run_tgt")
+
+    assert result["status"] == "fail"
+    assert "report.json" in result["missingFiles"]
+    assert "other.json" in result["extraFiles"]
 
 
 @respx.mock
@@ -322,7 +478,7 @@ def test_429_raises_rate_limit_error_with_retry_after(client: EigenpalClient) ->
 
 @respx.mock
 def test_400_raises_validation_error_with_issues(client: EigenpalClient) -> None:
-    respx.post("http://localhost:3000/api/v1/run/workflows.wf_xyz").mock(
+    respx.post("http://localhost:3000/api/v1/runs").mock(
         return_value=httpx.Response(
             400,
             json={
@@ -348,51 +504,35 @@ def test_400_raises_validation_error_with_issues(client: EigenpalClient) -> None
 @respx.mock
 def test_runs_cancel_cancels_workflow_runs(client: EigenpalClient) -> None:
     route = respx.post("http://localhost:3000/api/v1/runs/exec_pq/cancel").mock(
-        return_value=httpx.Response(
-            200,
-            json={
-                "status": "cancelled",
-            },
-        )
+        return_value=httpx.Response(200, json=run_cancel_response(id="exec_pq"))
     )
 
     result = client.runs.cancel("exec_pq")
 
     assert route.called
-    assert result["status"] == "cancelled"
+    assert result.execution.status.value == "cancelled"
+    assert result.cancellation.state.value == "cancelled"
 
 
 @respx.mock
 def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
-    respx.post("http://localhost:3000/api/v1/run/workflows.wf_abc").mock(
-        return_value=httpx.Response(201, json={"runId": "exec_pq", "type": "workflow"})
+    respx.post("http://localhost:3000/api/v1/runs").mock(
+        return_value=httpx.Response(202, json=run_accepted(id="exec_pq"))
     )
     # First poll: running. Second: completed.
-    poll_route = respx.get(
-        "http://localhost:3000/api/v1/runs/exec_pq", params={"include": "detail"}
-    ).mock(
+    poll_route = respx.get("http://localhost:3000/api/v1/runs/exec_pq").mock(
         side_effect=[
             httpx.Response(
-                200,
-                json={
-                    "run": {
-                        "runId": "exec_pq",
-                        "status": "running",
-                        "createdAt": "2025-01-01T00:00:00Z",
-                    }
-                },
+                200, json=run_summary(id="exec_pq", status="running", finished=False)
             ),
             httpx.Response(
                 200,
-                json={
-                    "run": {
-                        "runId": "exec_pq",
-                        "status": "completed",
-                        "output": {"total": 42},
-                        "createdAt": "2025-01-01T00:00:00Z",
-                        "completedAt": "2025-01-01T00:00:05Z",
-                    }
-                },
+                json=run_summary(
+                    id="exec_pq",
+                    status="completed",
+                    output={"total": 42},
+                    completedAt="2025-01-01T00:00:05Z",
+                ),
             ),
         ]
     )
@@ -402,6 +542,6 @@ def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
     )
 
     assert poll_route.call_count == 2
-    assert result["runId"] == "exec_pq"
+    assert result["id"] == "exec_pq"
     assert result["status"] == "completed"
     assert result["output"] == {"total": 42}

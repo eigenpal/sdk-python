@@ -8,29 +8,26 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from typing import cast
 
 
 
 
 
 
-T = TypeVar("T", bound="RunSummaryTriggeredByType0")
+T = TypeVar("T", bound="RunExecutionRetryNextRunType0")
 
 
 
 @_attrs_define
-class RunSummaryTriggeredByType0:
-    """ 
+class RunExecutionRetryNextRunType0:
+    """
         Attributes:
             id (str):
-            name (None | str):
-            email (str):
+            status (str):
      """
 
     id: str
-    name: None | str
-    email: str
+    status: str
 
 
 
@@ -39,18 +36,14 @@ class RunSummaryTriggeredByType0:
     def to_dict(self) -> dict[str, Any]:
         id = self.id
 
-        name: None | str
-        name = self.name
-
-        email = self.email
+        status = self.status
 
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
             "id": id,
-            "name": name,
-            "email": email,
+            "status": status,
         })
 
         return field_dict
@@ -62,21 +55,11 @@ class RunSummaryTriggeredByType0:
         d = dict(src_dict)
         id = d.pop("id")
 
-        def _parse_name(data: object) -> None | str:
-            if data is None:
-                return data
-            return cast(None | str, data)
+        status = d.pop("status")
 
-        name = _parse_name(d.pop("name"))
-
-
-        email = d.pop("email")
-
-        run_summary_triggered_by_type_0 = cls(
+        run_execution_retry_next_run_type_0 = cls(
             id=id,
-            name=name,
-            email=email,
+            status=status,
         )
 
-        return run_summary_triggered_by_type_0
-
+        return run_execution_retry_next_run_type_0

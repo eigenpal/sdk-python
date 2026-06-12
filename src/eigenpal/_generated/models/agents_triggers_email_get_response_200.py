@@ -21,7 +21,7 @@ T = TypeVar("T", bound="AgentsTriggersEmailGetResponse200")
 
 @_attrs_define
 class AgentsTriggersEmailGetResponse200:
-    """ 
+    """
         Attributes:
             trigger (Any):
             emails (list[Any]):
@@ -67,4 +67,3 @@ class AgentsTriggersEmailGetResponse200:
         )
 
         return agents_triggers_email_get_response_200
-

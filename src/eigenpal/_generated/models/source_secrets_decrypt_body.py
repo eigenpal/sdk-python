@@ -25,7 +25,7 @@ T = TypeVar("T", bound="SourceSecretsDecryptBody")
 
 @_attrs_define
 class SourceSecretsDecryptBody:
-    """ 
+    """
         Attributes:
             organization_id (str | Unset):
             execution_id (str | Unset):

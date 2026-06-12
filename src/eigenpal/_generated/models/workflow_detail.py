@@ -22,7 +22,7 @@ T = TypeVar("T", bound="WorkflowDetail")
 
 @_attrs_define
 class WorkflowDetail:
-    """ 
+    """
         Attributes:
             id (str): Workflow id (e.g. wf_abc123).
             created_at (str):
@@ -154,4 +154,3 @@ class WorkflowDetail:
         )
 
         return workflow_detail
-

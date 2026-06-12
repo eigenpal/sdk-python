@@ -21,7 +21,7 @@ T = TypeVar("T", bound="RunsTraceGetResponse200")
 
 @_attrs_define
 class RunsTraceGetResponse200:
-    """ 
+    """
         Attributes:
             events (list[Any]):
      """
@@ -59,4 +59,3 @@ class RunsTraceGetResponse200:
         )
 
         return runs_trace_get_response_200
-

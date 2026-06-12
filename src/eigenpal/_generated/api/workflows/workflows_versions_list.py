@@ -22,9 +22,9 @@ def _get_kwargs(
     offset: int | Unset = UNSET,
 
 ) -> dict[str, Any]:
-    
 
-    
+
+
 
     params: dict[str, Any] = {}
 

@@ -14,13 +14,14 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunStartResponseCost")
+T = TypeVar("T", bound="RunStartBodyInput")
 
 
 
 @_attrs_define
-class RunStartResponseCost:
-    """ 
+class RunStartBodyInput:
+    """ Scalar and structured automation arguments.
+
      """
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -30,7 +31,7 @@ class RunStartResponseCost:
 
 
     def to_dict(self) -> dict[str, Any]:
-        
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
 
@@ -41,12 +42,12 @@ class RunStartResponseCost:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_start_response_cost = cls(
+        run_start_body_input = cls(
         )
 
 
-        run_start_response_cost.additional_properties = d
-        return run_start_response_cost
+        run_start_body_input.additional_properties = d
+        return run_start_body_input
 
     @property
     def additional_keys(self) -> list[str]:

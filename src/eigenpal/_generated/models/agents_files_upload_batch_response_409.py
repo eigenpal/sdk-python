@@ -20,7 +20,7 @@ T = TypeVar("T", bound="AgentsFilesUploadBatchResponse409")
 
 @_attrs_define
 class AgentsFilesUploadBatchResponse409:
-    """ 
+    """
         Attributes:
             error (str):
      """
@@ -55,4 +55,3 @@ class AgentsFilesUploadBatchResponse409:
         )
 
         return agents_files_upload_batch_response_409
-

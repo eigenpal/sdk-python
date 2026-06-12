@@ -20,7 +20,7 @@ T = TypeVar("T", bound="RunsExpectedFileUpdateBody")
 
 @_attrs_define
 class RunsExpectedFileUpdateBody:
-    """ 
+    """
         Attributes:
             name (str):
      """

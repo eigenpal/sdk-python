@@ -24,7 +24,7 @@ T = TypeVar("T", bound="AutomationSyncResponse")
 
 @_attrs_define
 class AutomationSyncResponse:
-    """ 
+    """
         Attributes:
             automation (AutomationSyncResponseAutomation):
             release (AutomationSyncResponseRelease):
@@ -88,4 +88,3 @@ class AutomationSyncResponse:
         )
 
         return automation_sync_response
-

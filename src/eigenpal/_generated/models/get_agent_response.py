@@ -23,7 +23,7 @@ T = TypeVar("T", bound="GetAgentResponse")
 
 @_attrs_define
 class GetAgentResponse:
-    """ 
+    """
         Attributes:
             agent (AgentSummary):
      """
@@ -63,4 +63,3 @@ class GetAgentResponse:
         )
 
         return get_agent_response
-

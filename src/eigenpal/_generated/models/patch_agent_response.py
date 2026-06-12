@@ -23,7 +23,7 @@ T = TypeVar("T", bound="PatchAgentResponse")
 
 @_attrs_define
 class PatchAgentResponse:
-    """ 
+    """
         Attributes:
             agent (AgentSummary):
      """
@@ -63,4 +63,3 @@ class PatchAgentResponse:
         )
 
         return patch_agent_response
-

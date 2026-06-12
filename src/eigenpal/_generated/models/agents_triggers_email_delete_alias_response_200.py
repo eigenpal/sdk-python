@@ -20,7 +20,7 @@ T = TypeVar("T", bound="AgentsTriggersEmailDeleteAliasResponse200")
 
 @_attrs_define
 class AgentsTriggersEmailDeleteAliasResponse200:
-    """ 
+    """
         Attributes:
             removed (bool):
      """
@@ -55,4 +55,3 @@ class AgentsTriggersEmailDeleteAliasResponse200:
         )
 
         return agents_triggers_email_delete_alias_response_200
-

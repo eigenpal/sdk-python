@@ -21,7 +21,7 @@ T = TypeVar("T", bound="ApiErrorIssue")
 
 @_attrs_define
 class ApiErrorIssue:
-    """ 
+    """
         Attributes:
             field (str): JSON path of the offending field, or "<root>"
             message (str): Human-readable error message
@@ -83,4 +83,3 @@ class ApiErrorIssue:
         )
 
         return api_error_issue
-

@@ -45,11 +45,11 @@ client.run("workflows.compare-versions", input={
 })
 ```
 
-Each file becomes a top-level form field. Mix files and scalar inputs freely; scalars ride along in a single `_json` text field automatically.
+Each file becomes a `files.<fieldName>` multipart part. Mix files and scalar inputs freely; scalars ride in the `input` JSON part automatically.
 
 ## Nested files aren't extracted
 
-Only top-level file values become multipart fields. Files inside lists or nested dicts stay in the JSON sidecar and the server won't see them as uploads:
+Only top-level file values become multipart fields. Files inside lists or nested dicts stay in the `input` JSON part and the server won't see them as uploads:
 
 ```python
 # DON'T — `documents` becomes a JSON list, no upload.

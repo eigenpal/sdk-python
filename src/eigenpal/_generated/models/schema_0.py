@@ -22,7 +22,7 @@ T = TypeVar("T", bound="Schema0")
 
 @_attrs_define
 class Schema0:
-    """ 
+    """
         Attributes:
             package_path (str):
             requested_ref (str):
@@ -111,4 +111,3 @@ class Schema0:
         )
 
         return schema_0
-

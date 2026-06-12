@@ -24,7 +24,7 @@ T = TypeVar("T", bound="SourceSecretsDecryptResponse")
 
 @_attrs_define
 class SourceSecretsDecryptResponse:
-    """ 
+    """
         Attributes:
             plaintext (str | Unset):
             secrets (SourceSecretsDecryptResponseSecrets | Unset):
@@ -81,4 +81,3 @@ class SourceSecretsDecryptResponse:
         )
 
         return source_secrets_decrypt_response
-

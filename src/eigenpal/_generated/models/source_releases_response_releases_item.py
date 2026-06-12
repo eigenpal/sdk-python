@@ -20,7 +20,7 @@ T = TypeVar("T", bound="SourceReleasesResponseReleasesItem")
 
 @_attrs_define
 class SourceReleasesResponseReleasesItem:
-    """ 
+    """
         Attributes:
             version (str):
             tag (str):
@@ -71,4 +71,3 @@ class SourceReleasesResponseReleasesItem:
         )
 
         return source_releases_response_releases_item
-

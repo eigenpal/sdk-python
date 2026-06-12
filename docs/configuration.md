@@ -2,7 +2,7 @@
 
 ```python
 EigenpalClient(
-    api_key="eg_...",                       # or EIGENPAL_API_KEY env var
+    api_key="eig_live_...",                       # or EIGENPAL_API_KEY env var
     base_url="https://studio.eigenpal.com",    # or EIGENPAL_BASE_URL env var
     timeout_seconds=60.0,                   # per-request timeout
     verify_ssl=True,                        # set False only for testing

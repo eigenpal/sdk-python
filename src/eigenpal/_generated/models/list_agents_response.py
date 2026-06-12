@@ -23,7 +23,7 @@ T = TypeVar("T", bound="ListAgentsResponse")
 
 @_attrs_define
 class ListAgentsResponse:
-    """ 
+    """
         Attributes:
             data (list[AgentSummary]):
             total (int):
@@ -97,4 +97,3 @@ class ListAgentsResponse:
         )
 
         return list_agents_response
-

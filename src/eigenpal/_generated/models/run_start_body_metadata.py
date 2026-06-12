@@ -8,26 +8,22 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from ..types import UNSET, Unset
 
 
 
 
 
 
-T = TypeVar("T", bound="RunRerunRequest")
+T = TypeVar("T", bound="RunStartBodyMetadata")
 
 
 
 @_attrs_define
-class RunRerunRequest:
-    """ 
-        Attributes:
-            source_ref (str | Unset): Source version for the new run. Defaults to latest/current. Use original to rerun
-                against the source run version. Workflow runs support latest or original.
+class RunStartBodyMetadata:
+    """ Caller-supplied run metadata.
+
      """
 
-    source_ref: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -35,15 +31,9 @@ class RunRerunRequest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        source_ref = self.source_ref
-
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-        })
-        if source_ref is not UNSET:
-            field_dict["sourceRef"] = source_ref
 
         return field_dict
 
@@ -52,15 +42,12 @@ class RunRerunRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        source_ref = d.pop("sourceRef", UNSET)
-
-        run_rerun_request = cls(
-            source_ref=source_ref,
+        run_start_body_metadata = cls(
         )
 
 
-        run_rerun_request.additional_properties = d
-        return run_rerun_request
+        run_start_body_metadata.additional_properties = d
+        return run_start_body_metadata
 
     @property
     def additional_keys(self) -> list[str]:

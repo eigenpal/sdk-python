@@ -23,7 +23,7 @@ T = TypeVar("T", bound="ListAgentVersionsResponseVersionsItem")
 
 @_attrs_define
 class ListAgentVersionsResponseVersionsItem:
-    """ 
+    """
         Attributes:
             version (str):
             source_ref (str):
@@ -150,4 +150,3 @@ class ListAgentVersionsResponseVersionsItem:
         )
 
         return list_agent_versions_response_versions_item
-

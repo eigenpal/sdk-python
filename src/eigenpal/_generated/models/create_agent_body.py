@@ -24,7 +24,7 @@ T = TypeVar("T", bound="CreateAgentBody")
 
 @_attrs_define
 class CreateAgentBody:
-    """ 
+    """
         Attributes:
             name (str):
             slug (str):
@@ -97,4 +97,3 @@ class CreateAgentBody:
         )
 
         return create_agent_body
-

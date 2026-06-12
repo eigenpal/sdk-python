@@ -24,9 +24,9 @@ def _get_kwargs(
     headers: dict[str, Any] = {}
 
 
-    
 
-    
+
+
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -117,7 +117,7 @@ def sync_detailed(
     """ Upload run input file
 
      Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; agent run downloads use artifacts.
+    starts; generated output downloads use artifacts.
 
     Args:
         id (str):
@@ -154,7 +154,7 @@ def sync(
     """ Upload run input file
 
      Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; agent run downloads use artifacts.
+    starts; generated output downloads use artifacts.
 
     Args:
         id (str):
@@ -186,7 +186,7 @@ async def asyncio_detailed(
     """ Upload run input file
 
      Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; agent run downloads use artifacts.
+    starts; generated output downloads use artifacts.
 
     Args:
         id (str):
@@ -223,7 +223,7 @@ async def asyncio(
     """ Upload run input file
 
      Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; agent run downloads use artifacts.
+    starts; generated output downloads use artifacts.
 
     Args:
         id (str):

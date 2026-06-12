@@ -23,7 +23,7 @@ T = TypeVar("T", bound="ListWorkflowsResponse")
 
 @_attrs_define
 class ListWorkflowsResponse:
-    """ 
+    """
         Attributes:
             data (list[WorkflowSummary]):
             total (int):
@@ -97,4 +97,3 @@ class ListWorkflowsResponse:
         )
 
         return list_workflows_response
-

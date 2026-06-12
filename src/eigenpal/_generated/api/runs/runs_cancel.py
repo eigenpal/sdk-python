@@ -9,7 +9,7 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.runs_cancel_response_200 import RunsCancelResponse200
+from ...models.run_cancel_response import RunCancelResponse
 from typing import cast
 
 
@@ -18,11 +18,11 @@ def _get_kwargs(
     id: str,
 
 ) -> dict[str, Any]:
-    
 
-    
 
-    
+
+
+
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -34,9 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunsCancelResponse200 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunCancelResponse | None:
     if response.status_code == 200:
-        response_200 = RunsCancelResponse200.from_dict(response.json())
+        response_200 = RunCancelResponse.from_dict(response.json())
 
 
 
@@ -90,7 +90,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunsCancelResponse200]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunCancelResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -104,8 +104,11 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunsCancelResponse200]:
+) -> Response[ApiErrorEnvelope | RunCancelResponse]:
     """ Cancel run
+
+     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
+    canonical run with a `cancellation` block describing the outcome.
 
     Args:
         id (str):
@@ -115,7 +118,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsCancelResponse200]
+        Response[ApiErrorEnvelope | RunCancelResponse]
      """
 
 
@@ -135,8 +138,11 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunsCancelResponse200 | None:
+) -> ApiErrorEnvelope | RunCancelResponse | None:
     """ Cancel run
+
+     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
+    canonical run with a `cancellation` block describing the outcome.
 
     Args:
         id (str):
@@ -146,7 +152,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsCancelResponse200
+        ApiErrorEnvelope | RunCancelResponse
      """
 
 
@@ -161,8 +167,11 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunsCancelResponse200]:
+) -> Response[ApiErrorEnvelope | RunCancelResponse]:
     """ Cancel run
+
+     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
+    canonical run with a `cancellation` block describing the outcome.
 
     Args:
         id (str):
@@ -172,7 +181,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsCancelResponse200]
+        Response[ApiErrorEnvelope | RunCancelResponse]
      """
 
 
@@ -192,8 +201,11 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunsCancelResponse200 | None:
+) -> ApiErrorEnvelope | RunCancelResponse | None:
     """ Cancel run
+
+     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
+    canonical run with a `cancellation` block describing the outcome.
 
     Args:
         id (str):
@@ -203,7 +215,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsCancelResponse200
+        ApiErrorEnvelope | RunCancelResponse
      """
 
 

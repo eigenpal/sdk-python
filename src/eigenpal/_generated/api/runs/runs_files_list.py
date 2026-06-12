@@ -18,11 +18,11 @@ def _get_kwargs(
     id: str,
 
 ) -> dict[str, Any]:
-    
 
-    
 
-    
+
+
+
 
     _kwargs: dict[str, Any] = {
         "method": "get",
@@ -108,7 +108,9 @@ def sync_detailed(
     """ List run files
 
      List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows. Agent debug outputs are exposed as run artifacts instead.
+    workflow/eval input and output file rows for structured inspection. Download generated output
+    artifacts for completed workflow and agent runs through top-level `files` and GET
+    /api/v1/runs/:id/artifacts/:path.
 
     Args:
         id (str):
@@ -142,7 +144,9 @@ def sync(
     """ List run files
 
      List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows. Agent debug outputs are exposed as run artifacts instead.
+    workflow/eval input and output file rows for structured inspection. Download generated output
+    artifacts for completed workflow and agent runs through top-level `files` and GET
+    /api/v1/runs/:id/artifacts/:path.
 
     Args:
         id (str):
@@ -171,7 +175,9 @@ async def asyncio_detailed(
     """ List run files
 
      List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows. Agent debug outputs are exposed as run artifacts instead.
+    workflow/eval input and output file rows for structured inspection. Download generated output
+    artifacts for completed workflow and agent runs through top-level `files` and GET
+    /api/v1/runs/:id/artifacts/:path.
 
     Args:
         id (str):
@@ -205,7 +211,9 @@ async def asyncio(
     """ List run files
 
      List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows. Agent debug outputs are exposed as run artifacts instead.
+    workflow/eval input and output file rows for structured inspection. Download generated output
+    artifacts for completed workflow and agent runs through top-level `files` and GET
+    /api/v1/runs/:id/artifacts/:path.
 
     Args:
         id (str):

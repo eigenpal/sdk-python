@@ -1,6 +1,6 @@
 from enum import Enum
 
-class RunSummaryType(str, Enum):
+class RunType(str, Enum):
     AGENT = "agent"
     WORKFLOW = "workflow"
 

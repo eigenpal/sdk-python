@@ -23,7 +23,7 @@ T = TypeVar("T", bound="ListAgentVersionsResponse")
 
 @_attrs_define
 class ListAgentVersionsResponse:
-    """ 
+    """
         Attributes:
             agent_id (str):
             slug (str):
@@ -97,4 +97,3 @@ class ListAgentVersionsResponse:
         )
 
         return list_agent_versions_response
-

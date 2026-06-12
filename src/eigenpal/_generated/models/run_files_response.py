@@ -24,7 +24,7 @@ T = TypeVar("T", bound="RunFilesResponse")
 
 @_attrs_define
 class RunFilesResponse:
-    """ 
+    """
         Attributes:
             inputs (list[RunFilesResponseInputsItem]):
             outputs_by_step (RunFilesResponseOutputsByStep):
@@ -87,4 +87,3 @@ class RunFilesResponse:
         )
 
         return run_files_response
-

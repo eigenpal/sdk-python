@@ -21,7 +21,7 @@ T = TypeVar("T", bound="ListAgentVersionsResponseVersionsItemCreatedByUserType0"
 
 @_attrs_define
 class ListAgentVersionsResponseVersionsItemCreatedByUserType0:
-    """ 
+    """
         Attributes:
             id (str):
             email (str):
@@ -94,4 +94,3 @@ class ListAgentVersionsResponseVersionsItemCreatedByUserType0:
         )
 
         return list_agent_versions_response_versions_item_created_by_user_type_0
-

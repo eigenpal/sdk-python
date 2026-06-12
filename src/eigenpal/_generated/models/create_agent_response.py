@@ -25,7 +25,7 @@ T = TypeVar("T", bound="CreateAgentResponse")
 
 @_attrs_define
 class CreateAgentResponse:
-    """ 
+    """
         Attributes:
             agent (AgentSummary):
             source_recovered (bool | Unset):
@@ -94,4 +94,3 @@ class CreateAgentResponse:
         )
 
         return create_agent_response
-

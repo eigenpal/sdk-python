@@ -22,7 +22,7 @@ T = TypeVar("T", bound="AgentSummaryStats")
 
 @_attrs_define
 class AgentSummaryStats:
-    """ 
+    """
         Attributes:
             example_count (int | Unset):
             total_executions (int | Unset):

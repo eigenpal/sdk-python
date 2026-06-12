@@ -21,7 +21,7 @@ T = TypeVar("T", bound="SourceSecretsEncryptResponseSecretsAdditionalProperty")
 
 @_attrs_define
 class SourceSecretsEncryptResponseSecretsAdditionalProperty:
-    """ 
+    """
         Attributes:
             algorithm (Literal['aes-256-gcm']):
             key_id (str):
@@ -90,4 +90,3 @@ class SourceSecretsEncryptResponseSecretsAdditionalProperty:
         )
 
         return source_secrets_encrypt_response_secrets_additional_property
-

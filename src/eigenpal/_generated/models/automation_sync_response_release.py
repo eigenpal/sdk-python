@@ -20,7 +20,7 @@ T = TypeVar("T", bound="AutomationSyncResponseRelease")
 
 @_attrs_define
 class AutomationSyncResponseRelease:
-    """ 
+    """
         Attributes:
             version (str):
             tag (str):
@@ -71,4 +71,3 @@ class AutomationSyncResponseRelease:
         )
 
         return automation_sync_response_release
-

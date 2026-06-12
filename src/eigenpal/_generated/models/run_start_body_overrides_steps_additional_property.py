@@ -14,13 +14,13 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunsCancelResponse200")
+T = TypeVar("T", bound="RunStartBodyOverridesStepsAdditionalProperty")
 
 
 
 @_attrs_define
-class RunsCancelResponse200:
-    """ 
+class RunStartBodyOverridesStepsAdditionalProperty:
+    """
      """
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -30,7 +30,7 @@ class RunsCancelResponse200:
 
 
     def to_dict(self) -> dict[str, Any]:
-        
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
 
@@ -41,12 +41,12 @@ class RunsCancelResponse200:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        runs_cancel_response_200 = cls(
+        run_start_body_overrides_steps_additional_property = cls(
         )
 
 
-        runs_cancel_response_200.additional_properties = d
-        return runs_cancel_response_200
+        run_start_body_overrides_steps_additional_property.additional_properties = d
+        return run_start_body_overrides_steps_additional_property
 
     @property
     def additional_keys(self) -> list[str]:

@@ -21,9 +21,9 @@ def _get_kwargs(
     path: str,
 
 ) -> dict[str, Any]:
-    
 
-    
+
+
 
     params: dict[str, Any] = {}
 

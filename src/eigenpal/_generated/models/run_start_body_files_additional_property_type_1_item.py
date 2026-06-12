@@ -8,21 +8,29 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..types import UNSET, Unset
 
 
 
 
 
 
-T = TypeVar("T", bound="RunTargetInputBody")
+T = TypeVar("T", bound="RunStartBodyFilesAdditionalPropertyType1Item")
 
 
 
 @_attrs_define
-class RunTargetInputBody:
-    """ 
+class RunStartBodyFilesAdditionalPropertyType1Item:
+    """
+        Attributes:
+            file_id (str):
+            filename (str | Unset):
+            mime_type (str | Unset):
      """
 
+    file_id: str
+    filename: str | Unset = UNSET
+    mime_type: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -30,9 +38,22 @@ class RunTargetInputBody:
 
 
     def to_dict(self) -> dict[str, Any]:
-        
+        file_id = self.file_id
+
+        filename = self.filename
+
+        mime_type = self.mime_type
+
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
+        field_dict.update({
+            "fileId": file_id,
+        })
+        if filename is not UNSET:
+            field_dict["filename"] = filename
+        if mime_type is not UNSET:
+            field_dict["mimeType"] = mime_type
 
         return field_dict
 
@@ -41,12 +62,21 @@ class RunTargetInputBody:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_target_input_body = cls(
+        file_id = d.pop("fileId")
+
+        filename = d.pop("filename", UNSET)
+
+        mime_type = d.pop("mimeType", UNSET)
+
+        run_start_body_files_additional_property_type_1_item = cls(
+            file_id=file_id,
+            filename=filename,
+            mime_type=mime_type,
         )
 
 
-        run_target_input_body.additional_properties = d
-        return run_target_input_body
+        run_start_body_files_additional_property_type_1_item.additional_properties = d
+        return run_start_body_files_additional_property_type_1_item
 
     @property
     def additional_keys(self) -> list[str]:

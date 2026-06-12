@@ -25,7 +25,7 @@ T = TypeVar("T", bound="SourceSecretsEncryptResponse")
 
 @_attrs_define
 class SourceSecretsEncryptResponse:
-    """ 
+    """
         Attributes:
             encrypted (SourceSecretsEncryptResponseEncrypted | Unset):
             secrets (SourceSecretsEncryptResponseSecrets | Unset):
@@ -94,4 +94,3 @@ class SourceSecretsEncryptResponse:
         )
 
         return source_secrets_encrypt_response
-

@@ -50,11 +50,19 @@ import sys
 out_dir = Path(sys.argv[1])
 for path in out_dir.rglob("*.py"):
     text = path.read_text()
-    if "Unset" not in text or "from ...types import" not in text:
-        continue
-    if "from ...types import UNSET, Unset" in text:
-        continue
-    updated = text.replace("from ...types import Response, UNSET", "from ...types import Response, UNSET, Unset")
+    lines = [line.rstrip() for line in text.splitlines()]
+    while lines and lines[-1] == "":
+        lines.pop()
+    updated = "\n".join(lines) + "\n"
+    if (
+        "Unset" in updated
+        and "from ...types import" in updated
+        and "from ...types import UNSET, Unset" not in updated
+    ):
+        updated = updated.replace(
+            "from ...types import Response, UNSET",
+            "from ...types import Response, UNSET, Unset",
+        )
     if updated != text:
         path.write_text(updated)
 PY

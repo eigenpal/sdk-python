@@ -26,7 +26,7 @@ T = TypeVar("T", bound="AgentSummary")
 
 @_attrs_define
 class AgentSummary:
-    """ 
+    """
         Attributes:
             id (str):
             slug (str):

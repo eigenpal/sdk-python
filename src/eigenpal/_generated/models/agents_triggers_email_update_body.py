@@ -20,7 +20,7 @@ T = TypeVar("T", bound="AgentsTriggersEmailUpdateBody")
 
 @_attrs_define
 class AgentsTriggersEmailUpdateBody:
-    """ 
+    """
         Attributes:
             enabled (bool):
      """

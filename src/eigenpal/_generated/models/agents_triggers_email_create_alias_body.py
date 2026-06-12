@@ -24,7 +24,7 @@ T = TypeVar("T", bound="AgentsTriggersEmailCreateAliasBody")
 
 @_attrs_define
 class AgentsTriggersEmailCreateAliasBody:
-    """ 
+    """
         Attributes:
             email (str | Unset):
             alias (str | Unset):

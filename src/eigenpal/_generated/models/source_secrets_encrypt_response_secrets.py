@@ -23,7 +23,7 @@ T = TypeVar("T", bound="SourceSecretsEncryptResponseSecrets")
 
 @_attrs_define
 class SourceSecretsEncryptResponseSecrets:
-    """ 
+    """
      """
 
     additional_properties: dict[str, SourceSecretsEncryptResponseSecretsAdditionalProperty] = _attrs_field(init=False, factory=dict)
@@ -34,7 +34,7 @@ class SourceSecretsEncryptResponseSecrets:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.source_secrets_encrypt_response_secrets_additional_property import SourceSecretsEncryptResponseSecretsAdditionalProperty
-        
+
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
             field_dict[prop_name] = prop.to_dict()

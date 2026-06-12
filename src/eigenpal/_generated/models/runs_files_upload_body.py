@@ -24,7 +24,7 @@ T = TypeVar("T", bound="RunsFilesUploadBody")
 
 @_attrs_define
 class RunsFilesUploadBody:
-    """ 
+    """
         Attributes:
             file (File): File contents
      """

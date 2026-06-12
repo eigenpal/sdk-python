@@ -23,7 +23,7 @@ T = TypeVar("T", bound="RunFilesResponseOutputsByStep")
 
 @_attrs_define
 class RunFilesResponseOutputsByStep:
-    """ 
+    """
      """
 
     additional_properties: dict[str, list[RunFilesResponseOutputsByStepAdditionalPropertyItem]] = _attrs_field(init=False, factory=dict)
@@ -34,7 +34,7 @@ class RunFilesResponseOutputsByStep:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_files_response_outputs_by_step_additional_property_item import RunFilesResponseOutputsByStepAdditionalPropertyItem
-        
+
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
             field_dict[prop_name] = []

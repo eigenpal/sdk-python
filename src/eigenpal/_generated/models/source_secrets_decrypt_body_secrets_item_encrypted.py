@@ -21,7 +21,7 @@ T = TypeVar("T", bound="SourceSecretsDecryptBodySecretsItemEncrypted")
 
 @_attrs_define
 class SourceSecretsDecryptBodySecretsItemEncrypted:
-    """ 
+    """
         Attributes:
             algorithm (Literal['aes-256-gcm']):
             key_id (str):
@@ -90,4 +90,3 @@ class SourceSecretsDecryptBodySecretsItemEncrypted:
         )
 
         return source_secrets_decrypt_body_secrets_item_encrypted
-

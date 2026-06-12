@@ -20,7 +20,7 @@ T = TypeVar("T", bound="AgentsFilesPutResponse409")
 
 @_attrs_define
 class AgentsFilesPutResponse409:
-    """ 
+    """
         Attributes:
             error (str):
      """
@@ -55,4 +55,3 @@ class AgentsFilesPutResponse409:
         )
 
         return agents_files_put_response_409
-

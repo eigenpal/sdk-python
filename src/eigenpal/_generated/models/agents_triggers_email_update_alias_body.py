@@ -25,7 +25,7 @@ T = TypeVar("T", bound="AgentsTriggersEmailUpdateAliasBody")
 
 @_attrs_define
 class AgentsTriggersEmailUpdateAliasBody:
-    """ 
+    """
         Attributes:
             label (None | str | Unset):
             allowlist (list[str] | Unset):

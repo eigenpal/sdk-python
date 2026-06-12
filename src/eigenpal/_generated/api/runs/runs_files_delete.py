@@ -18,11 +18,11 @@ def _get_kwargs(
     file_id: str,
 
 ) -> dict[str, Any]:
-    
 
-    
 
-    
+
+
+
 
     _kwargs: dict[str, Any] = {
         "method": "delete",

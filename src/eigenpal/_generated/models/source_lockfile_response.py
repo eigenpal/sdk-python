@@ -24,7 +24,7 @@ T = TypeVar("T", bound="SourceLockfileResponse")
 
 @_attrs_define
 class SourceLockfileResponse:
-    """ 
+    """
         Attributes:
             lockfile_version (Literal[1]):
             eigenpal_version (str):
@@ -90,4 +90,3 @@ class SourceLockfileResponse:
         )
 
         return source_lockfile_response
-

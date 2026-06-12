@@ -5,6 +5,8 @@ from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+import json
+from .. import types
 
 from ..types import UNSET, Unset
 
@@ -14,13 +16,15 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunEnvelopeRunType1")
+T = TypeVar("T", bound="RunsStartFilesBody")
 
 
 
 @_attrs_define
-class RunEnvelopeRunType1:
-    """ 
+class RunsStartFilesBody:
+    """ Multipart envelope: `target` (text), `input` / `overrides` / `metadata` (JSON text), and `files.<fieldName>`
+    (binary; repeat for arrays). Legacy: `_json`, top-level file fields, `_overrides`, `_metadata`.
+
      """
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -30,23 +34,34 @@ class RunEnvelopeRunType1:
 
 
     def to_dict(self) -> dict[str, Any]:
-        
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
 
         return field_dict
 
 
+    def to_multipart(self) -> types.RequestFiles:
+        files: types.RequestFiles = []
+
+
+        for prop_name, prop in self.additional_properties.items():
+            files.append((prop_name, (None, str(prop).encode(), "text/plain")))
+
+
+
+        return files
+
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_envelope_run_type_1 = cls(
+        runs_start_files_body = cls(
         )
 
 
-        run_envelope_run_type_1.additional_properties = d
-        return run_envelope_run_type_1
+        runs_start_files_body.additional_properties = d
+        return runs_start_files_body
 
     @property
     def additional_keys(self) -> list[str]:

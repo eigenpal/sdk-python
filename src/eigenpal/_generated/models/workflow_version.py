@@ -22,7 +22,7 @@ T = TypeVar("T", bound="WorkflowVersion")
 
 @_attrs_define
 class WorkflowVersion:
-    """ 
+    """
         Attributes:
             id (str): Version id (e.g. wfh_xyz). Stable for SDK pinning.
             workflow_id (str):
@@ -123,4 +123,3 @@ class WorkflowVersion:
         )
 
         return workflow_version
-

@@ -19,11 +19,11 @@ def _get_kwargs(
     email_id: str,
 
 ) -> dict[str, Any]:
-    
 
-    
 
-    
+
+
+
 
     _kwargs: dict[str, Any] = {
         "method": "delete",

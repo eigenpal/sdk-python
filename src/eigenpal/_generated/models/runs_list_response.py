@@ -11,7 +11,7 @@ from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
-  from ..models.run_summary import RunSummary
+  from ..models.run_list_item import RunListItem
 
 
 
@@ -23,13 +23,13 @@ T = TypeVar("T", bound="RunsListResponse")
 
 @_attrs_define
 class RunsListResponse:
-    """ 
+    """
         Attributes:
-            runs (list[RunSummary]):
+            runs (list[RunListItem]):
             next_cursor (None | str):
      """
 
-    runs: list[RunSummary]
+    runs: list[RunListItem]
     next_cursor: None | str
 
 
@@ -37,7 +37,7 @@ class RunsListResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_summary import RunSummary
+        from ..models.run_list_item import RunListItem
         runs = []
         for runs_item_data in self.runs:
             runs_item = runs_item_data.to_dict()
@@ -62,12 +62,12 @@ class RunsListResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_summary import RunSummary
+        from ..models.run_list_item import RunListItem
         d = dict(src_dict)
         runs = []
         _runs = d.pop("runs")
         for runs_item_data in (_runs):
-            runs_item = RunSummary.from_dict(runs_item_data)
+            runs_item = RunListItem.from_dict(runs_item_data)
 
 
 
@@ -88,4 +88,3 @@ class RunsListResponse:
         )
 
         return runs_list_response
-

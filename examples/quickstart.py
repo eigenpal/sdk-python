@@ -35,7 +35,7 @@ def main() -> None:
         timeout_seconds=5 * 60,
     )
     print("status:", result["status"])
-    print("result:", json.dumps(result["result"], indent=2, default=str))
+    print("output:", json.dumps(result["output"], indent=2, default=str))
 
 
 if __name__ == "__main__":

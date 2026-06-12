@@ -24,7 +24,7 @@ T = TypeVar("T", bound="PatchAgentBody")
 
 @_attrs_define
 class PatchAgentBody:
-    """ 
+    """
         Attributes:
             name (str | Unset):
             description (str | Unset):

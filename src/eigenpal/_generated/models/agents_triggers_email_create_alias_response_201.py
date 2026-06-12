@@ -20,7 +20,7 @@ T = TypeVar("T", bound="AgentsTriggersEmailCreateAliasResponse201")
 
 @_attrs_define
 class AgentsTriggersEmailCreateAliasResponse201:
-    """ 
+    """
         Attributes:
             email (Any):
      """
@@ -55,4 +55,3 @@ class AgentsTriggersEmailCreateAliasResponse201:
         )
 
         return agents_triggers_email_create_alias_response_201
-

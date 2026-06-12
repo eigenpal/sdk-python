@@ -9,24 +9,24 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.run_definition_response import RunDefinitionResponse
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
-    path: str,
 
 ) -> dict[str, Any]:
-    
 
-    
 
-    
+
+
+
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/runs/{id}/artifact/{path}".format(id=quote(str(id), safe=""),path=quote(str(path), safe=""),),
+        "url": "/api/v1/runs/{id}/definition".format(id=quote(str(id), safe=""),),
     }
 
 
@@ -34,9 +34,12 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunDefinitionResponse | None:
     if response.status_code == 200:
-        response_200 = cast(Any, None)
+        response_200 = RunDefinitionResponse.from_dict(response.json())
+
+
+
         return response_200
 
     if response.status_code == 400:
@@ -87,7 +90,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -98,32 +101,30 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
-    path: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[Any | ApiErrorEnvelope]:
-    """ Download run artifact
+) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
+    """ Get run definition snapshot
 
-     Download an agent run artifact such as input/output JSON, trace.jsonl, issues.md, metadata, or files
-    under input/ and output/. Workflow run file rows are exposed through /files.
+     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
+    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
+    see `source.git` on the run).
 
     Args:
-        id (str):
-        path (str):
+        id (str): Run id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | RunDefinitionResponse]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-path=path,
 
     )
 
@@ -135,64 +136,60 @@ path=path,
 
 def sync(
     id: str,
-    path: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Any | ApiErrorEnvelope | None:
-    """ Download run artifact
+) -> ApiErrorEnvelope | RunDefinitionResponse | None:
+    """ Get run definition snapshot
 
-     Download an agent run artifact such as input/output JSON, trace.jsonl, issues.md, metadata, or files
-    under input/ and output/. Workflow run file rows are exposed through /files.
+     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
+    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
+    see `source.git` on the run).
 
     Args:
-        id (str):
-        path (str):
+        id (str): Run id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Any | ApiErrorEnvelope
+        ApiErrorEnvelope | RunDefinitionResponse
      """
 
 
     return sync_detailed(
         id=id,
-path=path,
 client=client,
 
     ).parsed
 
 async def asyncio_detailed(
     id: str,
-    path: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[Any | ApiErrorEnvelope]:
-    """ Download run artifact
+) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
+    """ Get run definition snapshot
 
-     Download an agent run artifact such as input/output JSON, trace.jsonl, issues.md, metadata, or files
-    under input/ and output/. Workflow run file rows are exposed through /files.
+     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
+    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
+    see `source.git` on the run).
 
     Args:
-        id (str):
-        path (str):
+        id (str): Run id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | RunDefinitionResponse]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-path=path,
 
     )
 
@@ -204,32 +201,30 @@ path=path,
 
 async def asyncio(
     id: str,
-    path: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Any | ApiErrorEnvelope | None:
-    """ Download run artifact
+) -> ApiErrorEnvelope | RunDefinitionResponse | None:
+    """ Get run definition snapshot
 
-     Download an agent run artifact such as input/output JSON, trace.jsonl, issues.md, metadata, or files
-    under input/ and output/. Workflow run file rows are exposed through /files.
+     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
+    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
+    see `source.git` on the run).
 
     Args:
-        id (str):
-        path (str):
+        id (str): Run id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Any | ApiErrorEnvelope
+        ApiErrorEnvelope | RunDefinitionResponse
      """
 
 
     return (await asyncio_detailed(
         id=id,
-path=path,
 client=client,
 
     )).parsed

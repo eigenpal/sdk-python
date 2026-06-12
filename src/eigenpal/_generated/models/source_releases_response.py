@@ -23,7 +23,7 @@ T = TypeVar("T", bound="SourceReleasesResponse")
 
 @_attrs_define
 class SourceReleasesResponse:
-    """ 
+    """
         Attributes:
             package_path (str):
             releases (list[SourceReleasesResponseReleasesItem]):
@@ -81,4 +81,3 @@ class SourceReleasesResponse:
         )
 
         return source_releases_response
-

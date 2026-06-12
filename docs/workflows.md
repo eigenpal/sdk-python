@@ -33,7 +33,7 @@ from pathlib import Path
 result = client.run("workflows.extract-invoice", input={
     "contract_document": Path("contract.pdf"),
 })
-print(result.run_id)
+print(result.id)
 ```
 
 For webhooks and fire-and-forget jobs. Poll status via [`client.runs.get`](./executions.md).
@@ -46,10 +46,10 @@ result = client.run(
     input={"contract_document": Path("contract.pdf")},
     wait_for_completion=60,
 )
-print(result.status, result.output)
+print(result.finished, result.output)
 ```
 
-If the run completes within `wait_for_completion` seconds, `status`/`output` are populated. Otherwise the response includes `run_id`.
+If the run completes within `wait_for_completion` seconds, `finished` is true and `output` is populated. Either way the response carries the run `id`.
 
 ### Long-running (client polls)
 
@@ -74,7 +74,7 @@ If omitted, the run picks up the workflow's current published version at trigger
 
 ```python
 client.run("workflows.extract-invoice", input=input, overrides={
-    "parse-contract": {"text": "pre-extracted..."},
+    "steps": {"parse-contract": {"text": "pre-extracted..."}},
 })
 ```
 
@@ -92,4 +92,4 @@ Returns published versions in reverse-chronological order.
 
 ## File inputs
 
-See [File inputs](./files.md). The TL;DR: pass a `Path`, a file handle, or `{"content": bytes, "filename": str, "mime_type": str}` and the SDK uploads via `multipart/form-data` automatically.
+See [File inputs](./files.md). In short: pass a `Path`, a file handle, or `{"content": bytes, "filename": str, "mime_type": str}` and the SDK uploads via `multipart/form-data` automatically.

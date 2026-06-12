@@ -20,7 +20,7 @@ T = TypeVar("T", bound="RawSourceResponse")
 
 @_attrs_define
 class RawSourceResponse:
-    """ 
+    """
         Attributes:
             ref (str):
             path (str):
@@ -79,4 +79,3 @@ class RawSourceResponse:
         )
 
         return raw_source_response
-

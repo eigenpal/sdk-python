@@ -1,6 +1,6 @@
 from enum import Enum
 
-class RunStartResponseType(str, Enum):
+class RunListItemType(str, Enum):
     AGENT = "agent"
     WORKFLOW = "workflow"
 
