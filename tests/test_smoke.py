@@ -222,9 +222,6 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
     rerun_route = respx.post("http://localhost:3000/api/v1/runs/run_123/rerun").mock(
         return_value=httpx.Response(200, json={"executionId": "run_rerun", "status": "pending"})
     )
-    resume_route = respx.post("http://localhost:3000/api/v1/runs/run_123/resume").mock(
-        return_value=httpx.Response(200, json={"id": "run_123", "status": "running"})
-    )
     feedback_route = respx.patch("http://localhost:3000/api/v1/runs/run_123/feedback").mock(
         return_value=httpx.Response(200, json={"ok": True})
     )
@@ -236,7 +233,6 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
     run = client.runs.get("run_123", include="detail")
     client.runs.cancel("run_123")
     client.rerun("run_123")
-    client.runs.resume("run_123")
     client.runs.feedback.update("run_123", status="open")
     client.runs.expected.list("run_123")
 
@@ -248,7 +244,6 @@ def test_runs_resource_uses_public_v1_runs_api(client: EigenpalClient) -> None:
     assert (run.get("id") if isinstance(run, dict) else run["id"]) == "run_123"
     assert cancel_route.called
     assert rerun_route.called
-    assert resume_route.called
     assert feedback_route.called
     assert expected_route.called
 

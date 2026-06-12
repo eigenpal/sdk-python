@@ -72,7 +72,6 @@ client
 │   │   ├── list
 │   │   ├── delete
 │   │   └── upload
-│   ├── resume
 │   └── trace
 │       └── get
 ├── source
@@ -825,26 +824,6 @@ Rerun run
 
 ```python
 // RunRerunResponse
-```
-
-### `client.runs.resume`
-
-**`POST /api/v1/runs/{id}/resume`**
-
-Resume workflow run
-
-Resume a workflow run that is waiting for approval.
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` | Run id      |
-
-**Response**
-
-```python
-// RunResumeResponse
 ```
 
 ### `client.runs.get`

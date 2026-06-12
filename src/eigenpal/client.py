@@ -45,7 +45,6 @@ from eigenpal._generated.api.runs import (
     runs_get,
     runs_list,
     runs_rerun,
-    runs_resume,
 )
 from eigenpal._generated.api.automations import automations_sync
 from eigenpal._generated.api.source import (
@@ -136,7 +135,6 @@ from eigenpal._generated.models.runs_list_response import RunsListResponse
 from eigenpal._generated.models.run_envelope import RunEnvelope
 from eigenpal._generated.models.run_rerun_request import RunRerunRequest
 from eigenpal._generated.models.run_rerun_response import RunRerunResponse
-from eigenpal._generated.models.run_resume_response import RunResumeResponse
 from eigenpal._generated.models.run_start_response import RunStartResponse
 from eigenpal._generated.models.run_feedback_request import RunFeedbackRequest
 from eigenpal._generated.models.workflow_detail import WorkflowDetail
@@ -700,10 +698,6 @@ class RunsResource:
             include=_opt(include),
         )
         return _check_response(response).run
-
-    def resume(self, run_id: str) -> RunResumeResponse:
-        response = runs_resume.sync_detailed(id=run_id, client=self._client)
-        return _check_response(response)
 
     def cancel(self, run_id: str) -> RunsCancelResponse200:
         response = runs_cancel.sync_detailed(id=run_id, client=self._client)
