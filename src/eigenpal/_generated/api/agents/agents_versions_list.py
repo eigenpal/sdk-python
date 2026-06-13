@@ -107,8 +107,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | ListAgentVersionsResponse]:
     """ List agent Git versions
 
-     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
-    published-version message exists.
+     List Git release versions for an agent.
 
     Args:
         agent_id (str): Agent id or slug
@@ -141,8 +140,7 @@ def sync(
 ) -> ApiErrorEnvelope | ListAgentVersionsResponse | None:
     """ List agent Git versions
 
-     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
-    published-version message exists.
+     List Git release versions for an agent.
 
     Args:
         agent_id (str): Agent id or slug
@@ -170,8 +168,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | ListAgentVersionsResponse]:
     """ List agent Git versions
 
-     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
-    published-version message exists.
+     List Git release versions for an agent.
 
     Args:
         agent_id (str): Agent id or slug
@@ -204,8 +201,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | ListAgentVersionsResponse | None:
     """ List agent Git versions
 
-     Lists Git-backed release versions for an agent. Release notes are included when a matching legacy
-    published-version message exists.
+     List Git release versions for an agent.
 
     Args:
         agent_id (str): Agent id or slug

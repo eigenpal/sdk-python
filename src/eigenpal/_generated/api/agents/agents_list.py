@@ -132,8 +132,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     """ List agents
 
-     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
-    cookies or API keys.
+     List agents with pagination.
 
     Args:
         search (str | Unset): Substring match against agent fields
@@ -178,8 +177,7 @@ def sync(
 ) -> ApiErrorEnvelope | ListAgentsResponse | None:
     """ List agents
 
-     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
-    cookies or API keys.
+     List agents with pagination.
 
     Args:
         search (str | Unset): Substring match against agent fields
@@ -219,8 +217,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | ListAgentsResponse]:
     """ List agents
 
-     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
-    cookies or API keys.
+     List agents with pagination.
 
     Args:
         search (str | Unset): Substring match against agent fields
@@ -265,8 +262,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | ListAgentsResponse | None:
     """ List agents
 
-     Returns agents the caller has access to, with pagination and basic execution stats. Accepts session
-    cookies or API keys.
+     List agents with pagination.
 
     Args:
         search (str | Unset): Substring match against agent fields

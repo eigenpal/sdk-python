@@ -107,7 +107,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | WorkflowDetail]:
     """ Get a workflow by id
 
-     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
+     Get a workflow by id, including current YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -140,7 +140,7 @@ def sync(
 ) -> ApiErrorEnvelope | WorkflowDetail | None:
     """ Get a workflow by id
 
-     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
+     Get a workflow by id, including current YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -168,7 +168,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | WorkflowDetail]:
     """ Get a workflow by id
 
-     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
+     Get a workflow by id, including current YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)
@@ -201,7 +201,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | WorkflowDetail | None:
     """ Get a workflow by id
 
-     Returns the workflow summary plus the current version YAML. Use `versions list` for historical YAML.
+     Get a workflow by id, including current YAML.
 
     Args:
         id (str): Workflow id (e.g. wf_abc123)

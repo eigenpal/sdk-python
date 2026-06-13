@@ -188,6 +188,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
     """ Rerun run
 
+     Start a new run from an existing run id.
+
     Args:
         id (str):
         version (str | Unset): Version for the new run. `original` pins the source run. Defaults
@@ -227,6 +229,8 @@ def sync(
 ) -> ApiErrorEnvelope | Run | RunAccepted | None:
     """ Rerun run
 
+     Start a new run from an existing run id.
+
     Args:
         id (str):
         version (str | Unset): Version for the new run. `original` pins the source run. Defaults
@@ -260,6 +264,8 @@ async def asyncio_detailed(
 
 ) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
     """ Rerun run
+
+     Start a new run from an existing run id.
 
     Args:
         id (str):
@@ -299,6 +305,8 @@ async def asyncio(
 
 ) -> ApiErrorEnvelope | Run | RunAccepted | None:
     """ Rerun run
+
+     Start a new run from an existing run id.
 
     Args:
         id (str):

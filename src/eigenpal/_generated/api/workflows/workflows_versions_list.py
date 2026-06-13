@@ -122,7 +122,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
     """ List tagged versions for a workflow
 
-     Returns released versions in reverse-chronological order, paginated.
+     List published workflow versions.
 
     Args:
         id (str): Workflow id
@@ -161,7 +161,7 @@ def sync(
 ) -> ApiErrorEnvelope | ListVersionsResponse | None:
     """ List tagged versions for a workflow
 
-     Returns released versions in reverse-chronological order, paginated.
+     List published workflow versions.
 
     Args:
         id (str): Workflow id
@@ -195,7 +195,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | ListVersionsResponse]:
     """ List tagged versions for a workflow
 
-     Returns released versions in reverse-chronological order, paginated.
+     List published workflow versions.
 
     Args:
         id (str): Workflow id
@@ -234,7 +234,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | ListVersionsResponse | None:
     """ List tagged versions for a workflow
 
-     Returns released versions in reverse-chronological order, paginated.
+     List published workflow versions.
 
     Args:
         id (str): Workflow id

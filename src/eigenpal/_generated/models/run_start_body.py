@@ -27,7 +27,9 @@ T = TypeVar("T", bound="RunStartBody")
 
 @_attrs_define
 class RunStartBody:
-    """
+    """ Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header (`api` or `cli`). Legacy 0.5.12 body shapes
+    remain accepted.
+
         Attributes:
             target (str): Automation target without a version suffix, e.g. workflows.invoice or agents.support.
             input_ (RunStartBodyInput | Unset): Scalar and structured automation arguments.

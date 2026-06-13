@@ -25,7 +25,8 @@ class ApiErrorIssue:
         Attributes:
             field (str): JSON path of the offending field, or "<root>"
             message (str): Human-readable error message
-            code (str): Machine-readable error code (e.g. invalid_value, not_found)
+            code (str): Machine-readable error code (e.g. invalid_value, not_found, api_trigger_disabled,
+                manual_trigger_disabled)
             severity (ApiErrorIssueSeverity): Issue severity
      """
 

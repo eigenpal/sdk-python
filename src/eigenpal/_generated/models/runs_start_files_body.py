@@ -22,8 +22,8 @@ T = TypeVar("T", bound="RunsStartFilesBody")
 
 @_attrs_define
 class RunsStartFilesBody:
-    """ Multipart envelope: `target` (text), `input` / `overrides` / `metadata` (JSON text), and `files.<fieldName>`
-    (binary; repeat for arrays). Legacy: `_json`, top-level file fields, `_overrides`, `_metadata`.
+    """ Fields: `target` (text), `input` / `overrides` / `metadata` (JSON text), `files.<fieldName>` (binary). Legacy
+    `_json` and top-level file fields are accepted.
 
      """
 

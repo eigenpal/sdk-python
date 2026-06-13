@@ -105,8 +105,7 @@ def sync_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download run artifact
 
-     Download a run artifact. Workflow output artifacts resolve through DB-backed file rows; agent
-    artifacts resolve through S3. Output files for both run types live under `output/` paths.
+     Download one artifact by path.
 
     Args:
         id (str):
@@ -142,8 +141,7 @@ def sync(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download run artifact
 
-     Download a run artifact. Workflow output artifacts resolve through DB-backed file rows; agent
-    artifacts resolve through S3. Output files for both run types live under `output/` paths.
+     Download one artifact by path.
 
     Args:
         id (str):
@@ -174,8 +172,7 @@ async def asyncio_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download run artifact
 
-     Download a run artifact. Workflow output artifacts resolve through DB-backed file rows; agent
-    artifacts resolve through S3. Output files for both run types live under `output/` paths.
+     Download one artifact by path.
 
     Args:
         id (str):
@@ -211,8 +208,7 @@ async def asyncio(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download run artifact
 
-     Download a run artifact. Workflow output artifacts resolve through DB-backed file rows; agent
-    artifacts resolve through S3. Output files for both run types live under `output/` paths.
+     Download one artifact by path.
 
     Args:
         id (str):

@@ -188,8 +188,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunsListResponse]:
     """ List runs
 
-     Tenant-scoped, cursor-paginated feed of workflow and agent runs. Use type and source filters to
-    scope to one runtime or resource.
+     List workflow and agent runs with cursor pagination.
 
     Args:
         type_ (str | Unset):
@@ -276,8 +275,7 @@ def sync(
 ) -> ApiErrorEnvelope | RunsListResponse | None:
     """ List runs
 
-     Tenant-scoped, cursor-paginated feed of workflow and agent runs. Use type and source filters to
-    scope to one runtime or resource.
+     List workflow and agent runs with cursor pagination.
 
     Args:
         type_ (str | Unset):
@@ -359,8 +357,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunsListResponse]:
     """ List runs
 
-     Tenant-scoped, cursor-paginated feed of workflow and agent runs. Use type and source filters to
-    scope to one runtime or resource.
+     List workflow and agent runs with cursor pagination.
 
     Args:
         type_ (str | Unset):
@@ -447,8 +444,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunsListResponse | None:
     """ List runs
 
-     Tenant-scoped, cursor-paginated feed of workflow and agent runs. Use type and source filters to
-    scope to one runtime or resource.
+     List workflow and agent runs with cursor pagination.
 
     Args:
         type_ (str | Unset):

@@ -107,8 +107,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunArtifactsResponse]:
     """ List run artifacts
 
-     Lists every downloadable artifact path for a run. Download each with `GET
-    /api/v1/runs/:id/artifacts/:path`.
+     List downloadable artifact paths for a run.
 
     Args:
         id (str): Run id
@@ -141,8 +140,7 @@ def sync(
 ) -> ApiErrorEnvelope | RunArtifactsResponse | None:
     """ List run artifacts
 
-     Lists every downloadable artifact path for a run. Download each with `GET
-    /api/v1/runs/:id/artifacts/:path`.
+     List downloadable artifact paths for a run.
 
     Args:
         id (str): Run id
@@ -170,8 +168,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunArtifactsResponse]:
     """ List run artifacts
 
-     Lists every downloadable artifact path for a run. Download each with `GET
-    /api/v1/runs/:id/artifacts/:path`.
+     List downloadable artifact paths for a run.
 
     Args:
         id (str): Run id
@@ -204,8 +201,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunArtifactsResponse | None:
     """ List run artifacts
 
-     Lists every downloadable artifact path for a run. Download each with `GET
-    /api/v1/runs/:id/artifacts/:path`.
+     List downloadable artifact paths for a run.
 
     Args:
         id (str): Run id

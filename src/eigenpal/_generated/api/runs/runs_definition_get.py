@@ -107,9 +107,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
     """ Get run definition snapshot
 
-     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
-    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
-    see `source.git` on the run).
+     Workflow definition snapshot captured when the run was created.
 
     Args:
         id (str): Run id
@@ -142,9 +140,7 @@ def sync(
 ) -> ApiErrorEnvelope | RunDefinitionResponse | None:
     """ Get run definition snapshot
 
-     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
-    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
-    see `source.git` on the run).
+     Workflow definition snapshot captured when the run was created.
 
     Args:
         id (str): Run id
@@ -172,9 +168,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
     """ Get run definition snapshot
 
-     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
-    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
-    see `source.git` on the run).
+     Workflow definition snapshot captured when the run was created.
 
     Args:
         id (str): Run id
@@ -207,9 +201,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunDefinitionResponse | None:
     """ Get run definition snapshot
 
-     Returns the workflow definition snapshot that ran — the exact definition captured at run creation,
-    independent of later edits. Workflow runs only; agent runs return 404 (agent source lives in git,
-    see `source.git` on the run).
+     Workflow definition snapshot captured when the run was created.
 
     Args:
         id (str): Run id

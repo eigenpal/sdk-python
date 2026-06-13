@@ -316,7 +316,7 @@ class EigenpalClient:
         wait_for_completion: Optional[int] = None,
         overrides: Optional[dict[str, Any]] = None,
     ) -> RunStartResponse:
-        """Start a workflow or agent run via ``POST /api/v1/runs``.
+        """Start a run via ``POST /api/v1/runs``.
 
         The canonical JSON envelope is
         ``{"target": <canonical target>, "input": <args>, "overrides"?, "metadata"?}``.

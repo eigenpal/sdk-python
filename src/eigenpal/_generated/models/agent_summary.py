@@ -15,6 +15,7 @@ from typing import cast
 if TYPE_CHECKING:
   from ..models.agent_summary_config import AgentSummaryConfig
   from ..models.agent_summary_stats import AgentSummaryStats
+  from ..models.agent_summary_triggers import AgentSummaryTriggers
 
 
 
@@ -33,6 +34,8 @@ class AgentSummary:
             name (str):
             created_at (str):
             description (None | str | Unset):
+            api_enabled (bool | Unset): Whether API trigger is enabled (runtime projection)
+            triggers (AgentSummaryTriggers | Unset): Runtime trigger projection by type.
             source_integrity (AgentSummarySourceIntegrity | Unset):
             latest_version (None | str | Unset):
             latest_commit (None | str | Unset):
@@ -46,6 +49,8 @@ class AgentSummary:
     name: str
     created_at: str
     description: None | str | Unset = UNSET
+    api_enabled: bool | Unset = UNSET
+    triggers: AgentSummaryTriggers | Unset = UNSET
     source_integrity: AgentSummarySourceIntegrity | Unset = UNSET
     latest_version: None | str | Unset = UNSET
     latest_commit: None | str | Unset = UNSET
@@ -61,6 +66,7 @@ class AgentSummary:
     def to_dict(self) -> dict[str, Any]:
         from ..models.agent_summary_config import AgentSummaryConfig
         from ..models.agent_summary_stats import AgentSummaryStats
+        from ..models.agent_summary_triggers import AgentSummaryTriggers
         id = self.id
 
         slug = self.slug
@@ -75,6 +81,12 @@ class AgentSummary:
             description = UNSET
         else:
             description = self.description
+
+        api_enabled = self.api_enabled
+
+        triggers: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.triggers, Unset):
+            triggers = self.triggers.to_dict()
 
         source_integrity: str | Unset = UNSET
         if not isinstance(self.source_integrity, Unset):
@@ -118,6 +130,10 @@ class AgentSummary:
         })
         if description is not UNSET:
             field_dict["description"] = description
+        if api_enabled is not UNSET:
+            field_dict["apiEnabled"] = api_enabled
+        if triggers is not UNSET:
+            field_dict["triggers"] = triggers
         if source_integrity is not UNSET:
             field_dict["sourceIntegrity"] = source_integrity
         if latest_version is not UNSET:
@@ -139,6 +155,7 @@ class AgentSummary:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.agent_summary_config import AgentSummaryConfig
         from ..models.agent_summary_stats import AgentSummaryStats
+        from ..models.agent_summary_triggers import AgentSummaryTriggers
         d = dict(src_dict)
         id = d.pop("id")
 
@@ -160,6 +177,18 @@ class AgentSummary:
             return cast(None | str | Unset, data)
 
         description = _parse_description(d.pop("description", UNSET))
+
+
+        api_enabled = d.pop("apiEnabled", UNSET)
+
+        _triggers = d.pop("triggers", UNSET)
+        triggers: AgentSummaryTriggers | Unset
+        if isinstance(_triggers,  Unset):
+            triggers = UNSET
+        else:
+            triggers = AgentSummaryTriggers.from_dict(_triggers)
+
+
 
 
         _source_integrity = d.pop("sourceIntegrity", UNSET)
@@ -226,6 +255,8 @@ class AgentSummary:
             name=name,
             created_at=created_at,
             description=description,
+            api_enabled=api_enabled,
+            triggers=triggers,
             source_integrity=source_integrity,
             latest_version=latest_version,
             latest_commit=latest_commit,

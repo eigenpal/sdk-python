@@ -200,23 +200,19 @@ def sync_detailed(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
-    """ Start a workflow or agent run
+    """ Start a run
 
-     Starts a run for a workflow or agent target. JSON and multipart bodies share the same envelope: `{
-    target, input, files?, overrides?, metadata? }`. In JSON, `files` carries `{ fileId, filename,
-    mimeType }` references. In multipart (`Content-Type: multipart/form-data`), send `input`,
-    `overrides`, and `metadata` as JSON text parts and each file as `files.<fieldName>`. Legacy 0.5.12
-    shapes (`_json`, top-level file fields, `input._overrides`) remain accepted. Run provenance may be
-    declared with the `X-Eigenpal-Trigger` header (`api` or `cli`).
+     Start a run. Send JSON or multipart/form-data.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
-        body (RunStartBody):
-        body (RunsStartFilesBody): Multipart envelope: `target` (text), `input` / `overrides` /
-            `metadata` (JSON text), and `files.<fieldName>` (binary; repeat for arrays). Legacy:
-            `_json`, top-level file fields, `_overrides`, `_metadata`.
+        body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
+            (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
+        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
+            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
+            accepted.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -248,23 +244,19 @@ def sync(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | Run | RunAccepted | None:
-    """ Start a workflow or agent run
+    """ Start a run
 
-     Starts a run for a workflow or agent target. JSON and multipart bodies share the same envelope: `{
-    target, input, files?, overrides?, metadata? }`. In JSON, `files` carries `{ fileId, filename,
-    mimeType }` references. In multipart (`Content-Type: multipart/form-data`), send `input`,
-    `overrides`, and `metadata` as JSON text parts and each file as `files.<fieldName>`. Legacy 0.5.12
-    shapes (`_json`, top-level file fields, `input._overrides`) remain accepted. Run provenance may be
-    declared with the `X-Eigenpal-Trigger` header (`api` or `cli`).
+     Start a run. Send JSON or multipart/form-data.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
-        body (RunStartBody):
-        body (RunsStartFilesBody): Multipart envelope: `target` (text), `input` / `overrides` /
-            `metadata` (JSON text), and `files.<fieldName>` (binary; repeat for arrays). Legacy:
-            `_json`, top-level file fields, `_overrides`, `_metadata`.
+        body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
+            (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
+        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
+            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
+            accepted.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -291,23 +283,19 @@ async def asyncio_detailed(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
-    """ Start a workflow or agent run
+    """ Start a run
 
-     Starts a run for a workflow or agent target. JSON and multipart bodies share the same envelope: `{
-    target, input, files?, overrides?, metadata? }`. In JSON, `files` carries `{ fileId, filename,
-    mimeType }` references. In multipart (`Content-Type: multipart/form-data`), send `input`,
-    `overrides`, and `metadata` as JSON text parts and each file as `files.<fieldName>`. Legacy 0.5.12
-    shapes (`_json`, top-level file fields, `input._overrides`) remain accepted. Run provenance may be
-    declared with the `X-Eigenpal-Trigger` header (`api` or `cli`).
+     Start a run. Send JSON or multipart/form-data.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
-        body (RunStartBody):
-        body (RunsStartFilesBody): Multipart envelope: `target` (text), `input` / `overrides` /
-            `metadata` (JSON text), and `files.<fieldName>` (binary; repeat for arrays). Legacy:
-            `_json`, top-level file fields, `_overrides`, `_metadata`.
+        body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
+            (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
+        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
+            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
+            accepted.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -339,23 +327,19 @@ async def asyncio(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | Run | RunAccepted | None:
-    """ Start a workflow or agent run
+    """ Start a run
 
-     Starts a run for a workflow or agent target. JSON and multipart bodies share the same envelope: `{
-    target, input, files?, overrides?, metadata? }`. In JSON, `files` carries `{ fileId, filename,
-    mimeType }` references. In multipart (`Content-Type: multipart/form-data`), send `input`,
-    `overrides`, and `metadata` as JSON text parts and each file as `files.<fieldName>`. Legacy 0.5.12
-    shapes (`_json`, top-level file fields, `input._overrides`) remain accepted. Run provenance may be
-    declared with the `X-Eigenpal-Trigger` header (`api` or `cli`).
+     Start a run. Send JSON or multipart/form-data.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
-        body (RunStartBody):
-        body (RunsStartFilesBody): Multipart envelope: `target` (text), `input` / `overrides` /
-            `metadata` (JSON text), and `files.<fieldName>` (binary; repeat for arrays). Legacy:
-            `_json`, top-level file fields, `_overrides`, `_metadata`.
+        body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
+            (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
+        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
+            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
+            accepted.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -116,8 +116,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunsFilesUploadResponse201]:
     """ Upload run input file
 
-     Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; generated output downloads use artifacts.
+     Upload a workflow run input file before execution starts.
 
     Args:
         id (str):
@@ -153,8 +152,7 @@ def sync(
 ) -> ApiErrorEnvelope | RunsFilesUploadResponse201 | None:
     """ Upload run input file
 
-     Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; generated output downloads use artifacts.
+     Upload a workflow run input file before execution starts.
 
     Args:
         id (str):
@@ -185,8 +183,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunsFilesUploadResponse201]:
     """ Upload run input file
 
-     Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; generated output downloads use artifacts.
+     Upload a workflow run input file before execution starts.
 
     Args:
         id (str):
@@ -222,8 +219,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunsFilesUploadResponse201 | None:
     """ Upload run input file
 
-     Upload a DB-backed workflow run input file. This endpoint is for workflow runs before execution
-    starts; generated output downloads use artifacts.
+     Upload a workflow run input file before execution starts.
 
     Args:
         id (str):

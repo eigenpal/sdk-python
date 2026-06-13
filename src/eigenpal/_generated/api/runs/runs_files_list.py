@@ -107,10 +107,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunFilesResponse]:
     """ List run files
 
-     List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows for structured inspection. Download generated output
-    artifacts for completed workflow and agent runs through top-level `files` and GET
-    /api/v1/runs/:id/artifacts/:path.
+     List workflow run input and output file rows.
 
     Args:
         id (str):
@@ -143,10 +140,7 @@ def sync(
 ) -> ApiErrorEnvelope | RunFilesResponse | None:
     """ List run files
 
-     List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows for structured inspection. Download generated output
-    artifacts for completed workflow and agent runs through top-level `files` and GET
-    /api/v1/runs/:id/artifacts/:path.
+     List workflow run input and output file rows.
 
     Args:
         id (str):
@@ -174,10 +168,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunFilesResponse]:
     """ List run files
 
-     List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows for structured inspection. Download generated output
-    artifacts for completed workflow and agent runs through top-level `files` and GET
-    /api/v1/runs/:id/artifacts/:path.
+     List workflow run input and output file rows.
 
     Args:
         id (str):
@@ -210,10 +201,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunFilesResponse | None:
     """ List run files
 
-     List DB-backed workflow run files: mutable workflow inputs before execution starts, plus
-    workflow/eval input and output file rows for structured inspection. Download generated output
-    artifacts for completed workflow and agent runs through top-level `files` and GET
-    /api/v1/runs/:id/artifacts/:path.
+     List workflow run input and output file rows.
 
     Args:
         id (str):

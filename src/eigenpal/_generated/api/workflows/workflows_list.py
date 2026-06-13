@@ -137,8 +137,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | ListWorkflowsResponse]:
     """ List workflows
 
-     Returns workflows the API key has access to, with pagination. Use `name` for exact-match slug
-    lookup, `search` for substring match.
+     List workflows with pagination.
 
     Args:
         search (str | Unset): Substring match against workflow name
@@ -183,8 +182,7 @@ def sync(
 ) -> ApiErrorEnvelope | ListWorkflowsResponse | None:
     """ List workflows
 
-     Returns workflows the API key has access to, with pagination. Use `name` for exact-match slug
-    lookup, `search` for substring match.
+     List workflows with pagination.
 
     Args:
         search (str | Unset): Substring match against workflow name
@@ -224,8 +222,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | ListWorkflowsResponse]:
     """ List workflows
 
-     Returns workflows the API key has access to, with pagination. Use `name` for exact-match slug
-    lookup, `search` for substring match.
+     List workflows with pagination.
 
     Args:
         search (str | Unset): Substring match against workflow name
@@ -270,8 +267,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | ListWorkflowsResponse | None:
     """ List workflows
 
-     Returns workflows the API key has access to, with pagination. Use `name` for exact-match slug
-    lookup, `search` for substring match.
+     List workflows with pagination.
 
     Args:
         search (str | Unset): Substring match against workflow name

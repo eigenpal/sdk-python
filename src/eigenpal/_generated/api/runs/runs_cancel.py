@@ -107,8 +107,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunCancelResponse]:
     """ Cancel run
 
-     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
-    canonical run with a `cancellation` block describing the outcome.
+     Cancel a queued run or request cancellation of an in-flight run.
 
     Args:
         id (str):
@@ -141,8 +140,7 @@ def sync(
 ) -> ApiErrorEnvelope | RunCancelResponse | None:
     """ Cancel run
 
-     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
-    canonical run with a `cancellation` block describing the outcome.
+     Cancel a queued run or request cancellation of an in-flight run.
 
     Args:
         id (str):
@@ -170,8 +168,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunCancelResponse]:
     """ Cancel run
 
-     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
-    canonical run with a `cancellation` block describing the outcome.
+     Cancel a queued run or request cancellation of an in-flight run.
 
     Args:
         id (str):
@@ -204,8 +201,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunCancelResponse | None:
     """ Cancel run
 
-     Cancels a queued run immediately, or requests cancellation of an in-flight run. Returns the partial
-    canonical run with a `cancellation` block describing the outcome.
+     Cancel a queued run or request cancellation of an in-flight run.
 
     Args:
         id (str):

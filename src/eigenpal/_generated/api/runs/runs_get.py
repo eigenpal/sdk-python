@@ -118,21 +118,12 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | Run]:
     """ Get run
 
-     Returns the grouped run object — identity, `finished`, slim `execution`, `timing`, `source`,
-    `trigger`, optional `eval`, and terminal `output`/`files`/`error` at the top level once `finished`
-    is true. Pass `expand` (`input`, `usage`, `execution`, `debug`) to add nested detail objects;
-    `expand=execution` adds steps (workflow) or files, feedback, and expected (agent). Download
-    artifacts through `GET /api/v1/runs/:id/artifacts/:path`. Workflow definition snapshot: `GET
-    /api/v1/runs/:id/definition`.
+     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
 
     Args:
         id (str): Run id
-        expand (str | Unset): Comma-separated expand sections: `input`, `usage`, `execution`,
-            `debug`. Each adds one nested object onto the run. `finished` and slim `execution`
-            (status, schemaValid, batch, retry, annotation) are always present; `output`, `files`, and
-            `error` appear at the top level once the run is terminal. Use `expand=execution` for steps
-            (workflow) or files, feedback, and expected (agent). Unknown tokens return 400 with a
-            migration hint.
+        expand (str | Unset): Optional sections: `input`, `usage`, `execution`, `debug`. Terminal
+            runs always include top-level output, files, and error.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,21 +155,12 @@ def sync(
 ) -> ApiErrorEnvelope | Run | None:
     """ Get run
 
-     Returns the grouped run object — identity, `finished`, slim `execution`, `timing`, `source`,
-    `trigger`, optional `eval`, and terminal `output`/`files`/`error` at the top level once `finished`
-    is true. Pass `expand` (`input`, `usage`, `execution`, `debug`) to add nested detail objects;
-    `expand=execution` adds steps (workflow) or files, feedback, and expected (agent). Download
-    artifacts through `GET /api/v1/runs/:id/artifacts/:path`. Workflow definition snapshot: `GET
-    /api/v1/runs/:id/definition`.
+     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
 
     Args:
         id (str): Run id
-        expand (str | Unset): Comma-separated expand sections: `input`, `usage`, `execution`,
-            `debug`. Each adds one nested object onto the run. `finished` and slim `execution`
-            (status, schemaValid, batch, retry, annotation) are always present; `output`, `files`, and
-            `error` appear at the top level once the run is terminal. Use `expand=execution` for steps
-            (workflow) or files, feedback, and expected (agent). Unknown tokens return 400 with a
-            migration hint.
+        expand (str | Unset): Optional sections: `input`, `usage`, `execution`, `debug`. Terminal
+            runs always include top-level output, files, and error.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -205,21 +187,12 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | Run]:
     """ Get run
 
-     Returns the grouped run object — identity, `finished`, slim `execution`, `timing`, `source`,
-    `trigger`, optional `eval`, and terminal `output`/`files`/`error` at the top level once `finished`
-    is true. Pass `expand` (`input`, `usage`, `execution`, `debug`) to add nested detail objects;
-    `expand=execution` adds steps (workflow) or files, feedback, and expected (agent). Download
-    artifacts through `GET /api/v1/runs/:id/artifacts/:path`. Workflow definition snapshot: `GET
-    /api/v1/runs/:id/definition`.
+     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
 
     Args:
         id (str): Run id
-        expand (str | Unset): Comma-separated expand sections: `input`, `usage`, `execution`,
-            `debug`. Each adds one nested object onto the run. `finished` and slim `execution`
-            (status, schemaValid, batch, retry, annotation) are always present; `output`, `files`, and
-            `error` appear at the top level once the run is terminal. Use `expand=execution` for steps
-            (workflow) or files, feedback, and expected (agent). Unknown tokens return 400 with a
-            migration hint.
+        expand (str | Unset): Optional sections: `input`, `usage`, `execution`, `debug`. Terminal
+            runs always include top-level output, files, and error.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -251,21 +224,12 @@ async def asyncio(
 ) -> ApiErrorEnvelope | Run | None:
     """ Get run
 
-     Returns the grouped run object — identity, `finished`, slim `execution`, `timing`, `source`,
-    `trigger`, optional `eval`, and terminal `output`/`files`/`error` at the top level once `finished`
-    is true. Pass `expand` (`input`, `usage`, `execution`, `debug`) to add nested detail objects;
-    `expand=execution` adds steps (workflow) or files, feedback, and expected (agent). Download
-    artifacts through `GET /api/v1/runs/:id/artifacts/:path`. Workflow definition snapshot: `GET
-    /api/v1/runs/:id/definition`.
+     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
 
     Args:
         id (str): Run id
-        expand (str | Unset): Comma-separated expand sections: `input`, `usage`, `execution`,
-            `debug`. Each adds one nested object onto the run. `finished` and slim `execution`
-            (status, schemaValid, batch, retry, annotation) are always present; `output`, `files`, and
-            `error` appear at the top level once the run is terminal. Use `expand=execution` for steps
-            (workflow) or files, feedback, and expected (agent). Unknown tokens return 400 with a
-            migration hint.
+        expand (str | Unset): Optional sections: `input`, `usage`, `execution`, `debug`. Terminal
+            runs always include top-level output, files, and error.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

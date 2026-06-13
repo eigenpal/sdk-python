@@ -122,8 +122,7 @@ def sync_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ List or download agent source files
 
-     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
-    artifacts (runs, dataset) are not served here.
+     List or read agent source files from Git.
 
     Args:
         agent_id (str): Agent id or slug
@@ -165,8 +164,7 @@ def sync(
 ) -> Any | ApiErrorEnvelope | None:
     """ List or download agent source files
 
-     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
-    artifacts (runs, dataset) are not served here.
+     List or read agent source files from Git.
 
     Args:
         agent_id (str): Agent id or slug
@@ -203,8 +201,7 @@ async def asyncio_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ List or download agent source files
 
-     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
-    artifacts (runs, dataset) are not served here.
+     List or read agent source files from Git.
 
     Args:
         agent_id (str): Agent id or slug
@@ -246,8 +243,7 @@ async def asyncio(
 ) -> Any | ApiErrorEnvelope | None:
     """ List or download agent source files
 
-     Lists or reads files from the agent Git package (`agents/{slug}/` on organization source). Runtime
-    artifacts (runs, dataset) are not served here.
+     List or read agent source files from Git.
 
     Args:
         agent_id (str): Agent id or slug
