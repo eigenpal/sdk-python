@@ -21,6 +21,7 @@ def _get_kwargs(
     search: str | Unset = UNSET,
     name: str | Unset = UNSET,
     kind: WorkflowsListKind | Unset = UNSET,
+    folder_id: None | str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -40,6 +41,13 @@ def _get_kwargs(
         json_kind = kind.value
 
     params["kind"] = json_kind
+
+    json_folder_id: None | str | Unset
+    if isinstance(folder_id, Unset):
+        json_folder_id = UNSET
+    else:
+        json_folder_id = folder_id
+    params["folderId"] = json_folder_id
 
     params["limit"] = limit
 
@@ -131,6 +139,7 @@ def sync_detailed(
     search: str | Unset = UNSET,
     name: str | Unset = UNSET,
     kind: WorkflowsListKind | Unset = UNSET,
+    folder_id: None | str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -143,6 +152,8 @@ def sync_detailed(
         search (str | Unset): Substring match against workflow name
         name (str | Unset): Exact-match lookup by workflow name (slug)
         kind (WorkflowsListKind | Unset): Filter by workflow kind
+        folder_id (None | str | Unset): Filter by folder: omit for all workflows, 'null' for
+            root/unfiled only, or a folder id
         limit (int | Unset): Page size (max 100, default 50)
         offset (int | Unset): Page offset
 
@@ -159,6 +170,7 @@ def sync_detailed(
         search=search,
 name=name,
 kind=kind,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
@@ -176,6 +188,7 @@ def sync(
     search: str | Unset = UNSET,
     name: str | Unset = UNSET,
     kind: WorkflowsListKind | Unset = UNSET,
+    folder_id: None | str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -188,6 +201,8 @@ def sync(
         search (str | Unset): Substring match against workflow name
         name (str | Unset): Exact-match lookup by workflow name (slug)
         kind (WorkflowsListKind | Unset): Filter by workflow kind
+        folder_id (None | str | Unset): Filter by folder: omit for all workflows, 'null' for
+            root/unfiled only, or a folder id
         limit (int | Unset): Page size (max 100, default 50)
         offset (int | Unset): Page offset
 
@@ -205,6 +220,7 @@ def sync(
 search=search,
 name=name,
 kind=kind,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
@@ -216,6 +232,7 @@ async def asyncio_detailed(
     search: str | Unset = UNSET,
     name: str | Unset = UNSET,
     kind: WorkflowsListKind | Unset = UNSET,
+    folder_id: None | str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -228,6 +245,8 @@ async def asyncio_detailed(
         search (str | Unset): Substring match against workflow name
         name (str | Unset): Exact-match lookup by workflow name (slug)
         kind (WorkflowsListKind | Unset): Filter by workflow kind
+        folder_id (None | str | Unset): Filter by folder: omit for all workflows, 'null' for
+            root/unfiled only, or a folder id
         limit (int | Unset): Page size (max 100, default 50)
         offset (int | Unset): Page offset
 
@@ -244,6 +263,7 @@ async def asyncio_detailed(
         search=search,
 name=name,
 kind=kind,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
@@ -261,6 +281,7 @@ async def asyncio(
     search: str | Unset = UNSET,
     name: str | Unset = UNSET,
     kind: WorkflowsListKind | Unset = UNSET,
+    folder_id: None | str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -273,6 +294,8 @@ async def asyncio(
         search (str | Unset): Substring match against workflow name
         name (str | Unset): Exact-match lookup by workflow name (slug)
         kind (WorkflowsListKind | Unset): Filter by workflow kind
+        folder_id (None | str | Unset): Filter by folder: omit for all workflows, 'null' for
+            root/unfiled only, or a folder id
         limit (int | Unset): Page size (max 100, default 50)
         offset (int | Unset): Page offset
 
@@ -290,6 +313,7 @@ async def asyncio(
 search=search,
 name=name,
 kind=kind,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 

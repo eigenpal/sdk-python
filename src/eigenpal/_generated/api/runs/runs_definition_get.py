@@ -107,7 +107,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
     """ Get run definition snapshot
 
-     Workflow definition snapshot captured when the run was created.
+     Workflow definition snapshot captured when the run was created. Workflow runs only; agent runs
+    return not_found.
 
     Args:
         id (str): Run id
@@ -140,7 +141,8 @@ def sync(
 ) -> ApiErrorEnvelope | RunDefinitionResponse | None:
     """ Get run definition snapshot
 
-     Workflow definition snapshot captured when the run was created.
+     Workflow definition snapshot captured when the run was created. Workflow runs only; agent runs
+    return not_found.
 
     Args:
         id (str): Run id
@@ -168,7 +170,8 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunDefinitionResponse]:
     """ Get run definition snapshot
 
-     Workflow definition snapshot captured when the run was created.
+     Workflow definition snapshot captured when the run was created. Workflow runs only; agent runs
+    return not_found.
 
     Args:
         id (str): Run id
@@ -201,7 +204,8 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunDefinitionResponse | None:
     """ Get run definition snapshot
 
-     Workflow definition snapshot captured when the run was created.
+     Workflow definition snapshot captured when the run was created. Workflow runs only; agent runs
+    return not_found.
 
     Args:
         id (str): Run id

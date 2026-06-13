@@ -11,6 +11,8 @@ from ..types import UNSET, Unset
 from ..types import UNSET, Unset
 from typing import cast
 
+if TYPE_CHECKING:
+  from ..models.workflow_detail_triggers import WorkflowDetailTriggers
 
 
 
@@ -29,6 +31,8 @@ class WorkflowDetail:
             name (None | str | Unset): Human-readable workflow name from the YAML (e.g. "extract-invoice"). Null when no
                 version is published yet.
             version (None | str | Unset): Current release tag (e.g. "1.2.4"). Null until a version is published.
+            api_enabled (bool | Unset): Whether API trigger is enabled (runtime projection)
+            triggers (WorkflowDetailTriggers | Unset): Runtime trigger projection by type.
             updated_at (str | Unset):
             yaml_content (None | str | Unset): YAML for the current version. Null until a version is published. Heavy; only
                 returned on single-workflow GET, not on list.
@@ -38,6 +42,8 @@ class WorkflowDetail:
     created_at: str
     name: None | str | Unset = UNSET
     version: None | str | Unset = UNSET
+    api_enabled: bool | Unset = UNSET
+    triggers: WorkflowDetailTriggers | Unset = UNSET
     updated_at: str | Unset = UNSET
     yaml_content: None | str | Unset = UNSET
 
@@ -46,6 +52,7 @@ class WorkflowDetail:
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.workflow_detail_triggers import WorkflowDetailTriggers
         id = self.id
 
         created_at: str
@@ -62,6 +69,12 @@ class WorkflowDetail:
             version = UNSET
         else:
             version = self.version
+
+        api_enabled = self.api_enabled
+
+        triggers: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.triggers, Unset):
+            triggers = self.triggers.to_dict()
 
         updated_at: str | Unset
         if isinstance(self.updated_at, Unset):
@@ -86,6 +99,10 @@ class WorkflowDetail:
             field_dict["name"] = name
         if version is not UNSET:
             field_dict["version"] = version
+        if api_enabled is not UNSET:
+            field_dict["apiEnabled"] = api_enabled
+        if triggers is not UNSET:
+            field_dict["triggers"] = triggers
         if updated_at is not UNSET:
             field_dict["updatedAt"] = updated_at
         if yaml_content is not UNSET:
@@ -97,6 +114,7 @@ class WorkflowDetail:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.workflow_detail_triggers import WorkflowDetailTriggers
         d = dict(src_dict)
         id = d.pop("id")
 
@@ -126,6 +144,18 @@ class WorkflowDetail:
         version = _parse_version(d.pop("version", UNSET))
 
 
+        api_enabled = d.pop("apiEnabled", UNSET)
+
+        _triggers = d.pop("triggers", UNSET)
+        triggers: WorkflowDetailTriggers | Unset
+        if isinstance(_triggers,  Unset):
+            triggers = UNSET
+        else:
+            triggers = WorkflowDetailTriggers.from_dict(_triggers)
+
+
+
+
         def _parse_updated_at(data: object) -> str | Unset:
             if isinstance(data, Unset):
                 return data
@@ -149,6 +179,8 @@ class WorkflowDetail:
             created_at=created_at,
             name=name,
             version=version,
+            api_enabled=api_enabled,
+            triggers=triggers,
             updated_at=updated_at,
             yaml_content=yaml_content,
         )

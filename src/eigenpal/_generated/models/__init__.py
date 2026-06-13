@@ -130,8 +130,10 @@ from .source_secrets_encrypt_response_encrypted import SourceSecretsEncryptRespo
 from .source_secrets_encrypt_response_secrets import SourceSecretsEncryptResponseSecrets
 from .source_secrets_encrypt_response_secrets_additional_property import SourceSecretsEncryptResponseSecretsAdditionalProperty
 from .workflow_detail import WorkflowDetail
+from .workflow_detail_triggers import WorkflowDetailTriggers
 from .workflow_run_execution import WorkflowRunExecution
 from .workflow_summary import WorkflowSummary
+from .workflow_summary_triggers import WorkflowSummaryTriggers
 from .workflow_version import WorkflowVersion
 from .workflows_list_kind import WorkflowsListKind
 
@@ -266,8 +268,10 @@ __all__ = (
     "SourceSecretsEncryptResponseSecrets",
     "SourceSecretsEncryptResponseSecretsAdditionalProperty",
     "WorkflowDetail",
+    "WorkflowDetailTriggers",
     "WorkflowRunExecution",
     "WorkflowsListKind",
     "WorkflowSummary",
+    "WorkflowSummaryTriggers",
     "WorkflowVersion",
 )

@@ -631,7 +631,7 @@ Connect to live run
 
 Get run definition snapshot
 
-Workflow definition snapshot captured when the run was created.
+Workflow definition snapshot captured when the run was created. Workflow runs only; agent runs return not_found.
 
 **Path parameters**
 
@@ -1120,13 +1120,14 @@ List workflows with pagination.
 
 **Query parameters**
 
-| Name     | Type                           | Description                                          |
-| -------- | ------------------------------ | ---------------------------------------------------- |
-| `search` | `str`                          | (optional)Substring match against workflow name      |
-| `name`   | `str`                          | (optional)Exact-match lookup by workflow name (slug) |
-| `kind`   | `Literal["workflow", "block"]` | (optional)Filter by workflow kind                    |
-| `limit`  | `int`                          | (optional)Page size (max 100, default 50)            |
-| `offset` | `int`                          | (optional)Page offset                                |
+| Name        | Type                           | Description                                                                                      |
+| ----------- | ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `search`    | `str`                          | (optional)Substring match against workflow name                                                  |
+| `name`      | `str`                          | (optional)Exact-match lookup by workflow name (slug)                                             |
+| `kind`      | `Literal["workflow", "block"]` | (optional)Filter by workflow kind                                                                |
+| `folder_id` | `Union[str, None]`             | (optional)Filter by folder: omit for all workflows, 'null' for root/unfiled only, or a folder id |
+| `limit`     | `int`                          | (optional)Page size (max 100, default 50)                                                        |
+| `offset`    | `int`                          | (optional)Page offset                                                                            |
 
 **Response**
 
