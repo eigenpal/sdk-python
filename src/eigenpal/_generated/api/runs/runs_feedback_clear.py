@@ -9,7 +9,7 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.runs_feedback_clear_response_200 import RunsFeedbackClearResponse200
+from ...models.run_feedback_detail import RunFeedbackDetail
 from typing import cast
 
 
@@ -34,9 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunsFeedbackClearResponse200 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     if response.status_code == 200:
-        response_200 = RunsFeedbackClearResponse200.from_dict(response.json())
+        response_200 = RunFeedbackDetail.from_dict(response.json())
 
 
 
@@ -70,6 +70,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 413:
+        response_413 = ApiErrorEnvelope.from_dict(response.json())
+
+
+
+        return response_413
+
     if response.status_code == 429:
         response_429 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -90,7 +97,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunsFeedbackClearResponse200]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -104,7 +111,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunsFeedbackClearResponse200]:
+) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Clear run feedback
 
     Args:
@@ -115,7 +122,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsFeedbackClearResponse200]
+        Response[ApiErrorEnvelope | RunFeedbackDetail]
      """
 
 
@@ -135,7 +142,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunsFeedbackClearResponse200 | None:
+) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Clear run feedback
 
     Args:
@@ -146,7 +153,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsFeedbackClearResponse200
+        ApiErrorEnvelope | RunFeedbackDetail
      """
 
 
@@ -161,7 +168,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunsFeedbackClearResponse200]:
+) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Clear run feedback
 
     Args:
@@ -172,7 +179,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsFeedbackClearResponse200]
+        Response[ApiErrorEnvelope | RunFeedbackDetail]
      """
 
 
@@ -192,7 +199,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunsFeedbackClearResponse200 | None:
+) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Clear run feedback
 
     Args:
@@ -203,7 +210,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsFeedbackClearResponse200
+        ApiErrorEnvelope | RunFeedbackDetail
      """
 
 

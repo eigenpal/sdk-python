@@ -12,7 +12,7 @@ from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.run import Run
 from ...models.run_accepted import RunAccepted
 from ...models.run_start_body import RunStartBody
-from ...models.runs_start_files_body import RunsStartFilesBody
+from ...models.run_start_multipart_request import RunStartMultipartRequest
 from ...types import UNSET, Unset
 from typing import cast
 
@@ -20,7 +20,7 @@ from typing import cast
 
 def _get_kwargs(
     *,
-    body:    RunStartBody  |     RunsStartFilesBody  | Unset = UNSET,
+    body:    RunStartBody  |     RunStartMultipartRequest  | Unset = UNSET,
     version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
@@ -51,7 +51,7 @@ def _get_kwargs(
 
 
         headers["Content-Type"] = "application/json"
-    if isinstance(body, RunsStartFilesBody):
+    if isinstance(body, RunStartMultipartRequest):
         _kwargs["files"] = body.to_multipart()
 
 
@@ -163,6 +163,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 413:
+        response_413 = ApiErrorEnvelope.from_dict(response.json())
+
+
+
+        return response_413
+
     if response.status_code == 429:
         response_429 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -195,7 +202,7 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body:    RunStartBody  |     RunsStartFilesBody  | Unset = UNSET,
+    body:    RunStartBody  |     RunStartMultipartRequest  | Unset = UNSET,
     version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
@@ -210,9 +217,7 @@ def sync_detailed(
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
             (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
-        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
-            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
-            accepted.
+        body (RunStartMultipartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -239,7 +244,7 @@ wait_for_completion=wait_for_completion,
 def sync(
     *,
     client: AuthenticatedClient | Client,
-    body:    RunStartBody  |     RunsStartFilesBody  | Unset = UNSET,
+    body:    RunStartBody  |     RunStartMultipartRequest  | Unset = UNSET,
     version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
@@ -254,9 +259,7 @@ def sync(
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
             (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
-        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
-            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
-            accepted.
+        body (RunStartMultipartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -278,7 +281,7 @@ wait_for_completion=wait_for_completion,
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body:    RunStartBody  |     RunsStartFilesBody  | Unset = UNSET,
+    body:    RunStartBody  |     RunStartMultipartRequest  | Unset = UNSET,
     version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
@@ -293,9 +296,7 @@ async def asyncio_detailed(
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
             (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
-        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
-            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
-            accepted.
+        body (RunStartMultipartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -322,7 +323,7 @@ wait_for_completion=wait_for_completion,
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
-    body:    RunStartBody  |     RunsStartFilesBody  | Unset = UNSET,
+    body:    RunStartBody  |     RunStartMultipartRequest  | Unset = UNSET,
     version: str | Unset = UNSET,
     wait_for_completion: int | Unset = UNSET,
 
@@ -337,9 +338,7 @@ async def asyncio(
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
             (`api` or `cli`). Legacy 0.5.12 body shapes remain accepted.
-        body (RunsStartFilesBody): Fields: `target` (text), `input` / `overrides` / `metadata`
-            (JSON text), `files.<fieldName>` (binary). Legacy `_json` and top-level file fields are
-            accepted.
+        body (RunStartMultipartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

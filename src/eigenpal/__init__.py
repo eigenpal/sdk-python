@@ -8,15 +8,15 @@ Example
     client = EigenpalClient(api_key=os.environ["EIGENPAL_API_KEY"])
 
     # Async — enqueue and poll later.
-    result = client.run("workflows.wf_abc", input={"contract": {"file_id": "f_x"}})
+    result = client.run("workflows.extract-invoice", input={"contract": {"fileId": "f_x"}})
 
     # Sync — server holds the connection up to 60s.
     result = client.run(
-        "workflows.wf_abc", input={...}, wait_for_completion=60,
+        "workflows.extract-invoice", input={...}, wait_for_completion=60,
     )
 
     # Client-side poll (up to 5min by default).
-    result = client.workflows.executions.run_and_wait("wf_abc", input={...})
+    result = client.run_and_wait("workflows.extract-invoice", input={...})
 """
 
 from eigenpal.client import EigenpalClient

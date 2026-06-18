@@ -10,8 +10,8 @@ from eigenpal import EigenpalClient
 client = EigenpalClient(api_key=os.environ["EIGENPAL_API_KEY"])
 
 # Run a workflow with a file input (multipart upload, no base64).
-result = client.workflows.executions.run_and_wait(
-    "extract-invoice",
+result = client.run_and_wait(
+    "workflows.extract-invoice",
     input={"contract": Path("contract.pdf")},
 )
 print(result["finished"], result["output"])
@@ -23,77 +23,62 @@ print(result["finished"], result["output"])
 client
 ├── run
 ├── rerun
-├── agents
-│   ├── list
-│   ├── get
-│   ├── create
-│   ├── update
-│   ├── list_files
-│   ├── put_file
-│   ├── upload_files
-│   ├── versions
-│   └── email_triggers
-│       ├── list
-│       ├── get
-│       ├── create_alias
-│       ├── delete_alias
-│       ├── update
-│       └── update_alias
-├── workflows
+├── automations
 │   ├── list
 │   ├── get
 │   ├── versions
-│   └── executions
-│       └── run_and_wait
+│   ├── dataset
+│   │   ├── export
+│   │   └── import_
+│   ├── evaluators
+│   │   ├── get
+│   │   └── update
+│   ├── examples
+│   │   ├── list
+│   │   ├── get
+│   │   ├── create
+│   │   ├── delete
+│   │   ├── run
+│   │   └── update
+│   ├── experiments
+│   │   ├── list
+│   │   ├── get
+│   │   ├── cancel
+│   │   └── create
+│   └── triggers
 ├── runs
 │   ├── list
 │   ├── get
 │   ├── artifacts
 │   │   ├── list
-│   │   ├── download
-│   │   └── download_zip
+│   │   └── download
 │   ├── cancel
-│   ├── compare
-│   ├── comparison
-│   │   └── get
-│   ├── connect
-│   ├── definition
-│   ├── expected
-│   │   ├── list
-│   │   ├── copy_output
-│   │   ├── delete
-│   │   ├── download
-│   │   ├── rename
-│   │   └── upload
+│   ├── eval_results
+│   │   └── list
+│   ├── events
 │   ├── feedback
 │   │   ├── get
 │   │   ├── clear
-│   │   ├── resolve
 │   │   └── update
-│   ├── files
-│   │   ├── list
-│   │   ├── delete
-│   │   └── upload
-│   └── trace
-│       └── get
-├── source
-│   ├── decrypt_secrets
-│   ├── encrypt_secrets
-│   ├── lockfile
-│   ├── raw
-│   ├── releases
-│   └── repository
-└── automations
-    └── sync
+│   ├── promote
+│   ├── steps
+│   ├── trace
+│   │   └── get
+│   └── usage
+├── files
+│   ├── get
+│   ├── delete
+│   ├── download
+│   └── upload
+└── auth
+    └── check
 ```
 
 Start runs with `client.run(...)` and create a new run from a previous snapshot with `client.rerun(...)`.
 
-Run inspection and artifact/feedback/file mutation lives under `client.runs.*`, which maps to `/api/v1/runs`.
+Run inspection, artifacts, traces, usage, events, and feedback live under `client.runs.*`, which maps to `/api/v1/runs`.
 
-`client.runs.artifacts.*` lists and downloads artifacts for both workflow and agent runs. Output artifacts live under `output/`; workflow outputs may include `stepName`, and agent diagnostics use root paths such as `trace.jsonl`, `issues.md`, and `eigenpal.lock`. `client.runs.files.*` remains the DB-backed workflow file surface for input management and structured file listings.
-
-`client.workflows.executions.run_and_wait` remains a workflow-specific helper because it triggers a workflow and then polls the canonical runs API until completion.
+Reusable upload-first files live under `client.files.*`; once a file is referenced by a run, Eigenpal snapshots it into run-scoped artifacts.
 
 ## Client construction
 
@@ -115,356 +100,498 @@ The constructor argument always wins; the env var is a fallback so scripts don't
 | `api_key`         | `str`   | `os.environ["EIGENPAL_API_KEY"]`                 | Bearer key from the dashboard.                    |
 | `base_url`        | `str`   | `os.environ.get("EIGENPAL_BASE_URL")` or default | API host. Set to your deployment for self-hosted. |
 | `timeout_seconds` | `float` | `60.0`                                           | Per-request timeout.                              |
-| `verify_ssl`      | `bool`  | `True`                                           | Disable for self-signed dev hosts.                |
 
-## Agents
+## Metadata
 
-### `client.agents.list_files`
+### `client.auth.check`
 
-**`GET /api/v1/agents/:agentId/files`**
+**`GET /api/v1/auth/check`**
 
-List or download agent source files
+Check API key identity
 
-List or read agent source files from Git.
+Return the tenant, user, API key, and scope represented by the current API key.
+
+**Response**
+
+```python
+// AuthCheckResponse
+```
+
+## Evaluation
+
+### `client.automations.dataset.export`
+
+**`GET /api/v1/automations/:id/dataset/export`**
+
+Export automation dataset
 
 **Path parameters**
 
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
 
 **Query parameters**
 
-| Name     | Type  | Description                      |
-| -------- | ----- | -------------------------------- |
-| `path`   | `str` | (optional)                       |
-| `prefix` | `str` | (optional)                       |
-| `ref`    | `str` | (optional)Git ref (default main) |
+| Name          | Type  | Description |
+| ------------- | ----- | ----------- |
+| `example_ids` | `str` | (optional)  |
 
 **Response**
 
 ```python
-// Any
+// str
 ```
 
-### `client.agents.put_file`
+### `client.automations.dataset.import_`
 
-**`PUT /api/v1/agents/:agentId/files`**
+**`POST /api/v1/automations/:id/dataset/import`**
 
-Upload one agent file (deprecated)
-
-Agent source is Git-backed. Use Git push or the builder instead.
+Import automation dataset
 
 **Path parameters**
 
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
 
-**Query parameters**
+**Response**
 
-| Name     | Type  | Description                      |
-| -------- | ----- | -------------------------------- |
-| `path`   | `str` | (optional)                       |
-| `prefix` | `str` | (optional)                       |
-| `ref`    | `str` | (optional)Git ref (default main) |
+```python
+// DatasetImportResponse
+```
+
+### `client.automations.evaluators.get`
+
+**`GET /api/v1/automations/:id/evaluators`**
+
+Get automation evaluators
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Response**
+
+```python
+// EvaluatorConfigResponse
+```
+
+### `client.automations.evaluators.update`
+
+**`PUT /api/v1/automations/:id/evaluators`**
+
+Replace automation evaluators
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
 
 **Request body**
 
 ```python
-// dict[str, Any]
-```
-
-### `client.agents.upload_files`
-
-**`POST /api/v1/agents/:agentId/files`**
-
-Upload agent files (deprecated)
-
-Agent source is Git-backed. Use Git push or the builder instead.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Request body**
-
-```python
-// dict[str, Any]
-```
-
-### `client.agents.get`
-
-**`GET /api/v1/agents/:agentId`**
-
-Get an agent
-
-Returns one agent by id or slug.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Query parameters**
-
-| Name      | Type  | Description                                                     |
-| --------- | ----- | --------------------------------------------------------------- |
-| `include` | `str` | (optional)Comma-separated optional sections, e.g. files,dataset |
-
-**Response**
-
-```python
-// GetAgentResponse
-```
-
-### `client.agents.update`
-
-**`PATCH /api/v1/agents/:agentId`**
-
-Update an agent
-
-Updates mutable agent metadata and configuration.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Request body**
-
-```python
-// PatchAgentBody
+// EvaluatorConfigUpdate
 ```
 
 **Response**
 
 ```python
-// PatchAgentResponse
+// EvaluatorConfigResponse
 ```
 
-### `client.agents.email_triggers.update_alias`
+### `client.automations.examples.get`
 
-**`PATCH /api/v1/agents/:agentId/triggers/email/:emailId`**
+**`GET /api/v1/automations/:id/examples/:exampleId`**
 
-Update an agent email alias
-
-Updates an email trigger alias for one agent.
-
-**Path parameters**
-
-| Name       | Type  | Description            |
-| ---------- | ----- | ---------------------- |
-| `agent_id` | `str` | Agent id or slug       |
-| `email_id` | `str` | Email trigger alias id |
-
-**Request body**
-
-```python
-// dict[str, Any]
-```
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.agents.email_triggers.delete_alias`
-
-**`DELETE /api/v1/agents/:agentId/triggers/email/:emailId`**
-
-Delete an agent email alias
-
-Revokes an email trigger alias for one agent.
-
-**Path parameters**
-
-| Name       | Type  | Description            |
-| ---------- | ----- | ---------------------- |
-| `agent_id` | `str` | Agent id or slug       |
-| `email_id` | `str` | Email trigger alias id |
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.agents.email_triggers.get`
-
-**`GET /api/v1/agents/:agentId/triggers/email`**
-
-Get an agent email trigger
-
-Returns email trigger configuration and aliases for one agent.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.agents.email_triggers.update`
-
-**`PATCH /api/v1/agents/:agentId/triggers/email`**
-
-Update an agent email trigger
-
-Enables or disables the email trigger for one agent.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Request body**
-
-```python
-// dict[str, Any]
-```
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.agents.email_triggers.create_alias`
-
-**`POST /api/v1/agents/:agentId/triggers/email`**
-
-Create an agent email alias
-
-Creates an email trigger alias for one agent.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Request body**
-
-```python
-// dict[str, Any]
-```
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.agents.versions`
-
-**`GET /api/v1/agents/:agentId/versions`**
-
-List agent Git versions
-
-List Git release versions for an agent.
-
-**Path parameters**
-
-| Name       | Type  | Description      |
-| ---------- | ----- | ---------------- |
-| `agent_id` | `str` | Agent id or slug |
-
-**Response**
-
-```python
-// ListAgentVersionsResponse
-```
-
-### `client.agents.list`
-
-**`GET /api/v1/agents`**
-
-List agents
-
-List agents with pagination.
-
-**Query parameters**
-
-| Name               | Type   | Description                                    |
-| ------------------ | ------ | ---------------------------------------------- |
-| `search`           | `str`  | (optional)Substring match against agent fields |
-| `slug`             | `str`  | (optional)Return a single agent by slug        |
-| `limit`            | `int`  | (optional)                                     |
-| `offset`           | `int`  | (optional)                                     |
-| `include_archived` | `bool` | (optional)                                     |
-
-**Response**
-
-```python
-// ListAgentsResponse
-```
-
-### `client.agents.create`
-
-**`POST /api/v1/agents`**
-
-Create an agent
-
-Create an agent and scaffold its Git source package.
-
-**Request body**
-
-```python
-// CreateAgentBody
-```
-
-**Response**
-
-```python
-// CreateAgentResponse
-```
-
-### `client.agents.email_triggers.list`
-
-**`GET /api/v1/agents/triggers/email`**
-
-List agent email triggers
-
-Lists email trigger aliases for the authenticated organization.
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-## Automations
-
-### `client.automations.sync`
-
-**`POST /api/v1/automations/:automation/sync`**
-
-Sync an automation from latest source
-
-Reconciles lightweight automation metadata from the latest released Git source package. This does not enqueue executions.
+Get automation example
 
 **Path parameters**
 
 | Name         | Type  | Description |
 | ------------ | ----- | ----------- |
-| `automation` | `str` |             |
+| `id`         | `str` |             |
+| `example_id` | `str` |             |
 
 **Response**
 
 ```python
-// AutomationSyncResponse
+// DatasetExample
+```
+
+### `client.automations.examples.update`
+
+**`PATCH /api/v1/automations/:id/examples/:exampleId`**
+
+Update automation example
+
+**Path parameters**
+
+| Name         | Type  | Description |
+| ------------ | ----- | ----------- |
+| `id`         | `str` |             |
+| `example_id` | `str` |             |
+
+**Request body**
+
+```python
+// DatasetExampleUpdate
+```
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.examples.delete`
+
+**`DELETE /api/v1/automations/:id/examples/:exampleId`**
+
+Delete automation example
+
+**Path parameters**
+
+| Name         | Type  | Description |
+| ------------ | ----- | ----------- |
+| `id`         | `str` |             |
+| `example_id` | `str` |             |
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.examples.run`
+
+**`POST /api/v1/automations/:id/examples/:exampleId/run`**
+
+Run automation example
+
+**Path parameters**
+
+| Name         | Type  | Description |
+| ------------ | ----- | ----------- |
+| `id`         | `str` |             |
+| `example_id` | `str` |             |
+
+**Response**
+
+```python
+// ExampleRunResponse
+```
+
+### `client.automations.examples.list`
+
+**`GET /api/v1/automations/:id/examples`**
+
+List automation examples
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Query parameters**
+
+| Name     | Type  | Description |
+| -------- | ----- | ----------- |
+| `limit`  | `int` | (optional)  |
+| `offset` | `int` | (optional)  |
+
+**Response**
+
+```python
+// DatasetExampleList
+```
+
+### `client.automations.examples.create`
+
+**`POST /api/v1/automations/:id/examples`**
+
+Create automation example
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Request body**
+
+```python
+// DatasetExampleMutation
+```
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.experiments.list`
+
+**`GET /api/v1/automations/:id/experiments`**
+
+List automation experiments
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Query parameters**
+
+| Name     | Type  | Description |
+| -------- | ----- | ----------- |
+| `limit`  | `int` | (optional)  |
+| `offset` | `int` | (optional)  |
+
+**Response**
+
+```python
+// dict[str, Any]
+```
+
+### `client.automations.experiments.create`
+
+**`POST /api/v1/automations/:id/experiments`**
+
+Create automation experiment
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Request body**
+
+```python
+// ExperimentCreate
+```
+
+**Response**
+
+```python
+// ExperimentCreateResponse
+```
+
+### `client.automations.experiments.cancel`
+
+**`POST /api/v1/automations/:id/experiments/:experimentId/cancel`**
+
+Cancel automation experiment
+
+**Path parameters**
+
+| Name            | Type  | Description |
+| --------------- | ----- | ----------- |
+| `id`            | `str` |             |
+| `experiment_id` | `str` |             |
+
+**Response**
+
+```python
+// ExperimentDetail
+```
+
+### `client.automations.experiments.get`
+
+**`GET /api/v1/automations/:id/experiments/:experimentId`**
+
+Get automation experiment
+
+**Path parameters**
+
+| Name            | Type  | Description |
+| --------------- | ----- | ----------- |
+| `id`            | `str` |             |
+| `experiment_id` | `str` |             |
+
+**Response**
+
+```python
+// ExperimentDetail
+```
+
+### `client.runs.eval_results.list`
+
+**`GET /api/v1/runs/:id/eval-results`**
+
+List run eval results
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Response**
+
+```python
+// EvalResultsResponse
+```
+
+## Automations
+
+### `client.automations.get`
+
+**`GET /api/v1/automations/:id`**
+
+Get automation
+
+Get one runnable workflow or agent automation by id or typed alias.
+
+**Path parameters**
+
+| Name | Type  | Description                                                             |
+| ---- | ----- | ----------------------------------------------------------------------- |
+| `id` | `str` | Workflow id, agent id, or typed alias like workflows.slug / agents.slug |
+
+**Response**
+
+```python
+// AutomationDetail
+```
+
+### `client.automations.triggers`
+
+**`GET /api/v1/automations/:id/triggers`**
+
+Get automation triggers
+
+Read trigger state for a workflow or agent automation. Trigger mutation is not public v1.
+
+**Path parameters**
+
+| Name | Type  | Description                                                             |
+| ---- | ----- | ----------------------------------------------------------------------- |
+| `id` | `str` | Workflow id, agent id, or typed alias like workflows.slug / agents.slug |
+
+**Response**
+
+```python
+// AutomationTriggersResponse
+```
+
+### `client.automations.versions`
+
+**`GET /api/v1/automations/:id/versions`**
+
+List automation versions
+
+List versions for a workflow or agent automation through one read-only route.
+
+**Path parameters**
+
+| Name | Type  | Description                                                             |
+| ---- | ----- | ----------------------------------------------------------------------- |
+| `id` | `str` | Workflow id, agent id, or typed alias like workflows.slug / agents.slug |
+
+**Response**
+
+```python
+// ListAutomationVersionsResponse
+```
+
+### `client.automations.list`
+
+**`GET /api/v1/automations`**
+
+List automations
+
+List runnable workflow and agent automations in one collection.
+
+**Query parameters**
+
+| Name     | Type                           | Description                                                  |
+| -------- | ------------------------------ | ------------------------------------------------------------ |
+| `search` | `str`                          | (optional)Substring match against slug, name, or description |
+| `type`   | `Literal["workflow", "agent"]` | (optional)Filter by implementation type                      |
+| `limit`  | `int`                          | (optional)                                                   |
+| `offset` | `int`                          | (optional)                                                   |
+
+**Response**
+
+```python
+// ListAutomationsResponse
+```
+
+## Files
+
+### `client.files.download`
+
+**`GET /api/v1/files/:id/content`**
+
+Download file content
+
+Download bytes for a reusable uploaded file.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | File id     |
+
+### `client.files.get`
+
+**`GET /api/v1/files/:id`**
+
+Get file metadata
+
+Get metadata for a reusable uploaded file.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | File id     |
+
+**Response**
+
+```python
+// File
+```
+
+### `client.files.delete`
+
+**`DELETE /api/v1/files/:id`**
+
+Delete file
+
+Delete a reusable uploaded file. Historical run and dataset snapshots are separate artifacts.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | File id     |
+
+**Response**
+
+```python
+// DeleteFileResponse
+```
+
+### `client.files.upload`
+
+**`POST /api/v1/files`**
+
+Upload file
+
+Upload a reusable file that can later be referenced by run inputs or dataset examples.
+
+**Response**
+
+```python
+// File
 ```
 
 ## Runs
@@ -589,49 +716,13 @@ Cancel a queued run or request cancellation of an in-flight run.
 // RunCancelResponse
 ```
 
-### `client.runs.comparison.get`
+### `client.runs.events`
 
-**`GET /api/v1/runs/:id/comparison`**
+**`GET /api/v1/runs/:id/events`**
 
-Get run comparison
+List run events
 
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.runs.connect`
-
-**`POST /api/v1/runs/:id/connect`**
-
-Connect to live run
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.runs.definition`
-
-**`GET /api/v1/runs/:id/definition`**
-
-Get run definition snapshot
-
-Workflow definition snapshot captured when the run was created. Workflow runs only; agent runs return not_found.
+List a stable chronological lifecycle timeline for a run.
 
 **Path parameters**
 
@@ -642,100 +733,7 @@ Workflow definition snapshot captured when the run was created. Workflow runs on
 **Response**
 
 ```python
-// RunDefinitionResponse
-```
-
-### `client.runs.expected.download`
-
-**`GET /api/v1/runs/:id/expected/:filename`**
-
-Download expected artifact file
-
-**Path parameters**
-
-| Name       | Type  | Description |
-| ---------- | ----- | ----------- |
-| `id`       | `str` |             |
-| `filename` | `str` |             |
-
-### `client.runs.expected.rename`
-
-**`PATCH /api/v1/runs/:id/expected/:filename`**
-
-Rename expected artifact file
-
-**Path parameters**
-
-| Name       | Type  | Description |
-| ---------- | ----- | ----------- |
-| `id`       | `str` |             |
-| `filename` | `str` |             |
-
-**Request body**
-
-```python
-// dict[str, Any]
-```
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.runs.expected.delete`
-
-**`DELETE /api/v1/runs/:id/expected/:filename`**
-
-Delete expected artifact file
-
-**Path parameters**
-
-| Name       | Type  | Description |
-| ---------- | ----- | ----------- |
-| `id`       | `str` |             |
-| `filename` | `str` |             |
-
-### `client.runs.expected.list`
-
-**`GET /api/v1/runs/:id/expected`**
-
-Get run expected artifacts
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.runs.expected.copy_output`
-
-**`POST /api/v1/runs/:id/expected`**
-
-Create or update expected artifacts
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Request body**
-
-```python
-// dict[str, Any]
-```
-
-**Response**
-
-```python
-// dict[str, Any]
+// RunEventsResponse
 ```
 
 ### `client.runs.feedback.get`
@@ -753,12 +751,12 @@ Get run feedback
 **Response**
 
 ```python
-// dict[str, Any]
+// RunFeedbackDetail
 ```
 
 ### `client.runs.feedback.update`
 
-**`PATCH /api/v1/runs/:id/feedback`**
+**`PUT /api/v1/runs/:id/feedback`**
 
 Update run feedback
 
@@ -777,7 +775,7 @@ Update run feedback
 **Response**
 
 ```python
-// dict[str, Any]
+// RunFeedbackDetail
 ```
 
 ### `client.runs.feedback.clear`
@@ -795,16 +793,14 @@ Clear run feedback
 **Response**
 
 ```python
-// dict[str, Any]
+// RunFeedbackDetail
 ```
 
-### `client.runs.artifacts.download_zip`
+### `client.runs.promote`
 
-**`GET /api/v1/runs/:id/files-zip`**
+**`POST /api/v1/runs/:id/promote`**
 
-Download run output files zip
-
-Download agent run output files as a zip.
+Promote a run to a dataset example
 
 **Path parameters**
 
@@ -812,64 +808,16 @@ Download agent run output files as a zip.
 | ---- | ----- | ----------- |
 | `id` | `str` |             |
 
-**Query parameters**
+**Request body**
 
-| Name    | Type  | Description |
-| ------- | ----- | ----------- |
-| `files` | `str` | (optional)  |
-| `token` | `str` | (optional)  |
-
-### `client.runs.files.delete`
-
-**`DELETE /api/v1/runs/:id/files/:fileId`**
-
-Delete run input file
-
-**Path parameters**
-
-| Name      | Type  | Description |
-| --------- | ----- | ----------- |
-| `id`      | `str` |             |
-| `file_id` | `str` |             |
-
-### `client.runs.files.list`
-
-**`GET /api/v1/runs/:id/files`**
-
-List run files
-
-List workflow run input and output file rows.
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
+```python
+// PromoteRunRequest
+```
 
 **Response**
 
 ```python
-// RunFilesResponse
-```
-
-### `client.runs.files.upload`
-
-**`POST /api/v1/runs/:id/files`**
-
-Upload run input file
-
-Upload a workflow run input file before execution starts.
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// dict[str, Any]
+// PromoteRunResponse
 ```
 
 ### `client.rerun`
@@ -925,6 +873,26 @@ Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
 // Run
 ```
 
+### `client.runs.steps`
+
+**`GET /api/v1/runs/:id/steps`**
+
+List run steps
+
+List workflow steps or an agent-compatible execution step summary for a run.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | Run id      |
+
+**Response**
+
+```python
+// RunStepsResponse
+```
+
 ### `client.runs.trace.get`
 
 **`GET /api/v1/runs/:id/trace`**
@@ -943,196 +911,24 @@ Get run trace
 // dict[str, Any]
 ```
 
-## Source
+### `client.runs.usage`
 
-### `client.source.lockfile`
+**`GET /api/v1/runs/:id/usage`**
 
-**`GET /api/v1/source/lockfile`**
+Get run usage
 
-Preview a source lockfile
-
-Resolves a package ref and returns the would-be eigenpal.lock without enqueueing or writing runtime artifacts.
-
-**Query parameters**
-
-| Name          | Type  | Description |
-| ------------- | ----- | ----------- |
-| `package_ref` | `str` |             |
-
-**Response**
-
-```python
-// SourceLockfileResponse
-```
-
-### `client.source.raw`
-
-**`GET /api/v1/source/raw`**
-
-Preview a raw Git source file
-
-Reads a raw file from the organization Git repository for metadata previews.
-
-**Query parameters**
-
-| Name   | Type  | Description |
-| ------ | ----- | ----------- |
-| `ref`  | `str` | (optional)  |
-| `path` | `str` |             |
-
-**Response**
-
-```python
-// RawSourceResponse
-```
-
-### `client.source.releases`
-
-**`GET /api/v1/source/releases`**
-
-List Git source package releases
-
-Lists package-scoped Git release tags, or returns one exact version when requested.
-
-**Query parameters**
-
-| Name           | Type  | Description |
-| -------------- | ----- | ----------- |
-| `package_path` | `str` |             |
-| `version`      | `str` | (optional)  |
-
-**Response**
-
-```python
-// SourceReleasesResponse
-```
-
-### `client.source.repository`
-
-**`GET /api/v1/source/repository`**
-
-Get organization Git source repository
-
-Returns the authenticated organization Git remote used by hidden source CLI commands.
-
-**Response**
-
-```python
-// SourceRepositoryResponse
-```
-
-### `client.source.decrypt_secrets`
-
-**`POST /api/v1/source/secrets/decrypt`**
-
-Decrypt a Git-backed source secret
-
-Decrypts one or more encrypted source secret values for the authenticated tenant. Single-secret requests require an execution id and are checked against that execution lockfile graph; batch `secrets[]` requests are tenant-scoped for local CLI use.
-
-**Request body**
-
-```python
-// SourceSecretsDecryptBody
-```
-
-**Response**
-
-```python
-// SourceSecretsDecryptResponse
-```
-
-### `client.source.encrypt_secrets`
-
-**`POST /api/v1/source/secrets/encrypt`**
-
-Encrypt a Git-backed source secret
-
-Encrypts one or more plaintext secret values for the authenticated tenant using the organization active decrypt key. Organization decrypt keys never leave the server; callers send plaintext over TLS with normal app authentication.
-
-**Request body**
-
-```python
-// SourceSecretsEncryptBody
-```
-
-**Response**
-
-```python
-// SourceSecretsEncryptResponse
-```
-
-## Workflows
-
-### `client.workflows.get`
-
-**`GET /api/v1/workflows/:id`**
-
-Get a workflow by id
-
-Get a workflow by id, including current YAML.
-
-**Path parameters**
-
-| Name | Type  | Description                  |
-| ---- | ----- | ---------------------------- |
-| `id` | `str` | Workflow id (e.g. wf_abc123) |
-
-**Response**
-
-```python
-// WorkflowDetail
-```
-
-### `client.workflows.versions`
-
-**`GET /api/v1/workflows/:id/versions`**
-
-List tagged versions for a workflow
-
-List published workflow versions.
+Get token, credit, duration, and execution usage for a run.
 
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` | Workflow id |
-
-**Query parameters**
-
-| Name     | Type  | Description                               |
-| -------- | ----- | ----------------------------------------- |
-| `limit`  | `int` | (optional)Page size (max 100, default 50) |
-| `offset` | `int` | (optional)Page offset                     |
+| `id` | `str` | Run id      |
 
 **Response**
 
 ```python
-// ListVersionsResponse
-```
-
-### `client.workflows.list`
-
-**`GET /api/v1/workflows`**
-
-List workflows
-
-List workflows with pagination.
-
-**Query parameters**
-
-| Name        | Type                           | Description                                                                                      |
-| ----------- | ------------------------------ | ------------------------------------------------------------------------------------------------ |
-| `search`    | `str`                          | (optional)Substring match against workflow name                                                  |
-| `name`      | `str`                          | (optional)Exact-match lookup by workflow name (slug)                                             |
-| `kind`      | `Literal["workflow", "block"]` | (optional)Filter by workflow kind                                                                |
-| `folder_id` | `Union[str, None]`             | (optional)Filter by folder: omit for all workflows, 'null' for root/unfiled only, or a folder id |
-| `limit`     | `int`                          | (optional)Page size (max 100, default 50)                                                        |
-| `offset`    | `int`                          | (optional)Page offset                                                                            |
-
-**Response**
-
-```python
-// ListWorkflowsResponse
+// RunUsageResponse
 ```
 
 ## Errors

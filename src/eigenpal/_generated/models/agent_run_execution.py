@@ -33,7 +33,6 @@ class AgentRunExecution:
             status (ExecutionStatus):
             schema_valid (bool | None): Whether the completed output matched the workflow or agent output schema.
             batch_id (None | str): Experiment batch id when the run is part of a batch.
-            annotation (None | str): Free-form note attached to the run (workflow runs).
             retry (RunExecutionRetry):
             files (AgentRunExecutionFiles):
             feedback (None | RunFeedback | Unset):
@@ -43,7 +42,6 @@ class AgentRunExecution:
     status: ExecutionStatus
     schema_valid: bool | None
     batch_id: None | str
-    annotation: None | str
     retry: RunExecutionRetry
     files: AgentRunExecutionFiles
     feedback: None | RunFeedback | Unset = UNSET
@@ -65,9 +63,6 @@ class AgentRunExecution:
 
         batch_id: None | str
         batch_id = self.batch_id
-
-        annotation: None | str
-        annotation = self.annotation
 
         retry = self.retry.to_dict()
 
@@ -92,7 +87,6 @@ class AgentRunExecution:
             "status": status,
             "schemaValid": schema_valid,
             "batchId": batch_id,
-            "annotation": annotation,
             "retry": retry,
             "files": files,
         })
@@ -131,14 +125,6 @@ class AgentRunExecution:
             return cast(None | str, data)
 
         batch_id = _parse_batch_id(d.pop("batchId"))
-
-
-        def _parse_annotation(data: object) -> None | str:
-            if data is None:
-                return data
-            return cast(None | str, data)
-
-        annotation = _parse_annotation(d.pop("annotation"))
 
 
         retry = RunExecutionRetry.from_dict(d.pop("retry"))
@@ -185,7 +171,6 @@ class AgentRunExecution:
             status=status,
             schema_valid=schema_valid,
             batch_id=batch_id,
-            annotation=annotation,
             retry=retry,
             files=files,
             feedback=feedback,

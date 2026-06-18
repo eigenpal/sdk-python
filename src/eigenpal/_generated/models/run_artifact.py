@@ -25,6 +25,7 @@ class RunArtifact:
     """
         Attributes:
             name (str):
+            role (str): `input`, `output`, `debug`, `report`, or another stable artifact role.
             path (str): Canonical artifact path for GET /api/v1/runs/:id/artifacts/:path.
             step_name (str | Unset): Workflow step that produced the file, when known.
             content_type (None | str | Unset):
@@ -32,6 +33,7 @@ class RunArtifact:
      """
 
     name: str
+    role: str
     path: str
     step_name: str | Unset = UNSET
     content_type: None | str | Unset = UNSET
@@ -43,6 +45,8 @@ class RunArtifact:
 
     def to_dict(self) -> dict[str, Any]:
         name = self.name
+
+        role = self.role
 
         path = self.path
 
@@ -65,6 +69,7 @@ class RunArtifact:
 
         field_dict.update({
             "name": name,
+            "role": role,
             "path": path,
         })
         if step_name is not UNSET:
@@ -82,6 +87,8 @@ class RunArtifact:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
         name = d.pop("name")
+
+        role = d.pop("role")
 
         path = d.pop("path")
 
@@ -109,6 +116,7 @@ class RunArtifact:
 
         run_artifact = cls(
             name=name,
+            role=role,
             path=path,
             step_name=step_name,
             content_type=content_type,

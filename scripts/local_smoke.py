@@ -28,19 +28,37 @@ if not API_KEY:
     print("EIGENPAL_API_KEY is required.", file=sys.stderr)
     sys.exit(2)
 
-PUBLIC_WORKFLOW_FIELDS = {"id", "name", "version", "created_at", "updated_at"}
-PUBLIC_EXECUTION_FIELDS = {
+PUBLIC_AUTOMATION_FIELDS = {
     "id",
-    "workflow_id",
+    "type",
+    "slug",
+    "name",
+    "description",
     "status",
-    "trigger_type",
-    "trigger_input",
-    "result",
-    "error",
+    "version",
+    "triggers",
     "created_at",
-    "started_at",
-    "completed_at",
-    "workflow",
+    "updated_at",
+}
+PUBLIC_AUTOMATION_DETAIL_FIELDS = PUBLIC_AUTOMATION_FIELDS | {"input_schema", "output_schema"}
+PUBLIC_RUN_LIST_FIELDS = {
+    "id",
+    "type",
+    "finished",
+    "timing",
+    "source",
+    "trigger",
+    "execution",
+    "error",
+    "eval",
+}
+PUBLIC_AUTOMATION_VERSION_FIELDS = {
+    "id",
+    "automation_id",
+    "version",
+    "source_ref",
+    "is_current",
+    "created_at",
 }
 
 results: list[tuple[str, bool, str]] = []
@@ -56,8 +74,6 @@ def model_keys(obj: object) -> set[str]:
     if hasattr(obj, "__attrs_attrs__"):
         names = {a.name for a in obj.__attrs_attrs__}  # type: ignore[attr-defined]
         names.discard("additional_properties")
-        # Drop attrs whose value is UNSET (the model declares them but the
-        # server didn't return them — a tighter response is fine).
         from eigenpal._generated.types import Unset
 
         return {n for n in names if not isinstance(getattr(obj, n, None), Unset)}
@@ -70,59 +86,81 @@ def main() -> int:
     print(f"→ Smoke-testing eigenpal against {BASE_URL}\n")
     client = EigenpalClient(api_key=API_KEY, base_url=BASE_URL)
 
-    # 1. workflows.list → public shape
-    listing = client.workflows.list(limit=5)
+    # 1. automations.list → public shape
+    listing = client.automations.list(type="workflow", limit=10)
     items = listing.data if hasattr(listing, "data") else []
-    pass_("workflows.list responds", isinstance(items, list), f"data.length={len(items)}")
-    workflow_id = None
+    pass_(
+        "automations.list responds",
+        isinstance(items, list),
+        f"total={getattr(listing, 'total', None)} data.length={len(items)}",
+    )
+    automation_id = None
     if items:
         keys = model_keys(items[0])
-        leaked = keys - PUBLIC_WORKFLOW_FIELDS
+        leaked = keys - PUBLIC_AUTOMATION_FIELDS
         pass_(
-            "workflows[0] only public fields",
+            "automations[0] only public fields",
             not leaked,
             f"leaked: {sorted(leaked)}" if leaked else f"keys: {sorted(keys)}",
         )
-        workflow_id = items[0].id
+        automation_id = items[0].id
 
-    # 2. workflows.get → same shape
-    if workflow_id:
-        fetched = client.workflows.get(workflow_id)
+    # 2. automations.get → same shape
+    if automation_id:
+        fetched = client.automations.get(automation_id)
         keys = model_keys(fetched)
-        leaked = keys - PUBLIC_WORKFLOW_FIELDS
+        leaked = keys - PUBLIC_AUTOMATION_DETAIL_FIELDS
         pass_(
-            "workflows.get only public fields",
+            "automations.get only public fields",
             not leaked,
             f"leaked: {sorted(leaked)}"
             if leaked
             else f"version={getattr(fetched, 'version', None)}",
         )
 
-    # 3. runs.list → public shape
+    # 3. automations.versions → public shape
+    if automation_id:
+        versions = client.automations.versions(automation_id, limit=5)
+        version_items = versions.data if hasattr(versions, "data") else []
+        pass_(
+            "automations.versions responds",
+            isinstance(version_items, list),
+            f"data.length={len(version_items)}",
+        )
+        if version_items:
+            keys = model_keys(version_items[0])
+            leaked = keys - PUBLIC_AUTOMATION_VERSION_FIELDS
+            pass_(
+                "versions[0] only public fields",
+                not leaked,
+                f"leaked: {sorted(leaked)}" if leaked else f"keys: {sorted(keys)}",
+            )
+
+    # 4. runs.list → public shape
     execs = (
-        client.runs.list(type="workflow", source=workflow_id, limit=5)
-        if workflow_id
+        client.runs.list(type="workflow", source=automation_id, limit=3)
+        if automation_id
         else None
     )
-    exec_items = execs.runs if hasattr(execs, "runs") else []
+    exec_items = execs.runs if execs and hasattr(execs, "runs") else []
     pass_(
         "runs.list responds",
         isinstance(exec_items, list),
-        f"data.length={len(exec_items)}",
+        f"runs={len(exec_items)}",
     )
     if exec_items:
         keys = model_keys(exec_items[0])
-        leaked = keys - PUBLIC_EXECUTION_FIELDS
+        leaked = keys - PUBLIC_RUN_LIST_FIELDS
         pass_(
             "runs[0] only public fields",
             not leaked,
             f"leaked: {sorted(leaked)}" if leaked else f"keys: {sorted(keys)}",
         )
 
-    # 4. Bad base_url throws an EigenpalError, not a raw httpx crash
+    # 5. Bad base_url throws an EigenpalError, not a raw httpx crash
     try:
         bad = EigenpalClient(api_key=API_KEY, base_url="https://example.com")
-        bad.workflows.list(limit=1)
+        bad.automations.list(limit=1)
         pass_("bad base_url throws EigenpalError", False, "no error thrown")
     except EigenpalError as e:
         pass_("bad base_url throws EigenpalError", True, type(e).__name__)

@@ -107,15 +107,12 @@ def test_no_files_uses_json(client: EigenpalClient) -> None:
 
 
 @respx.mock
-def test_runs_files_upload_uses_required_file_part(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/runs/run_123/files").mock(
+def test_files_upload_uses_required_file_part(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/api/v1/files").mock(
         return_value=httpx.Response(201, json={"id": "file_123", "filename": "input.txt"})
     )
 
-    result = client.runs.files.upload(
-        "run_123",
-        {"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"},
-    )
+    result = client.files.upload({"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"})
 
     assert route.called
     assert result["id"] == "file_123"
@@ -128,12 +125,10 @@ def test_runs_files_upload_uses_required_file_part(client: EigenpalClient) -> No
 
 
 @respx.mock
-def test_runs_files_delete_accepts_empty_204(client: EigenpalClient) -> None:
-    route = respx.delete("http://localhost:3000/api/v1/runs/run_123/files/file_123").mock(
-        return_value=httpx.Response(204)
-    )
+def test_files_delete_accepts_empty_204(client: EigenpalClient) -> None:
+    route = respx.delete("http://localhost:3000/api/v1/files/file_123").mock(return_value=httpx.Response(204))
 
-    result = client.runs.files.delete("run_123", "file_123")
+    result = client.files.delete("file_123")
 
     assert route.called
     assert result is None

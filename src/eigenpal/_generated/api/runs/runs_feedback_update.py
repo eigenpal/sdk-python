@@ -9,8 +9,8 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.run_feedback_detail import RunFeedbackDetail
 from ...models.run_feedback_request import RunFeedbackRequest
-from ...models.runs_feedback_update_response_200 import RunsFeedbackUpdateResponse200
 from typing import cast
 
 
@@ -29,7 +29,7 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "patch",
+        "method": "put",
         "url": "/api/v1/runs/{id}/feedback".format(id=quote(str(id), safe=""),),
     }
 
@@ -43,9 +43,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunsFeedbackUpdateResponse200 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     if response.status_code == 200:
-        response_200 = RunsFeedbackUpdateResponse200.from_dict(response.json())
+        response_200 = RunFeedbackDetail.from_dict(response.json())
 
 
 
@@ -79,6 +79,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 413:
+        response_413 = ApiErrorEnvelope.from_dict(response.json())
+
+
+
+        return response_413
+
     if response.status_code == 429:
         response_429 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -99,7 +106,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunsFeedbackUpdateResponse200]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -114,7 +121,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: RunFeedbackRequest,
 
-) -> Response[ApiErrorEnvelope | RunsFeedbackUpdateResponse200]:
+) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Update run feedback
 
     Args:
@@ -126,7 +133,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsFeedbackUpdateResponse200]
+        Response[ApiErrorEnvelope | RunFeedbackDetail]
      """
 
 
@@ -148,7 +155,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: RunFeedbackRequest,
 
-) -> ApiErrorEnvelope | RunsFeedbackUpdateResponse200 | None:
+) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Update run feedback
 
     Args:
@@ -160,7 +167,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsFeedbackUpdateResponse200
+        ApiErrorEnvelope | RunFeedbackDetail
      """
 
 
@@ -177,7 +184,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: RunFeedbackRequest,
 
-) -> Response[ApiErrorEnvelope | RunsFeedbackUpdateResponse200]:
+) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Update run feedback
 
     Args:
@@ -189,7 +196,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsFeedbackUpdateResponse200]
+        Response[ApiErrorEnvelope | RunFeedbackDetail]
      """
 
 
@@ -211,7 +218,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: RunFeedbackRequest,
 
-) -> ApiErrorEnvelope | RunsFeedbackUpdateResponse200 | None:
+) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Update run feedback
 
     Args:
@@ -223,7 +230,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsFeedbackUpdateResponse200
+        ApiErrorEnvelope | RunFeedbackDetail
      """
 
 

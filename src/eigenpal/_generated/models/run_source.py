@@ -33,6 +33,12 @@ class RunSource:
             slug (None | str | Unset): Agent slug (agent runs only).
             model (None | str | Unset): LLM model used (agent runs only).
             git (None | RunSourceGit | Unset): Git provenance (agent runs only).
+            implementation_available (bool | Unset): Whether the live workflow/agent implementation still exists (`GET
+                /api/v1/runs/:id` detail only).
+            automation_found (bool | Unset): Whether the owning automation registry row still exists (`GET /api/v1/runs/:id`
+                detail only).
+            current_version (None | str | Unset): Current released workflow version label when the source is live (`GET
+                /api/v1/runs/:id` detail only).
      """
 
     id: str
@@ -42,6 +48,9 @@ class RunSource:
     slug: None | str | Unset = UNSET
     model: None | str | Unset = UNSET
     git: None | RunSourceGit | Unset = UNSET
+    implementation_available: bool | Unset = UNSET
+    automation_found: bool | Unset = UNSET
+    current_version: None | str | Unset = UNSET
 
 
 
@@ -83,6 +92,16 @@ class RunSource:
         else:
             git = self.git
 
+        implementation_available = self.implementation_available
+
+        automation_found = self.automation_found
+
+        current_version: None | str | Unset
+        if isinstance(self.current_version, Unset):
+            current_version = UNSET
+        else:
+            current_version = self.current_version
+
 
         field_dict: dict[str, Any] = {}
 
@@ -99,6 +118,12 @@ class RunSource:
             field_dict["model"] = model
         if git is not UNSET:
             field_dict["git"] = git
+        if implementation_available is not UNSET:
+            field_dict["implementationAvailable"] = implementation_available
+        if automation_found is not UNSET:
+            field_dict["automationFound"] = automation_found
+        if current_version is not UNSET:
+            field_dict["currentVersion"] = current_version
 
         return field_dict
 
@@ -176,6 +201,20 @@ class RunSource:
         git = _parse_git(d.pop("git", UNSET))
 
 
+        implementation_available = d.pop("implementationAvailable", UNSET)
+
+        automation_found = d.pop("automationFound", UNSET)
+
+        def _parse_current_version(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        current_version = _parse_current_version(d.pop("currentVersion", UNSET))
+
+
         run_source = cls(
             id=id,
             name=name,
@@ -184,6 +223,9 @@ class RunSource:
             slug=slug,
             model=model,
             git=git,
+            implementation_available=implementation_available,
+            automation_found=automation_found,
+            current_version=current_version,
         )
 
         return run_source

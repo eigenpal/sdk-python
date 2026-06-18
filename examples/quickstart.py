@@ -1,7 +1,7 @@
 """Run with: ``EIGENPAL_API_KEY=eg_… python examples/quickstart.py``
 
-Lists workflows, picks the first one, triggers a run, and polls until
-the execution reaches a terminal state.
+Lists automations, picks the first one, triggers a run, and polls until the
+run reaches a terminal state.
 """
 
 from __future__ import annotations
@@ -20,22 +20,29 @@ def main() -> None:
         base_url=os.environ.get("EIGENPAL_BASE_URL"),
     )
 
-    listing = client.workflows.list(limit=1)
-    workflows = getattr(listing, "data", [])
-    if not workflows:
-        print("No workflows yet. Create one in the dashboard, then re-run.")
+    listing = client.automations.list(limit=1)
+    automations = getattr(listing, "data", [])
+    if not automations:
+        print("No automations yet. Create one in the dashboard, then re-run.")
         return
-    workflow = workflows[0]
-    workflow_id = workflow.id  # type: ignore[union-attr]
-    print(f"Triggering {workflow_id}")
+    automation = automations[0]
+    slug = automation.slug  # type: ignore[union-attr]
+    run_type = automation.type  # type: ignore[union-attr]
+    target = f"{run_type}s.{slug}"
+    print(f"Triggering {target}")
 
-    result = client.workflows.executions.run_and_wait(
-        workflow_id,
+    result = client.run_and_wait(
+        target,
         input={},
         timeout_seconds=5 * 60,
     )
-    print("status:", result["status"])
-    print("output:", json.dumps(result["output"], indent=2, default=str))
+    print("finished:", result.finished)
+    if result.finished:
+        print("output:", json.dumps(result.output, indent=2, default=str))
+    else:
+        print(
+            f"Run {result.id} still in flight; fetch it later with client.runs.get('{result.id}')."
+        )
 
 
 if __name__ == "__main__":

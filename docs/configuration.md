@@ -31,7 +31,7 @@ EigenpalClient(
 
 ## Timeouts
 
-`timeout_seconds` applies per-request via `httpx.Timeout`. For workflow runs longer than the timeout, prefer `workflows.executions.run_and_wait` (client-side polling) over `client.run(..., wait_for_completion=...)` (server-side hold).
+`timeout_seconds` applies per-request via `httpx.Timeout`. For runs longer than the timeout, use `client.run_and_wait(...)` or start asynchronously with `client.run(...)` and poll `client.runs.get(id)`.
 
 ## Connection lifetime
 

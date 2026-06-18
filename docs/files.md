@@ -47,9 +47,9 @@ client.run("workflows.compare-versions", input={
 
 Each file becomes a `files.<fieldName>` multipart part. Mix files and scalar inputs freely; scalars ride in the `input` JSON part automatically.
 
-## Nested files aren't extracted
+## Nested files are not extracted
 
-Only top-level file values become multipart fields. Files inside lists or nested dicts stay in the `input` JSON part and the server won't see them as uploads:
+Only top-level file values become multipart fields. Files inside lists or nested dicts stay in the `input` JSON part and the server will not see them as uploads:
 
 ```python
 # DON'T — `documents` becomes a JSON list, no upload.
@@ -59,7 +59,7 @@ client.run("workflows.compare", input={"documents": [Path("a.pdf"), Path("b.pdf"
 client.run("workflows.compare", input={"document_0": Path("a.pdf"), "document_1": Path("b.pdf")})
 ```
 
-## Don't base64 yourself
+## Do not base64 yourself
 
 ```python
 # Don't do this. Doubles the payload size and skips the optimised path.
