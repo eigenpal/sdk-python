@@ -127,12 +127,15 @@ def sync_detailed(
     offset: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | DatasetExampleList]:
-    """ List automation examples
+    """ List dataset examples
+
+     List dataset examples for one automation. Examples contain input, expected output, expected files,
+    metadata, and optional overrides used by evaluation runs.
 
     Args:
-        id (str):
-        limit (int | Unset):
-        offset (int | Unset):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        limit (int | Unset): Maximum number of examples to return.
+        offset (int | Unset): Zero-based offset for paging through examples.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,12 +167,15 @@ def sync(
     offset: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | DatasetExampleList | None:
-    """ List automation examples
+    """ List dataset examples
+
+     List dataset examples for one automation. Examples contain input, expected output, expected files,
+    metadata, and optional overrides used by evaluation runs.
 
     Args:
-        id (str):
-        limit (int | Unset):
-        offset (int | Unset):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        limit (int | Unset): Maximum number of examples to return.
+        offset (int | Unset): Zero-based offset for paging through examples.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -196,12 +202,15 @@ async def asyncio_detailed(
     offset: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | DatasetExampleList]:
-    """ List automation examples
+    """ List dataset examples
+
+     List dataset examples for one automation. Examples contain input, expected output, expected files,
+    metadata, and optional overrides used by evaluation runs.
 
     Args:
-        id (str):
-        limit (int | Unset):
-        offset (int | Unset):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        limit (int | Unset): Maximum number of examples to return.
+        offset (int | Unset): Zero-based offset for paging through examples.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -233,12 +242,15 @@ async def asyncio(
     offset: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | DatasetExampleList | None:
-    """ List automation examples
+    """ List dataset examples
+
+     List dataset examples for one automation. Examples contain input, expected output, expected files,
+    metadata, and optional overrides used by evaluation runs.
 
     Args:
-        id (str):
-        limit (int | Unset):
-        offset (int | Unset):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        limit (int | Unset): Maximum number of examples to return.
+        offset (int | Unset): Zero-based offset for paging through examples.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -114,11 +114,14 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | ExampleRunResponse]:
-    """ Run automation example
+    """ Run dataset example
+
+     Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
+    completion and use run scores or feedback endpoints to review the result.
 
     Args:
-        id (str):
-        example_id (str):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id to run.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -148,11 +151,14 @@ def sync(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | ExampleRunResponse | None:
-    """ Run automation example
+    """ Run dataset example
+
+     Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
+    completion and use run scores or feedback endpoints to review the result.
 
     Args:
-        id (str):
-        example_id (str):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id to run.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -177,11 +183,14 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | ExampleRunResponse]:
-    """ Run automation example
+    """ Run dataset example
+
+     Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
+    completion and use run scores or feedback endpoints to review the result.
 
     Args:
-        id (str):
-        example_id (str):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id to run.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -211,11 +220,14 @@ async def asyncio(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | ExampleRunResponse | None:
-    """ Run automation example
+    """ Run dataset example
+
+     Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
+    completion and use run scores or feedback endpoints to review the result.
 
     Args:
-        id (str):
-        example_id (str):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id to run.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

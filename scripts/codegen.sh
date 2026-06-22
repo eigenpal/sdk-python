@@ -48,6 +48,13 @@ from pathlib import Path
 import sys
 
 out_dir = Path(sys.argv[1])
+
+def replace(path: Path, old: str, new: str) -> None:
+    text = path.read_text()
+    if old not in text:
+        raise RuntimeError(f"expected snippet not found in {path}")
+    path.write_text(text.replace(old, new))
+
 for path in out_dir.rglob("*.py"):
     text = path.read_text()
     lines = [line.rstrip() for line in text.splitlines()]
@@ -65,6 +72,71 @@ for path in out_dir.rglob("*.py"):
         )
     if updated != text:
         path.write_text(updated)
+
+for relative in [
+    "api/evaluation/automations_dataset_export.py",
+    "api/runs/runs_feedback_expected_file_get.py",
+]:
+    path = out_dir / relative
+    text = path.read_text()
+    text = text.replace("from ...types import File, FileTypes\n", "")
+    text = text.replace("from io import BytesIO\n", "")
+    text = text.replace("ApiErrorEnvelope | File", "ApiErrorEnvelope | bytes")
+    text = text.replace("Response[ApiErrorEnvelope | File]", "Response[ApiErrorEnvelope | bytes]")
+    text = text.replace(
+        """        response_200 = File(
+             payload = BytesIO(response.content)
+        )
+
+
+
+        return response_200""",
+        """        response_200 = response.content
+        return response_200""",
+    )
+    path.write_text(text)
+
+runs_artifacts = out_dir / "api/runs/runs_artifacts_list.py"
+text = runs_artifacts.read_text()
+text = text.replace(
+    "def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunArtifactsResponse | None:",
+    "def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunArtifactsResponse | bytes | None:",
+)
+text = text.replace(
+    "Response[ApiErrorEnvelope | RunArtifactsResponse]",
+    "Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]",
+)
+text = text.replace(
+    "ApiErrorEnvelope | RunArtifactsResponse | None:",
+    "ApiErrorEnvelope | RunArtifactsResponse | bytes | None:",
+)
+text = text.replace(
+    """    if response.status_code == 200:
+        response_200 = RunArtifactsResponse.from_dict(response.json())
+
+
+
+        return response_200""",
+    """    if response.status_code == 200:
+        if response.headers.get("content-type", "").split(";", 1)[0].strip() in {"application/zip", "application/octet-stream"}:
+            return response.content
+        response_200 = RunArtifactsResponse.from_dict(response.json())
+
+
+
+        return response_200""",
+)
+runs_artifacts.write_text(text)
+
+runs_expected_create = out_dir / "api/runs/runs_feedback_expected_create.py"
+replace(
+    runs_expected_create,
+    """
+
+        headers["Content-Type"] = "multipart/form-data"
+""",
+    "",
+)
 PY
 
 echo "✓ Wrote generated client to $OUT_DIR"

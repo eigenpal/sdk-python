@@ -23,8 +23,8 @@ T = TypeVar("T", bound="EvaluatorConfigResponseConfig")
 class EvaluatorConfigResponseConfig:
     """
         Attributes:
-            evaluators (list[Any]):
-            pass_threshold (float):
+            evaluators (list[Any]): Parsed evaluator definitions from the YAML.
+            pass_threshold (float): Overall score threshold required for the experiment to pass.
      """
 
     evaluators: list[Any]

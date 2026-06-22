@@ -141,8 +141,11 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | DatasetImportResponseType0 | DatasetImportResponseType1]:
     """ Import automation dataset
 
+     Import a dataset ZIP archive using the examples/<name>/input and examples/<name>/expected folder
+    convention. Use `mode=append` for additive imports or `mode=replace` to replace the dataset.
+
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
         body (AutomationDatasetImportMultipartRequest):
 
     Raises:
@@ -175,8 +178,11 @@ def sync(
 ) -> ApiErrorEnvelope | DatasetImportResponseType0 | DatasetImportResponseType1 | None:
     """ Import automation dataset
 
+     Import a dataset ZIP archive using the examples/<name>/input and examples/<name>/expected folder
+    convention. Use `mode=append` for additive imports or `mode=replace` to replace the dataset.
+
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
         body (AutomationDatasetImportMultipartRequest):
 
     Raises:
@@ -204,8 +210,11 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | DatasetImportResponseType0 | DatasetImportResponseType1]:
     """ Import automation dataset
 
+     Import a dataset ZIP archive using the examples/<name>/input and examples/<name>/expected folder
+    convention. Use `mode=append` for additive imports or `mode=replace` to replace the dataset.
+
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
         body (AutomationDatasetImportMultipartRequest):
 
     Raises:
@@ -238,8 +247,11 @@ async def asyncio(
 ) -> ApiErrorEnvelope | DatasetImportResponseType0 | DatasetImportResponseType1 | None:
     """ Import automation dataset
 
+     Import a dataset ZIP archive using the examples/<name>/input and examples/<name>/expected folder
+    convention. Use `mode=append` for additive imports or `mode=replace` to replace the dataset.
+
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
         body (AutomationDatasetImportMultipartRequest):
 
     Raises:

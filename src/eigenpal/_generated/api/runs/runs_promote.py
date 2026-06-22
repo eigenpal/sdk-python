@@ -122,11 +122,16 @@ def sync_detailed(
     body: PromoteRunRequest,
 
 ) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
-    """ Promote a run to a dataset example
+    """ Promote run to example
+
+     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
+    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
+    expected artifacts to capture a regression test.
 
     Args:
-        id (str):
-        body (PromoteRunRequest):
+        id (str): Run id.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,11 +161,16 @@ def sync(
     body: PromoteRunRequest,
 
 ) -> ApiErrorEnvelope | PromoteRunResponse | None:
-    """ Promote a run to a dataset example
+    """ Promote run to example
+
+     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
+    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
+    expected artifacts to capture a regression test.
 
     Args:
-        id (str):
-        body (PromoteRunRequest):
+        id (str): Run id.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -185,11 +195,16 @@ async def asyncio_detailed(
     body: PromoteRunRequest,
 
 ) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
-    """ Promote a run to a dataset example
+    """ Promote run to example
+
+     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
+    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
+    expected artifacts to capture a regression test.
 
     Args:
-        id (str):
-        body (PromoteRunRequest):
+        id (str): Run id.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,11 +234,16 @@ async def asyncio(
     body: PromoteRunRequest,
 
 ) -> ApiErrorEnvelope | PromoteRunResponse | None:
-    """ Promote a run to a dataset example
+    """ Promote run to example
+
+     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
+    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
+    expected artifacts to capture a regression test.
 
     Args:
-        id (str):
-        body (PromoteRunRequest):
+        id (str): Run id.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -24,10 +24,11 @@ T = TypeVar("T", bound="ExampleRunResponse")
 class ExampleRunResponse:
     """
         Attributes:
-            id (str):
-            type_ (ExampleRunResponseType):
-            batch_id (None | str):
-            finished (bool):
+            id (str): Run id created for this example.
+            type_ (ExampleRunResponseType): Implementation type behind the automation.
+            batch_id (None | str): Experiment batch id when the run is associated with a batch. The API also calls this an
+                experiment id in experiment routes.
+            finished (bool): Example runs are accepted asynchronously.
      """
 
     id: str

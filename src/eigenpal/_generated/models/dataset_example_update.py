@@ -26,16 +26,20 @@ T = TypeVar("T", bound="DatasetExampleUpdate")
 
 @_attrs_define
 class DatasetExampleUpdate:
-    """
+    """ Partial update for a dataset example. Omitted fields are preserved.
+
         Attributes:
-            input_ (DatasetExampleUpdateInputType0 | None | Unset):
-            expected (Any | None | Unset):
-            metadata (DatasetExampleUpdateMetadataType0 | None | Unset):
-            annotation (None | str | Unset):
-            row_order (int | None | Unset):
-            overrides (DatasetExampleUpdateOverridesType0 | None | Unset):
+            name (None | str | Unset): Example name. Required on create; omitted or null uses a generated name where
+                supported.
+            input_ (DatasetExampleUpdateInputType0 | None | Unset): Input arguments for the example.
+            expected (Any | None | Unset): Expected JSON output. Null clears the expected output.
+            metadata (DatasetExampleUpdateMetadataType0 | None | Unset): Caller-managed metadata.
+            annotation (None | str | Unset): Human note about the example. Null clears the annotation.
+            row_order (int | None | Unset): Optional display order. Null clears the order.
+            overrides (DatasetExampleUpdateOverridesType0 | None | Unset): Step output overrides used during example runs.
      """
 
+    name: None | str | Unset = UNSET
     input_: DatasetExampleUpdateInputType0 | None | Unset = UNSET
     expected: Any | None | Unset = UNSET
     metadata: DatasetExampleUpdateMetadataType0 | None | Unset = UNSET
@@ -51,6 +55,12 @@ class DatasetExampleUpdate:
         from ..models.dataset_example_update_input_type_0 import DatasetExampleUpdateInputType0
         from ..models.dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadataType0
         from ..models.dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
+        name: None | str | Unset
+        if isinstance(self.name, Unset):
+            name = UNSET
+        else:
+            name = self.name
+
         input_: dict[str, Any] | None | Unset
         if isinstance(self.input_, Unset):
             input_ = UNSET
@@ -98,6 +108,8 @@ class DatasetExampleUpdate:
 
         field_dict.update({
         })
+        if name is not UNSET:
+            field_dict["name"] = name
         if input_ is not UNSET:
             field_dict["input"] = input_
         if expected is not UNSET:
@@ -121,6 +133,16 @@ class DatasetExampleUpdate:
         from ..models.dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadataType0
         from ..models.dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
         d = dict(src_dict)
+        def _parse_name(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        name = _parse_name(d.pop("name", UNSET))
+
+
         def _parse_input_(data: object) -> DatasetExampleUpdateInputType0 | None | Unset:
             if data is None:
                 return data
@@ -212,6 +234,7 @@ class DatasetExampleUpdate:
 
 
         dataset_example_update = cls(
+            name=name,
             input_=input_,
             expected=expected,
             metadata=metadata,

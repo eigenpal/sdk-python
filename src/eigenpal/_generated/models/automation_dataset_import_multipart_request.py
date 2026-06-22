@@ -29,7 +29,8 @@ class AutomationDatasetImportMultipartRequest:
     """
         Attributes:
             file (File): Dataset ZIP file
-            mode (AutomationDatasetImportMultipartRequestMode | Unset):
+            mode (AutomationDatasetImportMultipartRequestMode | Unset): `append` adds examples without deleting existing
+                rows. `replace` deletes the current dataset before importing.
      """
 
     file: File

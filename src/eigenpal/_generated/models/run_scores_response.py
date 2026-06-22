@@ -17,18 +17,20 @@ if TYPE_CHECKING:
 
 
 
-T = TypeVar("T", bound="EvalResultsResponse")
+T = TypeVar("T", bound="RunScoresResponse")
 
 
 
 @_attrs_define
-class EvalResultsResponse:
-    """
+class RunScoresResponse:
+    """ Automated evaluator results attached to a run.
+
         Attributes:
-            results (list[EvalResult]):
+            scores (list[EvalResult]): Automated evaluator scores for the run. These are separate from human feedback
+                `rating` values.
      """
 
-    results: list[EvalResult]
+    scores: list[EvalResult]
 
 
 
@@ -36,10 +38,10 @@ class EvalResultsResponse:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.eval_result import EvalResult
-        results = []
-        for results_item_data in self.results:
-            results_item = results_item_data.to_dict()
-            results.append(results_item)
+        scores = []
+        for scores_item_data in self.scores:
+            scores_item = scores_item_data.to_dict()
+            scores.append(scores_item)
 
 
 
@@ -47,7 +49,7 @@ class EvalResultsResponse:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "results": results,
+            "scores": scores,
         })
 
         return field_dict
@@ -58,18 +60,18 @@ class EvalResultsResponse:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.eval_result import EvalResult
         d = dict(src_dict)
-        results = []
-        _results = d.pop("results")
-        for results_item_data in (_results):
-            results_item = EvalResult.from_dict(results_item_data)
+        scores = []
+        _scores = d.pop("scores")
+        for scores_item_data in (_scores):
+            scores_item = EvalResult.from_dict(scores_item_data)
 
 
 
-            results.append(results_item)
+            scores.append(scores_item)
 
 
-        eval_results_response = cls(
-            results=results,
+        run_scores_response = cls(
+            scores=scores,
         )
 
-        return eval_results_response
+        return run_scores_response

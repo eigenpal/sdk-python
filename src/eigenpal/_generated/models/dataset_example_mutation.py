@@ -26,15 +26,17 @@ T = TypeVar("T", bound="DatasetExampleMutation")
 
 @_attrs_define
 class DatasetExampleMutation:
-    """
+    """ Fields used to create or update a dataset example.
+
         Attributes:
-            name (None | str | Unset):
-            input_ (DatasetExampleMutationInputType0 | None | Unset):
-            expected (Any | None | Unset):
-            metadata (DatasetExampleMutationMetadataType0 | None | Unset):
-            annotation (None | str | Unset):
-            row_order (int | None | Unset):
-            overrides (DatasetExampleMutationOverridesType0 | None | Unset):
+            name (None | str | Unset): Example name. Required on create; omitted or null uses a generated name where
+                supported.
+            input_ (DatasetExampleMutationInputType0 | None | Unset): Input arguments for the example.
+            expected (Any | None | Unset): Expected JSON output. Null clears the expected output.
+            metadata (DatasetExampleMutationMetadataType0 | None | Unset): Caller-managed metadata.
+            annotation (None | str | Unset): Human note about the example. Null clears the annotation.
+            row_order (int | None | Unset): Optional display order. Null clears the order.
+            overrides (DatasetExampleMutationOverridesType0 | None | Unset): Step output overrides used during example runs.
      """
 
     name: None | str | Unset = UNSET

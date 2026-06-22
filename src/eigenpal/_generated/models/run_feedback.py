@@ -21,20 +21,24 @@ T = TypeVar("T", bound="RunFeedback")
 
 @_attrs_define
 class RunFeedback:
-    """
+    """ Canonical human feedback object for a run. Use feedback endpoints to read, update, clear, or promote it to a dataset
+    example.
+
         Attributes:
-            rating (None | str): `pass`, `fail`, or `partial`.
-            status (None | str): `open`, `resolved`, or `ignored`.
-            body (str):
-            created_at (None | str):
-            created_by (None | str):
-            created_by_email (None | str):
-            updated_at (None | str):
-            resolved_at (None | str):
-            resolved_by (None | str):
-            resolved_by_email (None | str):
-            resolved_by_session_id (None | str):
-            promoted_example_name (None | str):
+            rating (None | str): Human verdict for the run: `pass`, `fail`, or `partial`. This is separate from evaluator
+                `score` values.
+            status (None | str): Review lifecycle status: `open` needs attention, `resolved` was addressed, and `ignored`
+                was acknowledged but intentionally not acted on.
+            body (str): Human feedback text written for this run.
+            created_at (None | str): When feedback was first created.
+            created_by (None | str): User id that created the feedback.
+            created_by_email (None | str): Email of the user that created the feedback.
+            updated_at (None | str): When feedback was last changed.
+            resolved_at (None | str): When feedback was marked resolved or ignored.
+            resolved_by (None | str): User id that resolved or ignored the feedback.
+            resolved_by_email (None | str): Email of the user that resolved or ignored the feedback.
+            resolved_by_session_id (None | str): Agent session id that resolved the feedback, when applicable.
+            promoted_example_name (None | str): Dataset example name created from this feedback, if promoted.
      """
 
     rating: None | str

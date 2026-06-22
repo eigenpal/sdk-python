@@ -24,10 +24,10 @@ T = TypeVar("T", bound="PromoteRunResponse")
 class PromoteRunResponse:
     """
         Attributes:
-            automation_id (str):
-            automation_type (PromoteRunResponseAutomationType):
-            example_id (str):
-            name (None | str):
+            automation_id (str): Automation that owns the promoted example.
+            automation_type (PromoteRunResponseAutomationType): Implementation type behind the automation.
+            example_id (str): Dataset example identifier returned for follow-up API calls.
+            name (None | str): Dataset example name.
      """
 
     automation_id: str

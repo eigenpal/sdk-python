@@ -140,13 +140,14 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | ListAutomationsResponse]:
     """ List automations
 
-     List runnable workflow and agent automations in one collection.
+     Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
+    workflows or agents, and `search` to find automations by slug, name, or description.
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
-        limit (int | Unset):
-        offset (int | Unset):
+        limit (int | Unset): Maximum number of automations to return.
+        offset (int | Unset): Zero-based offset for paging through automations.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -182,13 +183,14 @@ def sync(
 ) -> ApiErrorEnvelope | ListAutomationsResponse | None:
     """ List automations
 
-     List runnable workflow and agent automations in one collection.
+     Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
+    workflows or agents, and `search` to find automations by slug, name, or description.
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
-        limit (int | Unset):
-        offset (int | Unset):
+        limit (int | Unset): Maximum number of automations to return.
+        offset (int | Unset): Zero-based offset for paging through automations.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,13 +221,14 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | ListAutomationsResponse]:
     """ List automations
 
-     List runnable workflow and agent automations in one collection.
+     Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
+    workflows or agents, and `search` to find automations by slug, name, or description.
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
-        limit (int | Unset):
-        offset (int | Unset):
+        limit (int | Unset): Maximum number of automations to return.
+        offset (int | Unset): Zero-based offset for paging through automations.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -261,13 +264,14 @@ async def asyncio(
 ) -> ApiErrorEnvelope | ListAutomationsResponse | None:
     """ List automations
 
-     List runnable workflow and agent automations in one collection.
+     Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
+    workflows or agents, and `search` to find automations by slug, name, or description.
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
-        limit (int | Unset):
-        offset (int | Unset):
+        limit (int | Unset): Maximum number of automations to return.
+        offset (int | Unset): Zero-based offset for paging through automations.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

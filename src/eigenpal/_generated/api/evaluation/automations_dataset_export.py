@@ -43,9 +43,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | str | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | bytes | None:
     if response.status_code == 200:
-        response_200 = cast(str, response.json())
+        response_200 = response.content
         return response_200
 
     if response.status_code == 400:
@@ -103,7 +103,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | str]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | bytes]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -118,19 +118,24 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | str]:
+) -> Response[ApiErrorEnvelope | bytes]:
     """ Export automation dataset
 
+     Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
+    examples/<name>/expected folder convention, so it can be re-imported into another automation or
+    environment.
+
     Args:
-        id (str):
-        example_ids (str | Unset):
+        id (str): Automation id or typed alias.
+        example_ids (str | Unset): Optional comma-separated dataset example ids to export. Omit to
+            export the full dataset.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | str]
+        Response[ApiErrorEnvelope | bytes]
      """
 
 
@@ -152,19 +157,24 @@ def sync(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | str | None:
+) -> ApiErrorEnvelope | bytes | None:
     """ Export automation dataset
 
+     Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
+    examples/<name>/expected folder convention, so it can be re-imported into another automation or
+    environment.
+
     Args:
-        id (str):
-        example_ids (str | Unset):
+        id (str): Automation id or typed alias.
+        example_ids (str | Unset): Optional comma-separated dataset example ids to export. Omit to
+            export the full dataset.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | str
+        ApiErrorEnvelope | bytes
      """
 
 
@@ -181,19 +191,24 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | str]:
+) -> Response[ApiErrorEnvelope | bytes]:
     """ Export automation dataset
 
+     Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
+    examples/<name>/expected folder convention, so it can be re-imported into another automation or
+    environment.
+
     Args:
-        id (str):
-        example_ids (str | Unset):
+        id (str): Automation id or typed alias.
+        example_ids (str | Unset): Optional comma-separated dataset example ids to export. Omit to
+            export the full dataset.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | str]
+        Response[ApiErrorEnvelope | bytes]
      """
 
 
@@ -215,19 +230,24 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | str | None:
+) -> ApiErrorEnvelope | bytes | None:
     """ Export automation dataset
 
+     Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
+    examples/<name>/expected folder convention, so it can be re-imported into another automation or
+    environment.
+
     Args:
-        id (str):
-        example_ids (str | Unset):
+        id (str): Automation id or typed alias.
+        example_ids (str | Unset): Optional comma-separated dataset example ids to export. Omit to
+            export the full dataset.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | str
+        ApiErrorEnvelope | bytes
      """
 
 

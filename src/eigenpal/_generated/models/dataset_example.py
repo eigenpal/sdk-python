@@ -28,21 +28,22 @@ T = TypeVar("T", bound="DatasetExample")
 
 @_attrs_define
 class DatasetExample:
-    """
+    """ One input/expected-output row in an automation dataset.
+
         Attributes:
             id (str): Stable public example id. Workflow examples use DB ids; agent examples use deterministic name-derived
                 ids.
-            name (str):
-            automation_id (str):
+            name (str): Human-readable dataset example name.
+            automation_id (str): Automation that owns this example.
             automation_type (AutomationType):
-            input_ (DatasetExampleInputType0 | None):
-            expected (Any | None):
-            expected_files (list[DatasetExampleExpectedFilesItem]):
-            metadata (DatasetExampleMetadataType0 | None):
-            annotation (None | str):
-            row_order (float | None):
-            overrides (DatasetExampleOverridesType0 | None):
-            latest_run_id (None | str):
+            input_ (DatasetExampleInputType0 | None): Input arguments used when this example is run.
+            expected (Any | None): Expected JSON output for evaluator comparisons.
+            expected_files (list[DatasetExampleExpectedFilesItem]): Expected files attached to this example.
+            metadata (DatasetExampleMetadataType0 | None): Caller-managed metadata for sorting or filtering examples.
+            annotation (None | str): Human note about the example.
+            row_order (float | None): Optional display order within the dataset.
+            overrides (DatasetExampleOverridesType0 | None): Step output overrides used when running this example.
+            latest_run_id (None | str): Most recent run id created from this example.
             created_at (str | Unset):
             updated_at (None | str | Unset):
      """

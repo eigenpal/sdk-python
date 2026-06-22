@@ -114,11 +114,13 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | ExperimentDetail]:
-    """ Get automation experiment
+    """ Get experiment
+
+     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -148,11 +150,13 @@ def sync(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | ExperimentDetail | None:
-    """ Get automation experiment
+    """ Get experiment
+
+     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -177,11 +181,13 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | ExperimentDetail]:
-    """ Get automation experiment
+    """ Get experiment
+
+     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -211,11 +217,13 @@ async def asyncio(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | ExperimentDetail | None:
-    """ Get automation experiment
+    """ Get experiment
+
+     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

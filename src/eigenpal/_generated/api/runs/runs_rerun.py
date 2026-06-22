@@ -193,12 +193,13 @@ def sync_detailed(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
-    """ Rerun run
+    """ Retry run
 
-     Start a new run from an existing run id.
+     Start a new run using the source run input. By default the retry uses the latest automation version;
+    pass `version=original` to pin the same source version as the original run.
 
     Args:
-        id (str):
+        id (str): Source run id to retry.
         version (str | Unset): Version for the new run. `original` pins the source run. Defaults
             to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
@@ -234,12 +235,13 @@ def sync(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | Run | RunAccepted | None:
-    """ Rerun run
+    """ Retry run
 
-     Start a new run from an existing run id.
+     Start a new run using the source run input. By default the retry uses the latest automation version;
+    pass `version=original` to pin the same source version as the original run.
 
     Args:
-        id (str):
+        id (str): Source run id to retry.
         version (str | Unset): Version for the new run. `original` pins the source run. Defaults
             to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
@@ -270,12 +272,13 @@ async def asyncio_detailed(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | Run | RunAccepted]:
-    """ Rerun run
+    """ Retry run
 
-     Start a new run from an existing run id.
+     Start a new run using the source run input. By default the retry uses the latest automation version;
+    pass `version=original` to pin the same source version as the original run.
 
     Args:
-        id (str):
+        id (str): Source run id to retry.
         version (str | Unset): Version for the new run. `original` pins the source run. Defaults
             to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
@@ -311,12 +314,13 @@ async def asyncio(
     wait_for_completion: int | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | Run | RunAccepted | None:
-    """ Rerun run
+    """ Retry run
 
-     Start a new run from an existing run id.
+     Start a new run using the source run input. By default the retry uses the latest automation version;
+    pass `version=original` to pin the same source version as the original run.
 
     Args:
-        id (str):
+        id (str): Source run id to retry.
         version (str | Unset): Version for the new run. `original` pins the source run. Defaults
             to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for

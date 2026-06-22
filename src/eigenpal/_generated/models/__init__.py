@@ -17,11 +17,28 @@ from .automation_trigger_state import AutomationTriggerState
 from .automation_triggers_response import AutomationTriggersResponse
 from .automation_type import AutomationType
 from .automation_version import AutomationVersion
+from .automations_experiments_export_all_format import AutomationsExperimentsExportAllFormat
+from .automations_experiments_export_format import AutomationsExperimentsExportFormat
 from .automations_experiments_list_response_200 import AutomationsExperimentsListResponse200
 from .automations_list_type import AutomationsListType
+from .automations_sync_response_200 import AutomationsSyncResponse200
+from .automations_sync_response_200_automation import AutomationsSyncResponse200Automation
+from .automations_sync_response_200_automation_status import AutomationsSyncResponse200AutomationStatus
+from .automations_sync_response_200_automation_type import AutomationsSyncResponse200AutomationType
+from .automations_sync_response_200_release import AutomationsSyncResponse200Release
 from .create_file_multipart_request import CreateFileMultipartRequest
 from .dataset_example import DatasetExample
+from .dataset_example_expected_file_list import DatasetExampleExpectedFileList
+from .dataset_example_expected_file_rename_request import DatasetExampleExpectedFileRenameRequest
+from .dataset_example_expected_file_rename_response import DatasetExampleExpectedFileRenameResponse
+from .dataset_example_expected_file_upload_request import DatasetExampleExpectedFileUploadRequest
+from .dataset_example_expected_file_upload_response import DatasetExampleExpectedFileUploadResponse
 from .dataset_example_expected_files_item import DatasetExampleExpectedFilesItem
+from .dataset_example_input_file_list import DatasetExampleInputFileList
+from .dataset_example_input_file_rename_request import DatasetExampleInputFileRenameRequest
+from .dataset_example_input_file_rename_response import DatasetExampleInputFileRenameResponse
+from .dataset_example_input_file_upload_request import DatasetExampleInputFileUploadRequest
+from .dataset_example_input_file_upload_response import DatasetExampleInputFileUploadResponse
 from .dataset_example_input_type_0 import DatasetExampleInputType0
 from .dataset_example_list import DatasetExampleList
 from .dataset_example_metadata_type_0 import DatasetExampleMetadataType0
@@ -38,7 +55,6 @@ from .dataset_import_response_type_0 import DatasetImportResponseType0
 from .dataset_import_response_type_1 import DatasetImportResponseType1
 from .delete_file_response import DeleteFileResponse
 from .eval_result import EvalResult
-from .eval_results_response import EvalResultsResponse
 from .evaluator_config_response import EvaluatorConfigResponse
 from .evaluator_config_response_config import EvaluatorConfigResponseConfig
 from .evaluator_config_update import EvaluatorConfigUpdate
@@ -53,6 +69,7 @@ from .experiment_detail import ExperimentDetail
 from .experiment_detail_results_by_run import ExperimentDetailResultsByRun
 from .experiment_detail_runs_item import ExperimentDetailRunsItem
 from .experiment_detail_status import ExperimentDetailStatus
+from .experiment_ref import ExperimentRef
 from .experiment_status import ExperimentStatus
 from .file import File
 from .list_automation_versions_response import ListAutomationVersionsResponse
@@ -78,12 +95,15 @@ from .run_events_response import RunEventsResponse
 from .run_execution_meta import RunExecutionMeta
 from .run_execution_retry import RunExecutionRetry
 from .run_execution_retry_next_run_type_0 import RunExecutionRetryNextRunType0
+from .run_expected_artifacts import RunExpectedArtifacts
+from .run_expected_file_copy_request import RunExpectedFileCopyRequest
+from .run_expected_file_mutation_response import RunExpectedFileMutationResponse
+from .run_expected_file_update_request import RunExpectedFileUpdateRequest
+from .run_expected_file_update_response import RunExpectedFileUpdateResponse
+from .run_expected_file_upload_request import RunExpectedFileUploadRequest
 from .run_feedback import RunFeedback
 from .run_feedback_detail import RunFeedbackDetail
-from .run_feedback_detail_expected_files_item import RunFeedbackDetailExpectedFilesItem
 from .run_feedback_request import RunFeedbackRequest
-from .run_feedback_request_feedback_rating_type_0 import RunFeedbackRequestFeedbackRatingType0
-from .run_feedback_request_feedback_status_type_0 import RunFeedbackRequestFeedbackStatusType0
 from .run_feedback_request_rating_type_0 import RunFeedbackRequestRatingType0
 from .run_feedback_request_status_type_0 import RunFeedbackRequestStatusType0
 from .run_file import RunFile
@@ -91,6 +111,7 @@ from .run_input import RunInput
 from .run_list_item import RunListItem
 from .run_list_item_type import RunListItemType
 from .run_output_type_0 import RunOutputType0
+from .run_scores_response import RunScoresResponse
 from .run_source import RunSource
 from .run_source_git import RunSourceGit
 from .run_start_body import RunStartBody
@@ -105,14 +126,16 @@ from .run_start_body_overrides_steps_additional_property import RunStartBodyOver
 from .run_start_multipart_request import RunStartMultipartRequest
 from .run_steps_response import RunStepsResponse
 from .run_timing import RunTiming
+from .run_trace_event import RunTraceEvent
+from .run_trace_response import RunTraceResponse
 from .run_trigger import RunTrigger
 from .run_trigger_by_type_0 import RunTriggerByType0
 from .run_type import RunType
 from .run_usage import RunUsage
 from .run_usage_response import RunUsageResponse
 from .run_usage_tokens import RunUsageTokens
+from .runs_artifacts_list_zip import RunsArtifactsListZip
 from .runs_list_response import RunsListResponse
-from .runs_trace_get_response_200 import RunsTraceGetResponse200
 from .workflow_run_execution import WorkflowRunExecution
 from .workflow_run_execution_expected import WorkflowRunExecutionExpected
 
@@ -129,8 +152,15 @@ __all__ = (
     "AutomationDetail",
     "AutomationDetailInputSchemaType0",
     "AutomationDetailOutputSchemaType0",
+    "AutomationsExperimentsExportAllFormat",
+    "AutomationsExperimentsExportFormat",
     "AutomationsExperimentsListResponse200",
     "AutomationsListType",
+    "AutomationsSyncResponse200",
+    "AutomationsSyncResponse200Automation",
+    "AutomationsSyncResponse200AutomationStatus",
+    "AutomationsSyncResponse200AutomationType",
+    "AutomationsSyncResponse200Release",
     "AutomationSummary",
     "AutomationTriggersResponse",
     "AutomationTriggerState",
@@ -138,7 +168,17 @@ __all__ = (
     "AutomationVersion",
     "CreateFileMultipartRequest",
     "DatasetExample",
+    "DatasetExampleExpectedFileList",
+    "DatasetExampleExpectedFileRenameRequest",
+    "DatasetExampleExpectedFileRenameResponse",
     "DatasetExampleExpectedFilesItem",
+    "DatasetExampleExpectedFileUploadRequest",
+    "DatasetExampleExpectedFileUploadResponse",
+    "DatasetExampleInputFileList",
+    "DatasetExampleInputFileRenameRequest",
+    "DatasetExampleInputFileRenameResponse",
+    "DatasetExampleInputFileUploadRequest",
+    "DatasetExampleInputFileUploadResponse",
     "DatasetExampleInputType0",
     "DatasetExampleList",
     "DatasetExampleMetadataType0",
@@ -155,7 +195,6 @@ __all__ = (
     "DatasetImportResponseType1",
     "DeleteFileResponse",
     "EvalResult",
-    "EvalResultsResponse",
     "EvaluatorConfigResponse",
     "EvaluatorConfigResponseConfig",
     "EvaluatorConfigUpdate",
@@ -170,6 +209,7 @@ __all__ = (
     "ExperimentDetailResultsByRun",
     "ExperimentDetailRunsItem",
     "ExperimentDetailStatus",
+    "ExperimentRef",
     "ExperimentStatus",
     "File",
     "ListAutomationsResponse",
@@ -195,12 +235,15 @@ __all__ = (
     "RunExecutionMeta",
     "RunExecutionRetry",
     "RunExecutionRetryNextRunType0",
+    "RunExpectedArtifacts",
+    "RunExpectedFileCopyRequest",
+    "RunExpectedFileMutationResponse",
+    "RunExpectedFileUpdateRequest",
+    "RunExpectedFileUpdateResponse",
+    "RunExpectedFileUploadRequest",
     "RunFeedback",
     "RunFeedbackDetail",
-    "RunFeedbackDetailExpectedFilesItem",
     "RunFeedbackRequest",
-    "RunFeedbackRequestFeedbackRatingType0",
-    "RunFeedbackRequestFeedbackStatusType0",
     "RunFeedbackRequestRatingType0",
     "RunFeedbackRequestStatusType0",
     "RunFile",
@@ -208,6 +251,8 @@ __all__ = (
     "RunListItem",
     "RunListItemType",
     "RunOutputType0",
+    "RunsArtifactsListZip",
+    "RunScoresResponse",
     "RunsListResponse",
     "RunSource",
     "RunSourceGit",
@@ -222,8 +267,9 @@ __all__ = (
     "RunStartBodyOverridesStepsAdditionalProperty",
     "RunStartMultipartRequest",
     "RunStepsResponse",
-    "RunsTraceGetResponse200",
     "RunTiming",
+    "RunTraceEvent",
+    "RunTraceResponse",
     "RunTrigger",
     "RunTriggerByType0",
     "RunType",

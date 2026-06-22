@@ -124,9 +124,13 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Update run feedback
 
+     Partially update human feedback and expected JSON output for a run. Omitted fields are left
+    unchanged. Pass null to clear a field.
+
     Args:
-        id (str):
-        body (RunFeedbackRequest):
+        id (str): Run id.
+        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
+            pass null to clear a field.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -158,9 +162,13 @@ def sync(
 ) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Update run feedback
 
+     Partially update human feedback and expected JSON output for a run. Omitted fields are left
+    unchanged. Pass null to clear a field.
+
     Args:
-        id (str):
-        body (RunFeedbackRequest):
+        id (str): Run id.
+        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
+            pass null to clear a field.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -187,9 +195,13 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Update run feedback
 
+     Partially update human feedback and expected JSON output for a run. Omitted fields are left
+    unchanged. Pass null to clear a field.
+
     Args:
-        id (str):
-        body (RunFeedbackRequest):
+        id (str): Run id.
+        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
+            pass null to clear a field.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -221,9 +233,13 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Update run feedback
 
+     Partially update human feedback and expected JSON output for a run. Omitted fields are left
+    unchanged. Pass null to clear a field.
+
     Args:
-        id (str):
-        body (RunFeedbackRequest):
+        id (str): Run id.
+        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
+            pass null to clear a field.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -10,23 +10,41 @@ from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.run_artifacts_response import RunArtifactsResponse
+from ...models.runs_artifacts_list_zip import RunsArtifactsListZip
+from ...types import UNSET, Unset
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    *,
+    zip_: RunsArtifactsListZip | Unset = UNSET,
+    token: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
 
 
 
+    params: dict[str, Any] = {}
+
+    json_zip_: str | Unset = UNSET
+    if not isinstance(zip_, Unset):
+        json_zip_ = zip_.value
+
+    params["zip"] = json_zip_
+
+    params["token"] = token
+
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
 
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/api/v1/runs/{id}/artifacts".format(id=quote(str(id), safe=""),),
+        "params": params,
     }
 
 
@@ -34,8 +52,10 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunArtifactsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunArtifactsResponse | bytes | None:
     if response.status_code == 200:
+        if response.headers.get("content-type", "").split(";", 1)[0].strip() in {"application/zip", "application/octet-stream"}:
+            return response.content
         response_200 = RunArtifactsResponse.from_dict(response.json())
 
 
@@ -97,7 +117,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunArtifactsResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -110,26 +130,35 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    zip_: RunsArtifactsListZip | Unset = UNSET,
+    token: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | RunArtifactsResponse]:
+) -> Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]:
     """ List run artifacts
 
-     List downloadable artifact paths for a run.
+     Returns a JSON list of downloadable artifact paths for a run. Pass `zip=1` to switch the response to
+    a ZIP download containing output files.
 
     Args:
         id (str): Run id
+        zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
+            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            `GET /runs/{id}/trace` for those.
+        token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunArtifactsResponse]
+        Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+zip_=zip_,
+token=token,
 
     )
 
@@ -143,14 +172,21 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    zip_: RunsArtifactsListZip | Unset = UNSET,
+    token: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | RunArtifactsResponse | None:
+) -> ApiErrorEnvelope | RunArtifactsResponse | bytes | None:
     """ List run artifacts
 
-     List downloadable artifact paths for a run.
+     Returns a JSON list of downloadable artifact paths for a run. Pass `zip=1` to switch the response to
+    a ZIP download containing output files.
 
     Args:
         id (str): Run id
+        zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
+            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            `GET /runs/{id}/trace` for those.
+        token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -164,6 +200,8 @@ def sync(
     return sync_detailed(
         id=id,
 client=client,
+zip_=zip_,
+token=token,
 
     ).parsed
 
@@ -171,26 +209,35 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    zip_: RunsArtifactsListZip | Unset = UNSET,
+    token: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | RunArtifactsResponse]:
+) -> Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]:
     """ List run artifacts
 
-     List downloadable artifact paths for a run.
+     Returns a JSON list of downloadable artifact paths for a run. Pass `zip=1` to switch the response to
+    a ZIP download containing output files.
 
     Args:
         id (str): Run id
+        zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
+            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            `GET /runs/{id}/trace` for those.
+        token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunArtifactsResponse]
+        Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+zip_=zip_,
+token=token,
 
     )
 
@@ -204,14 +251,21 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    zip_: RunsArtifactsListZip | Unset = UNSET,
+    token: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | RunArtifactsResponse | None:
+) -> ApiErrorEnvelope | RunArtifactsResponse | bytes | None:
     """ List run artifacts
 
-     List downloadable artifact paths for a run.
+     Returns a JSON list of downloadable artifact paths for a run. Pass `zip=1` to switch the response to
+    a ZIP download containing output files.
 
     Args:
         id (str): Run id
+        zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
+            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            `GET /runs/{id}/trace` for those.
+        token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -225,5 +279,7 @@ async def asyncio(
     return (await asyncio_detailed(
         id=id,
 client=client,
+zip_=zip_,
+token=token,
 
     )).parsed

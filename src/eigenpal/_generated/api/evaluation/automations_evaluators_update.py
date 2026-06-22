@@ -122,11 +122,14 @@ def sync_detailed(
     body: EvaluatorConfigUpdate,
 
 ) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
-    """ Replace automation evaluators
+    """ Replace evaluators
+
+     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
+    source for future experiment scores.
 
     Args:
-        id (str):
-        body (EvaluatorConfigUpdate):
+        id (str): Automation id or typed alias.
+        body (EvaluatorConfigUpdate): Replacement evaluator configuration.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,11 +159,14 @@ def sync(
     body: EvaluatorConfigUpdate,
 
 ) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
-    """ Replace automation evaluators
+    """ Replace evaluators
+
+     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
+    source for future experiment scores.
 
     Args:
-        id (str):
-        body (EvaluatorConfigUpdate):
+        id (str): Automation id or typed alias.
+        body (EvaluatorConfigUpdate): Replacement evaluator configuration.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -185,11 +191,14 @@ async def asyncio_detailed(
     body: EvaluatorConfigUpdate,
 
 ) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
-    """ Replace automation evaluators
+    """ Replace evaluators
+
+     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
+    source for future experiment scores.
 
     Args:
-        id (str):
-        body (EvaluatorConfigUpdate):
+        id (str): Automation id or typed alias.
+        body (EvaluatorConfigUpdate): Replacement evaluator configuration.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,11 +228,14 @@ async def asyncio(
     body: EvaluatorConfigUpdate,
 
 ) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
-    """ Replace automation evaluators
+    """ Replace evaluators
+
+     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
+    source for future experiment scores.
 
     Args:
-        id (str):
-        body (EvaluatorConfigUpdate):
+        id (str): Automation id or typed alias.
+        body (EvaluatorConfigUpdate): Replacement evaluator configuration.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

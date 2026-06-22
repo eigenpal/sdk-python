@@ -124,12 +124,17 @@ def sync_detailed(
     body: DatasetExampleUpdate,
 
 ) -> Response[ApiErrorEnvelope | DatasetExample]:
-    """ Update automation example
+    """ Update dataset example
+
+     Partially update a dataset example. Omitted fields are preserved; pass null for nullable fields to
+    clear them.
 
     Args:
-        id (str):
-        example_id (str):
-        body (DatasetExampleUpdate):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id. Agent examples may use deterministic name-derived
+            ids returned by list/create responses.
+        body (DatasetExampleUpdate): Partial update for a dataset example. Omitted fields are
+            preserved.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -161,12 +166,17 @@ def sync(
     body: DatasetExampleUpdate,
 
 ) -> ApiErrorEnvelope | DatasetExample | None:
-    """ Update automation example
+    """ Update dataset example
+
+     Partially update a dataset example. Omitted fields are preserved; pass null for nullable fields to
+    clear them.
 
     Args:
-        id (str):
-        example_id (str):
-        body (DatasetExampleUpdate):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id. Agent examples may use deterministic name-derived
+            ids returned by list/create responses.
+        body (DatasetExampleUpdate): Partial update for a dataset example. Omitted fields are
+            preserved.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -193,12 +203,17 @@ async def asyncio_detailed(
     body: DatasetExampleUpdate,
 
 ) -> Response[ApiErrorEnvelope | DatasetExample]:
-    """ Update automation example
+    """ Update dataset example
+
+     Partially update a dataset example. Omitted fields are preserved; pass null for nullable fields to
+    clear them.
 
     Args:
-        id (str):
-        example_id (str):
-        body (DatasetExampleUpdate):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id. Agent examples may use deterministic name-derived
+            ids returned by list/create responses.
+        body (DatasetExampleUpdate): Partial update for a dataset example. Omitted fields are
+            preserved.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -230,12 +245,17 @@ async def asyncio(
     body: DatasetExampleUpdate,
 
 ) -> ApiErrorEnvelope | DatasetExample | None:
-    """ Update automation example
+    """ Update dataset example
+
+     Partially update a dataset example. Omitted fields are preserved; pass null for nullable fields to
+    clear them.
 
     Args:
-        id (str):
-        example_id (str):
-        body (DatasetExampleUpdate):
+        id (str): Automation id or typed alias.
+        example_id (str): Dataset example id. Agent examples may use deterministic name-derived
+            ids returned by list/create responses.
+        body (DatasetExampleUpdate): Partial update for a dataset example. Omitted fields are
+            preserved.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

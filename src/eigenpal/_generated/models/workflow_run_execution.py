@@ -34,6 +34,7 @@ class WorkflowRunExecution:
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
             steps (list[Any]): Per-step executions of the workflow run.
+            definition_snapshot (Any | None | Unset): Workflow definition snapshot captured when the run was created.
             feedback (None | RunFeedback | Unset):
             expected (WorkflowRunExecutionExpected | Unset): Ground-truth expected output and files.
      """
@@ -43,6 +44,7 @@ class WorkflowRunExecution:
     batch_id: None | str
     retry: RunExecutionRetry
     steps: list[Any]
+    definition_snapshot: Any | None | Unset = UNSET
     feedback: None | RunFeedback | Unset = UNSET
     expected: WorkflowRunExecutionExpected | Unset = UNSET
 
@@ -68,6 +70,12 @@ class WorkflowRunExecution:
 
 
 
+        definition_snapshot: Any | None | Unset
+        if isinstance(self.definition_snapshot, Unset):
+            definition_snapshot = UNSET
+        else:
+            definition_snapshot = self.definition_snapshot
+
         feedback: dict[str, Any] | None | Unset
         if isinstance(self.feedback, Unset):
             feedback = UNSET
@@ -90,6 +98,8 @@ class WorkflowRunExecution:
             "retry": retry,
             "steps": steps,
         })
+        if definition_snapshot is not UNSET:
+            field_dict["definitionSnapshot"] = definition_snapshot
         if feedback is not UNSET:
             field_dict["feedback"] = feedback
         if expected is not UNSET:
@@ -134,6 +144,16 @@ class WorkflowRunExecution:
         steps = cast(list[Any], d.pop("steps"))
 
 
+        def _parse_definition_snapshot(data: object) -> Any | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(Any | None | Unset, data)
+
+        definition_snapshot = _parse_definition_snapshot(d.pop("definitionSnapshot", UNSET))
+
+
         def _parse_feedback(data: object) -> None | RunFeedback | Unset:
             if data is None:
                 return data
@@ -170,6 +190,7 @@ class WorkflowRunExecution:
             batch_id=batch_id,
             retry=retry,
             steps=steps,
+            definition_snapshot=definition_snapshot,
             feedback=feedback,
             expected=expected,
         )

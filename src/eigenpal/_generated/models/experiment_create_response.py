@@ -23,11 +23,12 @@ T = TypeVar("T", bound="ExperimentCreateResponse")
 
 @_attrs_define
 class ExperimentCreateResponse:
-    """
+    """ Accepted experiment batch and the runs it enqueued.
+
         Attributes:
-            id (str):
-            runs (list[ExperimentCreateResponseRunsItem]):
-            total (int):
+            id (str): Experiment batch id.
+            runs (list[ExperimentCreateResponseRunsItem]): Runs enqueued for this experiment.
+            total (int): Number of runs enqueued.
      """
 
     id: str

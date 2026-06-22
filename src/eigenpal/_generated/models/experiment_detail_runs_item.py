@@ -23,10 +23,10 @@ T = TypeVar("T", bound="ExperimentDetailRunsItem")
 class ExperimentDetailRunsItem:
     """
         Attributes:
-            id (str):
-            status (str):
-            example_id (None | str):
-            example_name (None | str):
+            id (str): Run id created for the experiment.
+            status (str): Current run status.
+            example_id (None | str): Dataset example id for the run.
+            example_name (None | str): Dataset example name for the run.
             created_at (str):
             completed_at (None | str):
      """

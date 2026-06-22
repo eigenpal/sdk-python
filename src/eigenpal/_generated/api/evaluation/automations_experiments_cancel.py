@@ -114,11 +114,14 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | ExperimentDetail]:
-    """ Cancel automation experiment
+    """ Cancel experiment
+
+     Request cancellation for an experiment batch. Already-completed runs remain recorded; queued or
+    running work is cancelled when possible.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -148,11 +151,14 @@ def sync(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | ExperimentDetail | None:
-    """ Cancel automation experiment
+    """ Cancel experiment
+
+     Request cancellation for an experiment batch. Already-completed runs remain recorded; queued or
+    running work is cancelled when possible.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -177,11 +183,14 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | ExperimentDetail]:
-    """ Cancel automation experiment
+    """ Cancel experiment
+
+     Request cancellation for an experiment batch. Already-completed runs remain recorded; queued or
+    running work is cancelled when possible.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -211,11 +220,14 @@ async def asyncio(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | ExperimentDetail | None:
-    """ Cancel automation experiment
+    """ Cancel experiment
+
+     Request cancellation for an experiment batch. Already-completed runs remain recorded; queued or
+    running work is cancelled when possible.
 
     Args:
-        id (str):
-        experiment_id (str):
+        id (str): Automation id or typed alias.
+        experiment_id (str): Experiment batch id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

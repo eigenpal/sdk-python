@@ -37,6 +37,7 @@ class AgentRunExecution:
             files (AgentRunExecutionFiles):
             feedback (None | RunFeedback | Unset):
             expected (AgentRunExecutionExpected | Unset): Ground-truth expected output and files.
+            comparison (Any | Unset): Expected-vs-actual comparison for eval runs (terminal runs only).
      """
 
     status: ExecutionStatus
@@ -46,6 +47,7 @@ class AgentRunExecution:
     files: AgentRunExecutionFiles
     feedback: None | RunFeedback | Unset = UNSET
     expected: AgentRunExecutionExpected | Unset = UNSET
+    comparison: Any | Unset = UNSET
 
 
 
@@ -80,6 +82,8 @@ class AgentRunExecution:
         if not isinstance(self.expected, Unset):
             expected = self.expected.to_dict()
 
+        comparison = self.comparison
+
 
         field_dict: dict[str, Any] = {}
 
@@ -94,6 +98,8 @@ class AgentRunExecution:
             field_dict["feedback"] = feedback
         if expected is not UNSET:
             field_dict["expected"] = expected
+        if comparison is not UNSET:
+            field_dict["comparison"] = comparison
 
         return field_dict
 
@@ -167,6 +173,8 @@ class AgentRunExecution:
 
 
 
+        comparison = d.pop("comparison", UNSET)
+
         agent_run_execution = cls(
             status=status,
             schema_valid=schema_valid,
@@ -175,6 +183,7 @@ class AgentRunExecution:
             files=files,
             feedback=feedback,
             expected=expected,
+            comparison=comparison,
         )
 
         return agent_run_execution

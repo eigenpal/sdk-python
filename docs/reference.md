@@ -27,6 +27,7 @@ client
 │   ├── list
 │   ├── get
 │   ├── versions
+│   ├── sync
 │   ├── dataset
 │   │   ├── export
 │   │   └── import_
@@ -38,13 +39,30 @@ client
 │   │   ├── get
 │   │   ├── create
 │   │   ├── delete
+│   │   ├── expected_file
+│   │   │   ├── get
+│   │   │   ├── delete
+│   │   │   └── update
+│   │   ├── expected_files
+│   │   │   ├── list
+│   │   │   └── create
+│   │   ├── input_file
+│   │   │   ├── get
+│   │   │   ├── delete
+│   │   │   └── update
+│   │   ├── input_files
+│   │   │   ├── list
+│   │   │   └── create
 │   │   ├── run
 │   │   └── update
 │   ├── experiments
 │   │   ├── list
 │   │   ├── get
 │   │   ├── cancel
-│   │   └── create
+│   │   ├── create
+│   │   ├── create_stream
+│   │   ├── export
+│   │   └── export_all
 │   └── triggers
 ├── runs
 │   ├── list
@@ -53,14 +71,19 @@ client
 │   │   ├── list
 │   │   └── download
 │   ├── cancel
-│   ├── eval_results
-│   │   └── list
 │   ├── events
 │   ├── feedback
 │   │   ├── get
+│   │   ├── list_expected
+│   │   ├── copy_output_to_expected / upload_expected
+│   │   ├── download_expected
+│   │   ├── rename_expected
+│   │   ├── delete_expected
 │   │   ├── clear
 │   │   └── update
 │   ├── promote
+│   ├── scores
+│   │   └── list
 │   ├── steps
 │   ├── trace
 │   │   └── get
@@ -70,8 +93,10 @@ client
 │   ├── delete
 │   ├── download
 │   └── upload
-└── auth
-    └── check
+├── auth
+│   └── check
+└── experiments
+    └── resolve
 ```
 
 Start runs with `client.run(...)` and create a new run from a previous snapshot with `client.rerun(...)`.
@@ -117,329 +142,30 @@ Return the tenant, user, API key, and scope represented by the current API key.
 // AuthCheckResponse
 ```
 
-## Evaluation
-
-### `client.automations.dataset.export`
-
-**`GET /api/v1/automations/:id/dataset/export`**
-
-Export automation dataset
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Query parameters**
-
-| Name          | Type  | Description |
-| ------------- | ----- | ----------- |
-| `example_ids` | `str` | (optional)  |
-
-**Response**
-
-```python
-// str
-```
-
-### `client.automations.dataset.import_`
-
-**`POST /api/v1/automations/:id/dataset/import`**
-
-Import automation dataset
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// DatasetImportResponse
-```
-
-### `client.automations.evaluators.get`
-
-**`GET /api/v1/automations/:id/evaluators`**
-
-Get automation evaluators
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// EvaluatorConfigResponse
-```
-
-### `client.automations.evaluators.update`
-
-**`PUT /api/v1/automations/:id/evaluators`**
-
-Replace automation evaluators
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Request body**
-
-```python
-// EvaluatorConfigUpdate
-```
-
-**Response**
-
-```python
-// EvaluatorConfigResponse
-```
-
-### `client.automations.examples.get`
-
-**`GET /api/v1/automations/:id/examples/:exampleId`**
-
-Get automation example
-
-**Path parameters**
-
-| Name         | Type  | Description |
-| ------------ | ----- | ----------- |
-| `id`         | `str` |             |
-| `example_id` | `str` |             |
-
-**Response**
-
-```python
-// DatasetExample
-```
-
-### `client.automations.examples.update`
-
-**`PATCH /api/v1/automations/:id/examples/:exampleId`**
-
-Update automation example
-
-**Path parameters**
-
-| Name         | Type  | Description |
-| ------------ | ----- | ----------- |
-| `id`         | `str` |             |
-| `example_id` | `str` |             |
-
-**Request body**
-
-```python
-// DatasetExampleUpdate
-```
-
-**Response**
-
-```python
-// DatasetExample
-```
-
-### `client.automations.examples.delete`
-
-**`DELETE /api/v1/automations/:id/examples/:exampleId`**
-
-Delete automation example
-
-**Path parameters**
-
-| Name         | Type  | Description |
-| ------------ | ----- | ----------- |
-| `id`         | `str` |             |
-| `example_id` | `str` |             |
-
-**Response**
-
-```python
-// DatasetExample
-```
-
-### `client.automations.examples.run`
-
-**`POST /api/v1/automations/:id/examples/:exampleId/run`**
-
-Run automation example
-
-**Path parameters**
-
-| Name         | Type  | Description |
-| ------------ | ----- | ----------- |
-| `id`         | `str` |             |
-| `example_id` | `str` |             |
-
-**Response**
-
-```python
-// ExampleRunResponse
-```
-
-### `client.automations.examples.list`
-
-**`GET /api/v1/automations/:id/examples`**
-
-List automation examples
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Query parameters**
-
-| Name     | Type  | Description |
-| -------- | ----- | ----------- |
-| `limit`  | `int` | (optional)  |
-| `offset` | `int` | (optional)  |
-
-**Response**
-
-```python
-// DatasetExampleList
-```
-
-### `client.automations.examples.create`
-
-**`POST /api/v1/automations/:id/examples`**
-
-Create automation example
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Request body**
-
-```python
-// DatasetExampleMutation
-```
-
-**Response**
-
-```python
-// DatasetExample
-```
-
-### `client.automations.experiments.list`
-
-**`GET /api/v1/automations/:id/experiments`**
-
-List automation experiments
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Query parameters**
-
-| Name     | Type  | Description |
-| -------- | ----- | ----------- |
-| `limit`  | `int` | (optional)  |
-| `offset` | `int` | (optional)  |
-
-**Response**
-
-```python
-// dict[str, Any]
-```
-
-### `client.automations.experiments.create`
-
-**`POST /api/v1/automations/:id/experiments`**
-
-Create automation experiment
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Request body**
-
-```python
-// ExperimentCreate
-```
-
-**Response**
-
-```python
-// ExperimentCreateResponse
-```
-
-### `client.automations.experiments.cancel`
-
-**`POST /api/v1/automations/:id/experiments/:experimentId/cancel`**
-
-Cancel automation experiment
-
-**Path parameters**
-
-| Name            | Type  | Description |
-| --------------- | ----- | ----------- |
-| `id`            | `str` |             |
-| `experiment_id` | `str` |             |
-
-**Response**
-
-```python
-// ExperimentDetail
-```
-
-### `client.automations.experiments.get`
-
-**`GET /api/v1/automations/:id/experiments/:experimentId`**
-
-Get automation experiment
-
-**Path parameters**
-
-| Name            | Type  | Description |
-| --------------- | ----- | ----------- |
-| `id`            | `str` |             |
-| `experiment_id` | `str` |             |
-
-**Response**
-
-```python
-// ExperimentDetail
-```
-
-### `client.runs.eval_results.list`
-
-**`GET /api/v1/runs/:id/eval-results`**
-
-List run eval results
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
-
-**Response**
-
-```python
-// EvalResultsResponse
-```
-
 ## Automations
+
+### `client.automations.list`
+
+**`GET /api/v1/automations`**
+
+List automations
+
+Returns workflows and agents through one runnable automation collection. Use `type` to narrow to workflows or agents, and `search` to find automations by slug, name, or description.
+
+**Query parameters**
+
+| Name     | Type                           | Description                                                  |
+| -------- | ------------------------------ | ------------------------------------------------------------ |
+| `search` | `str`                          | (optional)Substring match against slug, name, or description |
+| `type`   | `Literal["workflow", "agent"]` | (optional)Filter by implementation type                      |
+| `limit`  | `int`                          | (optional)Maximum number of automations to return.           |
+| `offset` | `int`                          | (optional)Zero-based offset for paging through automations.  |
+
+**Response**
+
+```python
+// ListAutomationsResponse
+```
 
 ### `client.automations.get`
 
@@ -459,6 +185,26 @@ Get one runnable workflow or agent automation by id or typed alias.
 
 ```python
 // AutomationDetail
+```
+
+### `client.automations.sync`
+
+**`POST /api/v1/automations/:id/sync`**
+
+Sync automation from latest Git release
+
+Reconciles automation registry metadata and trigger projections from the latest Git source release. This operation is idempotent for unchanged source state: repeated calls against the same latest release leave the same automation registry state and may repeat the same warnings. Requires a Bearer API token for the organization and a user-backed API key. It does not publish source; it reads the already-published latest release manifest. Versioned targets are rejected with 400, missing organization/source/release/manifest state returns 404, invalid manifests return 400, and provider or persistence failures return 5xx.
+
+**Path parameters**
+
+| Name | Type  | Description                                                                                                                                      |
+| ---- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id` | `str` | Automation target to sync, such as agents.invoice-agent or workflows.extract. Do not include a version; sync always uses the latest Git release. |
+
+**Response**
+
+```python
+// dict[str, Any]
 ```
 
 ### `client.automations.triggers`
@@ -501,44 +247,690 @@ List versions for a workflow or agent automation through one read-only route.
 // ListAutomationVersionsResponse
 ```
 
-### `client.automations.list`
+## Evaluation
 
-**`GET /api/v1/automations`**
+### `client.automations.dataset.export`
 
-List automations
+**`GET /api/v1/automations/:id/dataset/export`**
 
-List runnable workflow and agent automations in one collection.
+Export automation dataset
+
+Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and examples/<name>/expected folder convention, so it can be re-imported into another automation or environment.
+
+**Path parameters**
+
+| Name | Type  | Description                   |
+| ---- | ----- | ----------------------------- |
+| `id` | `str` | Automation id or typed alias. |
 
 **Query parameters**
 
-| Name     | Type                           | Description                                                  |
-| -------- | ------------------------------ | ------------------------------------------------------------ |
-| `search` | `str`                          | (optional)Substring match against slug, name, or description |
-| `type`   | `Literal["workflow", "agent"]` | (optional)Filter by implementation type                      |
-| `limit`  | `int`                          | (optional)                                                   |
-| `offset` | `int`                          | (optional)                                                   |
+| Name          | Type  | Description                                                                                        |
+| ------------- | ----- | -------------------------------------------------------------------------------------------------- |
+| `example_ids` | `str` | (optional)Optional comma-separated dataset example ids to export. Omit to export the full dataset. |
 
 **Response**
 
 ```python
-// ListAutomationsResponse
+// bytes
 ```
 
-## Files
+### `client.automations.dataset.import_`
 
-### `client.files.download`
+**`POST /api/v1/automations/:id/dataset/import`**
 
-**`GET /api/v1/files/:id/content`**
+Import automation dataset
 
-Download file content
+Import a dataset ZIP archive using the examples/<name>/input and examples/<name>/expected folder convention. Use `mode=append` for additive imports or `mode=replace` to replace the dataset.
 
-Download bytes for a reusable uploaded file.
+**Path parameters**
+
+| Name | Type  | Description                   |
+| ---- | ----- | ----------------------------- |
+| `id` | `str` | Automation id or typed alias. |
+
+**Response**
+
+```python
+// DatasetImportResponse
+```
+
+### `client.automations.evaluators.get`
+
+**`GET /api/v1/automations/:id/evaluators`**
+
+Get evaluators
+
+Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results, which are separate from human feedback `rating` values.
+
+**Path parameters**
+
+| Name | Type  | Description                   |
+| ---- | ----- | ----------------------------- |
+| `id` | `str` | Automation id or typed alias. |
+
+**Response**
+
+```python
+// EvaluatorConfigResponse
+```
+
+### `client.automations.evaluators.update`
+
+**`PUT /api/v1/automations/:id/evaluators`**
+
+Replace evaluators
+
+Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the source for future experiment scores.
+
+**Path parameters**
+
+| Name | Type  | Description                   |
+| ---- | ----- | ----------------------------- |
+| `id` | `str` | Automation id or typed alias. |
+
+**Request body**
+
+```python
+// EvaluatorConfigUpdate
+```
+
+**Response**
+
+```python
+// EvaluatorConfigResponse
+```
+
+### `client.automations.examples.list`
+
+**`GET /api/v1/automations/:id/examples`**
+
+List dataset examples
+
+List dataset examples for one automation. Examples contain input, expected output, expected files, metadata, and optional overrides used by evaluation runs.
+
+**Path parameters**
+
+| Name | Type  | Description                                                              |
+| ---- | ----- | ------------------------------------------------------------------------ |
+| `id` | `str` | Automation id or typed alias, such as `workflows.slug` or `agents.slug`. |
+
+**Query parameters**
+
+| Name     | Type  | Description                                              |
+| -------- | ----- | -------------------------------------------------------- |
+| `limit`  | `int` | (optional)Maximum number of examples to return.          |
+| `offset` | `int` | (optional)Zero-based offset for paging through examples. |
+
+**Response**
+
+```python
+// DatasetExampleList
+```
+
+### `client.automations.examples.create`
+
+**`POST /api/v1/automations/:id/examples`**
+
+Create dataset example
+
+Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-bearing examples.
+
+**Path parameters**
+
+| Name | Type  | Description                                                              |
+| ---- | ----- | ------------------------------------------------------------------------ |
+| `id` | `str` | Automation id or typed alias, such as `workflows.slug` or `agents.slug`. |
+
+**Request body**
+
+```python
+// DatasetExampleMutation
+```
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.examples.get`
+
+**`GET /api/v1/automations/:id/examples/:exampleId`**
+
+Get dataset example
+
+Fetch one dataset example, including input, expected output, expected files, metadata, and overrides.
+
+**Path parameters**
+
+| Name         | Type  | Description                                                                                                  |
+| ------------ | ----- | ------------------------------------------------------------------------------------------------------------ |
+| `id`         | `str` | Automation id or typed alias.                                                                                |
+| `example_id` | `str` | Dataset example id. Agent examples may use deterministic name-derived ids returned by list/create responses. |
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.examples.update`
+
+**`PATCH /api/v1/automations/:id/examples/:exampleId`**
+
+Update dataset example
+
+Partially update a dataset example. Omitted fields are preserved; pass null for nullable fields to clear them.
+
+**Path parameters**
+
+| Name         | Type  | Description                                                                                                  |
+| ------------ | ----- | ------------------------------------------------------------------------------------------------------------ |
+| `id`         | `str` | Automation id or typed alias.                                                                                |
+| `example_id` | `str` | Dataset example id. Agent examples may use deterministic name-derived ids returned by list/create responses. |
+
+**Request body**
+
+```python
+// DatasetExampleUpdate
+```
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.examples.delete`
+
+**`DELETE /api/v1/automations/:id/examples/:exampleId`**
+
+Delete dataset example
+
+Delete one dataset example from the automation dataset. This removes the example from future experiments.
+
+**Path parameters**
+
+| Name         | Type  | Description                                                                                                  |
+| ------------ | ----- | ------------------------------------------------------------------------------------------------------------ |
+| `id`         | `str` | Automation id or typed alias.                                                                                |
+| `example_id` | `str` | Dataset example id. Agent examples may use deterministic name-derived ids returned by list/create responses. |
+
+**Response**
+
+```python
+// DatasetExample
+```
+
+### `client.automations.examples.expected_files.list`
+
+**`GET /api/v1/automations/:id/examples/:exampleId/expected`**
+
+List expected files
+
+List files stored under the expected folder for one automation dataset example.
+
+**Path parameters**
+
+| Name         | Type  | Description                   |
+| ------------ | ----- | ----------------------------- |
+| `id`         | `str` | Automation id or typed alias. |
+| `example_id` | `str` | Dataset example id.           |
+
+**Response**
+
+```python
+// DatasetExampleExpectedFileList
+```
+
+### `client.automations.examples.expected_files.create`
+
+**`POST /api/v1/automations/:id/examples/:exampleId/expected`**
+
+Upload expected files
+
+Upload one or more files into the expected folder for an automation dataset example. Use `$file` references such as `expected/result.pdf` from expected JSON to compare file outputs.
+
+**Path parameters**
+
+| Name         | Type  | Description                   |
+| ------------ | ----- | ----------------------------- |
+| `id`         | `str` | Automation id or typed alias. |
+| `example_id` | `str` | Dataset example id.           |
+
+**Response**
+
+```python
+// DatasetExampleExpectedFileUploadResponse
+```
+
+### `client.automations.examples.expected_file.get`
+
+**`GET /api/v1/automations/:id/examples/:exampleId/expected/:path`**
+
+Download expected dataset file
+
+Download one expected file attached to an automation dataset example.
+
+**Path parameters**
+
+| Name         | Type  | Description                             |
+| ------------ | ----- | --------------------------------------- |
+| `id`         | `str` | Automation id or typed alias.           |
+| `example_id` | `str` | Dataset example id.                     |
+| `path`       | `str` | Path under the example expected folder. |
+
+**Response**
+
+```python
+// bytes
+```
+
+### `client.automations.examples.expected_file.update`
+
+**`PATCH /api/v1/automations/:id/examples/:exampleId/expected/:path`**
+
+Rename expected file
+
+Rename one expected file attached to an automation dataset example. The parent folder is preserved.
+
+**Path parameters**
+
+| Name         | Type  | Description                             |
+| ------------ | ----- | --------------------------------------- |
+| `id`         | `str` | Automation id or typed alias.           |
+| `example_id` | `str` | Dataset example id.                     |
+| `path`       | `str` | Path under the example expected folder. |
+
+**Request body**
+
+```python
+// DatasetExampleExpectedFileRenameRequest
+```
+
+**Response**
+
+```python
+// DatasetExampleExpectedFileRenameResponse
+```
+
+### `client.automations.examples.expected_file.delete`
+
+**`DELETE /api/v1/automations/:id/examples/:exampleId/expected/:path`**
+
+Delete expected file
+
+Delete one file from an automation dataset example expected folder.
+
+**Path parameters**
+
+| Name         | Type  | Description                             |
+| ------------ | ----- | --------------------------------------- |
+| `id`         | `str` | Automation id or typed alias.           |
+| `example_id` | `str` | Dataset example id.                     |
+| `path`       | `str` | Path under the example expected folder. |
+
+### `client.automations.examples.input_files.list`
+
+**`GET /api/v1/automations/:id/examples/:exampleId/input`**
+
+List input files
+
+List files stored under the input folder for one automation dataset example.
+
+**Path parameters**
+
+| Name         | Type  | Description                   |
+| ------------ | ----- | ----------------------------- |
+| `id`         | `str` | Automation id or typed alias. |
+| `example_id` | `str` | Dataset example id.           |
+
+**Response**
+
+```python
+// DatasetExampleInputFileList
+```
+
+### `client.automations.examples.input_files.create`
+
+**`POST /api/v1/automations/:id/examples/:exampleId/input`**
+
+Upload input files
+
+Upload one or more files into the input folder for an automation dataset example. Use `$file` references such as `input/invoice.pdf` from the example input JSON to consume them.
+
+**Path parameters**
+
+| Name         | Type  | Description                   |
+| ------------ | ----- | ----------------------------- |
+| `id`         | `str` | Automation id or typed alias. |
+| `example_id` | `str` | Dataset example id.           |
+
+**Response**
+
+```python
+// DatasetExampleInputFileUploadResponse
+```
+
+### `client.automations.examples.input_file.get`
+
+**`GET /api/v1/automations/:id/examples/:exampleId/input/:path`**
+
+Download input file
+
+Download one file from an automation dataset example input folder.
+
+**Path parameters**
+
+| Name         | Type  | Description                                          |
+| ------------ | ----- | ---------------------------------------------------- |
+| `id`         | `str` | Automation id or typed alias.                        |
+| `example_id` | `str` | Dataset example id.                                  |
+| `path`       | `str` | Slash-delimited path under the example input folder. |
+
+**Response**
+
+```python
+// bytes
+```
+
+### `client.automations.examples.input_file.update`
+
+**`PATCH /api/v1/automations/:id/examples/:exampleId/input/:path`**
+
+Rename input file
+
+Rename one input file attached to an automation dataset example. The parent folder is preserved.
+
+**Path parameters**
+
+| Name         | Type  | Description                                          |
+| ------------ | ----- | ---------------------------------------------------- |
+| `id`         | `str` | Automation id or typed alias.                        |
+| `example_id` | `str` | Dataset example id.                                  |
+| `path`       | `str` | Slash-delimited path under the example input folder. |
+
+**Request body**
+
+```python
+// DatasetExampleInputFileRenameRequest
+```
+
+**Response**
+
+```python
+// DatasetExampleInputFileRenameResponse
+```
+
+### `client.automations.examples.input_file.delete`
+
+**`DELETE /api/v1/automations/:id/examples/:exampleId/input/:path`**
+
+Delete input file
+
+Delete one file from an automation dataset example input folder.
+
+**Path parameters**
+
+| Name         | Type  | Description                                          |
+| ------------ | ----- | ---------------------------------------------------- |
+| `id`         | `str` | Automation id or typed alias.                        |
+| `example_id` | `str` | Dataset example id.                                  |
+| `path`       | `str` | Slash-delimited path under the example input folder. |
+
+### `client.automations.examples.run`
+
+**`POST /api/v1/automations/:id/examples/:exampleId/run`**
+
+Run dataset example
+
+Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/:id` for completion and use run scores or feedback endpoints to review the result.
+
+**Path parameters**
+
+| Name         | Type  | Description                   |
+| ------------ | ----- | ----------------------------- |
+| `id`         | `str` | Automation id or typed alias. |
+| `example_id` | `str` | Dataset example id to run.    |
+
+**Response**
+
+```python
+// ExampleRunResponse
+```
+
+### `client.automations.experiments.list`
+
+**`GET /api/v1/automations/:id/experiments`**
+
+List experiments
+
+List experiment batches for one automation. Each experiment runs selected dataset examples and records automated evaluator scores.
+
+**Path parameters**
+
+| Name | Type  | Description                   |
+| ---- | ----- | ----------------------------- |
+| `id` | `str` | Automation id or typed alias. |
+
+**Query parameters**
+
+| Name        | Type  | Description                                                                             |
+| ----------- | ----- | --------------------------------------------------------------------------------------- |
+| `limit`     | `int` | (optional)Maximum number of experiment batches to return.                               |
+| `offset`    | `int` | (optional)Zero-based offset for paging through experiment batches.                      |
+| `from_date` | `str` | (optional)Filter to experiment batches created at or after this date or relative date.  |
+| `to_date`   | `str` | (optional)Filter to experiment batches created at or before this date or relative date. |
+
+**Response**
+
+```python
+// dict[str, Any]
+```
+
+### `client.automations.experiments.create`
+
+**`POST /api/v1/automations/:id/experiments`**
+
+Create experiment
+
+Start an asynchronous experiment batch for one automation. Omit `examples` to run the full dataset, or pass specific example ids to run a subset.
+
+**Path parameters**
+
+| Name | Type  | Description                   |
+| ---- | ----- | ----------------------------- |
+| `id` | `str` | Automation id or typed alias. |
+
+**Request body**
+
+```python
+// ExperimentCreate
+```
+
+**Response**
+
+```python
+// ExperimentCreateResponse
+```
+
+### `client.automations.experiments.get`
+
+**`GET /api/v1/automations/:id/experiments/:experimentId`**
+
+Get experiment
+
+Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
+
+**Path parameters**
+
+| Name            | Type  | Description                   |
+| --------------- | ----- | ----------------------------- |
+| `id`            | `str` | Automation id or typed alias. |
+| `experiment_id` | `str` | Experiment batch id.          |
+
+**Response**
+
+```python
+// ExperimentDetail
+```
+
+### `client.automations.experiments.cancel`
+
+**`POST /api/v1/automations/:id/experiments/:experimentId/cancel`**
+
+Cancel experiment
+
+Request cancellation for an experiment batch. Already-completed runs remain recorded; queued or running work is cancelled when possible.
+
+**Path parameters**
+
+| Name            | Type  | Description                   |
+| --------------- | ----- | ----------------------------- |
+| `id`            | `str` | Automation id or typed alias. |
+| `experiment_id` | `str` | Experiment batch id.          |
+
+**Response**
+
+```python
+// ExperimentDetail
+```
+
+### `client.automations.experiments.export`
+
+**`GET /api/v1/automations/:id/experiments/:experimentId/export`**
+
+Export experiment eval results
+
+Download eval result rows for a single experiment batch as CSV or JSON.
+
+**Path parameters**
+
+| Name            | Type  | Description |
+| --------------- | ----- | ----------- |
+| `id`            | `str` |             |
+| `experiment_id` | `str` |             |
+
+**Query parameters**
+
+| Name     | Type                     | Description |
+| -------- | ------------------------ | ----------- |
+| `format` | `Literal["csv", "json"]` |             |
+
+**Response**
+
+```python
+// str
+```
+
+### `client.automations.experiments.export_all`
+
+**`GET /api/v1/automations/:id/experiments/export`**
+
+Export all experiment eval results
+
+Download every eval result row for an automation as CSV or JSON.
 
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` | File id     |
+| `id` | `str` |             |
+
+**Query parameters**
+
+| Name     | Type                     | Description |
+| -------- | ------------------------ | ----------- |
+| `format` | `Literal["csv", "json"]` |             |
+
+**Response**
+
+```python
+// str
+```
+
+### `client.automations.experiments.create_stream`
+
+**`POST /api/v1/automations/:id/experiments/stream`**
+
+Create automation experiment with NDJSON progress
+
+Starts a batch eval experiment for workflow or agent automations and streams per-run completion events as NDJSON.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` |             |
+
+**Request body**
+
+```python
+// ExperimentCreate
+```
+
+**Response**
+
+```python
+// str
+```
+
+### `client.experiments.resolve`
+
+**`GET /api/v1/experiments/:experimentId`**
+
+Resolve experiment by id
+
+Returns the owning automation for an experiment batch id. Used when callers only know the experiment id.
+
+**Path parameters**
+
+| Name            | Type  | Description |
+| --------------- | ----- | ----------- |
+| `experiment_id` | `str` |             |
+
+**Response**
+
+```python
+// ExperimentRef
+```
+
+### `client.runs.scores.list`
+
+**`GET /api/v1/runs/:id/scores`**
+
+List run evaluator scores
+
+List automated evaluator results for one run. Use `score` for evaluator output and `rating` on run feedback for human verdicts.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | Run id.     |
+
+**Response**
+
+```python
+// RunScoresResponse
+```
+
+## Files
+
+### `client.files.upload`
+
+**`POST /api/v1/files`**
+
+Upload file
+
+Upload a reusable file that can later be referenced by run inputs or dataset examples.
+
+**Response**
+
+```python
+// File
+```
 
 ### `client.files.get`
 
@@ -580,48 +972,21 @@ Delete a reusable uploaded file. Historical run and dataset snapshots are separa
 // DeleteFileResponse
 ```
 
-### `client.files.upload`
+### `client.files.download`
 
-**`POST /api/v1/files`**
+**`GET /api/v1/files/:id/content`**
 
-Upload file
+Download file content
 
-Upload a reusable file that can later be referenced by run inputs or dataset examples.
+Download bytes for a reusable uploaded file.
 
-**Response**
+**Path parameters**
 
-```python
-// File
-```
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | File id     |
 
 ## Runs
-
-### `client.run`
-
-**`POST /api/v1/runs`**
-
-Start a run
-
-Start a run. Send JSON or multipart/form-data.
-
-**Query parameters**
-
-| Name                  | Type  | Description                                                           |
-| --------------------- | ----- | --------------------------------------------------------------------- |
-| `version`             | `str` | (optional)Release or git ref. Defaults to latest.                     |
-| `wait_for_completion` | `int` | (optional)Seconds to wait before returning (max 600). Omit for async. |
-
-**Request body**
-
-```python
-// RunStartBody
-```
-
-**Response**
-
-```python
-// RunStartResponse
-```
 
 ### `client.runs.list`
 
@@ -661,6 +1026,86 @@ List workflow and agent runs with cursor pagination.
 // RunsListResponse
 ```
 
+### `client.run`
+
+**`POST /api/v1/runs`**
+
+Start a run
+
+Start a run. Send JSON or multipart/form-data.
+
+**Query parameters**
+
+| Name                  | Type  | Description                                                           |
+| --------------------- | ----- | --------------------------------------------------------------------- |
+| `version`             | `str` | (optional)Release or git ref. Defaults to latest.                     |
+| `wait_for_completion` | `int` | (optional)Seconds to wait before returning (max 600). Omit for async. |
+
+**Request body**
+
+```python
+// RunStartBody
+```
+
+**Response**
+
+```python
+// RunStartResponse
+```
+
+### `client.runs.get`
+
+**`GET /api/v1/runs/:id`**
+
+Get a run
+
+Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also where embedded feedback and expected artifacts appear.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | Run id      |
+
+**Query parameters**
+
+| Name     | Type  | Description                                                                                                                           |
+| -------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `expand` | `str` | (optional)Optional sections: `input`, `usage`, `execution`, `debug`. Terminal runs always include top-level output, files, and error. |
+
+**Response**
+
+```python
+// Run
+```
+
+### `client.runs.artifacts.list`
+
+**`GET /api/v1/runs/:id/artifacts`**
+
+List run artifacts
+
+Returns a JSON list of downloadable artifact paths for a run. Pass `zip=1` to switch the response to a ZIP download containing output files.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | Run id      |
+
+**Query parameters**
+
+| Name    | Type           | Description                                                                                                                                                                               |
+| ------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `zip`   | `Literal["1"]` | (optional)When `1`, download output files as a ZIP instead of listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and `GET /runs/{id}/trace` for those. |
+| `token` | `str`          | (optional)Signed email download token (zip only; no Bearer required).                                                                                                                     |
+
+**Response**
+
+```python
+// RunArtifactsResponse
+```
+
 ### `client.runs.artifacts.download`
 
 **`GET /api/v1/runs/:id/artifacts/:path`**
@@ -675,26 +1120,6 @@ Download one artifact by path.
 | ------ | ----- | ----------- |
 | `id`   | `str` |             |
 | `path` | `str` |             |
-
-### `client.runs.artifacts.list`
-
-**`GET /api/v1/runs/:id/artifacts`**
-
-List run artifacts
-
-List downloadable artifact paths for a run.
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` | Run id      |
-
-**Response**
-
-```python
-// RunArtifactsResponse
-```
 
 ### `client.runs.cancel`
 
@@ -742,11 +1167,13 @@ List a stable chronological lifecycle timeline for a run.
 
 Get run feedback
 
+Returns the complete feedback state for one run, including the human feedback object, expected JSON output, and expected files. Use `GET /api/v1/runs/:id` with `expand=execution` when you only need feedback embedded in a run response.
+
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` |             |
+| `id` | `str` | Run id.     |
 
 **Response**
 
@@ -760,11 +1187,13 @@ Get run feedback
 
 Update run feedback
 
+Partially update human feedback and expected JSON output for a run. Omitted fields are left unchanged. Pass null to clear a field.
+
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` |             |
+| `id` | `str` | Run id.     |
 
 **Request body**
 
@@ -784,11 +1213,13 @@ Update run feedback
 
 Clear run feedback
 
+Deletes all feedback state for the run: human feedback, expected JSON output, and every expected artifact file.
+
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` |             |
+| `id` | `str` | Run id.     |
 
 **Response**
 
@@ -796,17 +1227,128 @@ Clear run feedback
 // RunFeedbackDetail
 ```
 
-### `client.runs.promote`
+### `client.runs.feedback.list_expected`
 
-**`POST /api/v1/runs/:id/promote`**
+**`GET /api/v1/runs/:id/feedback/expected`**
 
-Promote a run to a dataset example
+Get expected output
+
+Returns the expected JSON output and expected files currently attached to the run feedback record.
 
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` |             |
+| `id` | `str` | Run id.     |
+
+**Response**
+
+```python
+// RunExpectedArtifacts
+```
+
+### `client.runs.feedback.copy_output_to_expected / upload_expected`
+
+**`POST /api/v1/runs/:id/feedback/expected`**
+
+Add expected file
+
+Attach one expected file to run feedback. Send multipart/form-data with `file` and optional `name` to upload a local file, or JSON with `outputFileName` and optional `expectedName` to copy an existing run output file.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | Run id.     |
+
+**Request body**
+
+```python
+// RunExpectedFileCopyRequest
+```
+
+**Response**
+
+```python
+// RunExpectedFileMutationResponse
+```
+
+### `client.runs.feedback.download_expected`
+
+**`GET /api/v1/runs/:id/feedback/expected/:filename`**
+
+Download expected artifact file
+
+Downloads one expected artifact file attached to the run feedback record. Use the `filename` returned by the expected-output collection endpoint.
+
+**Path parameters**
+
+| Name       | Type  | Description                                                                                             |
+| ---------- | ----- | ------------------------------------------------------------------------------------------------------- |
+| `id`       | `str` | Run id.                                                                                                 |
+| `filename` | `str` | Expected artifact file name or slash-delimited path, as returned by `GET /runs/{id}/feedback/expected`. |
+
+**Response**
+
+```python
+// bytes
+```
+
+### `client.runs.feedback.rename_expected`
+
+**`PATCH /api/v1/runs/:id/feedback/expected/:filename`**
+
+Rename expected artifact file
+
+Renames one expected artifact file attached to the run feedback record.
+
+**Path parameters**
+
+| Name       | Type  | Description                                                                                             |
+| ---------- | ----- | ------------------------------------------------------------------------------------------------------- |
+| `id`       | `str` | Run id.                                                                                                 |
+| `filename` | `str` | Expected artifact file name or slash-delimited path, as returned by `GET /runs/{id}/feedback/expected`. |
+
+**Request body**
+
+```python
+// RunExpectedFileUpdateRequest
+```
+
+**Response**
+
+```python
+// RunExpectedFileUpdateResponse
+```
+
+### `client.runs.feedback.delete_expected`
+
+**`DELETE /api/v1/runs/:id/feedback/expected/:filename`**
+
+Delete expected artifact file
+
+Deletes one expected artifact file attached to the run feedback record. The feedback text and expected JSON output are left unchanged.
+
+**Path parameters**
+
+| Name       | Type  | Description                                                                                             |
+| ---------- | ----- | ------------------------------------------------------------------------------------------------------- |
+| `id`       | `str` | Run id.                                                                                                 |
+| `filename` | `str` | Expected artifact file name or slash-delimited path, as returned by `GET /runs/{id}/feedback/expected`. |
+
+### `client.runs.promote`
+
+**`POST /api/v1/runs/:id/promote`**
+
+Promote run to example
+
+Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and any expected output/files stored through the feedback endpoints. Use this after adding feedback or expected artifacts to capture a regression test.
+
+**Path parameters**
+
+| Name | Type  | Description |
+| ---- | ----- | ----------- |
+| `id` | `str` | Run id.     |
 
 **Request body**
 
@@ -824,15 +1366,15 @@ Promote a run to a dataset example
 
 **`POST /api/v1/runs/:id/rerun`**
 
-Rerun run
+Retry run
 
-Start a new run from an existing run id.
+Start a new run using the source run input. By default the retry uses the latest automation version; pass `version=original` to pin the same source version as the original run.
 
 **Path parameters**
 
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` |             |
+| Name | Type  | Description             |
+| ---- | ----- | ----------------------- |
+| `id` | `str` | Source run id to retry. |
 
 **Query parameters**
 
@@ -845,32 +1387,6 @@ Start a new run from an existing run id.
 
 ```python
 // RunRerunResponse
-```
-
-### `client.runs.get`
-
-**`GET /api/v1/runs/:id`**
-
-Get run
-
-Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
-
-**Path parameters**
-
-| Name | Type  | Description |
-| ---- | ----- | ----------- |
-| `id` | `str` | Run id      |
-
-**Query parameters**
-
-| Name     | Type  | Description                                                                                                                           |
-| -------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `expand` | `str` | (optional)Optional sections: `input`, `usage`, `execution`, `debug`. Terminal runs always include top-level output, files, and error. |
-
-**Response**
-
-```python
-// Run
 ```
 
 ### `client.runs.steps`
@@ -899,16 +1415,18 @@ List workflow steps or an agent-compatible execution step summary for a run.
 
 Get run trace
 
+Return low-level execution trace events for debugging one run. Workflow runs expose observability phases or step records; agent runs expose parsed trace.jsonl events. The shape is intentionally extensible, but common fields are documented.
+
 **Path parameters**
 
 | Name | Type  | Description |
 | ---- | ----- | ----------- |
-| `id` | `str` |             |
+| `id` | `str` | Run id.     |
 
 **Response**
 
 ```python
-// dict[str, Any]
+// RunTraceResponse
 ```
 
 ### `client.runs.usage`

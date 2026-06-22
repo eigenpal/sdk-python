@@ -122,11 +122,14 @@ def sync_detailed(
     body: ExperimentCreate,
 
 ) -> Response[ApiErrorEnvelope | ExperimentCreateResponse]:
-    """ Create automation experiment
+    """ Create experiment
+
+     Start an asynchronous experiment batch for one automation. Omit `examples` to run the full dataset,
+    or pass specific example ids to run a subset.
 
     Args:
-        id (str):
-        body (ExperimentCreate):
+        id (str): Automation id or typed alias.
+        body (ExperimentCreate): Request body for starting an experiment batch.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,11 +159,14 @@ def sync(
     body: ExperimentCreate,
 
 ) -> ApiErrorEnvelope | ExperimentCreateResponse | None:
-    """ Create automation experiment
+    """ Create experiment
+
+     Start an asynchronous experiment batch for one automation. Omit `examples` to run the full dataset,
+    or pass specific example ids to run a subset.
 
     Args:
-        id (str):
-        body (ExperimentCreate):
+        id (str): Automation id or typed alias.
+        body (ExperimentCreate): Request body for starting an experiment batch.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -185,11 +191,14 @@ async def asyncio_detailed(
     body: ExperimentCreate,
 
 ) -> Response[ApiErrorEnvelope | ExperimentCreateResponse]:
-    """ Create automation experiment
+    """ Create experiment
+
+     Start an asynchronous experiment batch for one automation. Omit `examples` to run the full dataset,
+    or pass specific example ids to run a subset.
 
     Args:
-        id (str):
-        body (ExperimentCreate):
+        id (str): Automation id or typed alias.
+        body (ExperimentCreate): Request body for starting an experiment batch.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,11 +228,14 @@ async def asyncio(
     body: ExperimentCreate,
 
 ) -> ApiErrorEnvelope | ExperimentCreateResponse | None:
-    """ Create automation experiment
+    """ Create experiment
+
+     Start an asynchronous experiment batch for one automation. Omit `examples` to run the full dataset,
+    or pass specific example ids to run a subset.
 
     Args:
-        id (str):
-        body (ExperimentCreate):
+        id (str): Automation id or typed alias.
+        body (ExperimentCreate): Request body for starting an experiment batch.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -10,6 +10,8 @@ from ..types import UNSET, Unset
 
 from typing import cast
 
+if TYPE_CHECKING:
+  from ..models.eval_result import EvalResult
 
 
 
@@ -21,20 +23,25 @@ T = TypeVar("T", bound="ExperimentDetailResultsByRun")
 
 @_attrs_define
 class ExperimentDetailResultsByRun:
-    """
+    """ Evaluator results keyed by run id.
+
      """
 
-    additional_properties: dict[str, list[Any]] = _attrs_field(init=False, factory=dict)
+    additional_properties: dict[str, list[EvalResult]] = _attrs_field(init=False, factory=dict)
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.eval_result import EvalResult
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
-            field_dict[prop_name] = prop
+            field_dict[prop_name] = []
+            for additional_property_item_data in prop:
+                additional_property_item = additional_property_item_data.to_dict()
+                field_dict[prop_name].append(additional_property_item)
 
 
 
@@ -45,6 +52,7 @@ class ExperimentDetailResultsByRun:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.eval_result import EvalResult
         d = dict(src_dict)
         experiment_detail_results_by_run = cls(
         )
@@ -52,7 +60,14 @@ class ExperimentDetailResultsByRun:
 
         additional_properties = {}
         for prop_name, prop_dict in d.items():
-            additional_property = cast(list[Any], prop_dict)
+            additional_property = []
+            _additional_property = prop_dict
+            for additional_property_item_data in (_additional_property):
+                additional_property_item = EvalResult.from_dict(additional_property_item_data)
+
+
+
+                additional_property.append(additional_property_item)
 
             additional_properties[prop_name] = additional_property
 
@@ -63,10 +78,10 @@ class ExperimentDetailResultsByRun:
     def additional_keys(self) -> list[str]:
         return list(self.additional_properties.keys())
 
-    def __getitem__(self, key: str) -> list[Any]:
+    def __getitem__(self, key: str) -> list[EvalResult]:
         return self.additional_properties[key]
 
-    def __setitem__(self, key: str, value: list[Any]) -> None:
+    def __setitem__(self, key: str, value: list[EvalResult]) -> None:
         self.additional_properties[key] = value
 
     def __delitem__(self, key: str) -> None:

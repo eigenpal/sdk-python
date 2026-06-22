@@ -6,7 +6,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Any, BinaryIO, Literal, Optional, Sequence, Union
+from typing import Any, BinaryIO, Iterator, Literal, Optional, Sequence, Union
 from urllib.parse import quote
 
 import httpx
@@ -324,6 +324,12 @@ class AutomationsResource:
             f"/api/v1/automations/{quote(automation_id, safe='')}/triggers",
         )
 
+    def sync(self, automation_id: str) -> Any:
+        return self._root._request(
+            "POST",
+            f"/api/v1/automations/{quote(automation_id, safe='')}/sync",
+        )
+
 
 class AutomationDatasetResource:
     def __init__(self, root: EigenpalClient) -> None:
@@ -460,12 +466,61 @@ class AutomationExperimentsResource:
             f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/cancel",
         )
 
+    def export(
+        self,
+        automation_id: str,
+        experiment_id: str,
+        *,
+        format: Literal["csv", "json"] = "csv",
+    ) -> str:
+        response = self._root._http.get(
+            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/export",
+            params={"format": format},
+        )
+        if response.status_code >= 400:
+            _check_response(response)
+        return response.text
+
+    def export_all(
+        self,
+        automation_id: str,
+        *,
+        format: Literal["csv", "json"] = "csv",
+    ) -> str:
+        response = self._root._http.get(
+            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/export",
+            params={"format": format},
+        )
+        if response.status_code >= 400:
+            _check_response(response)
+        return response.text
+
+    def create_stream(
+        self,
+        automation_id: str,
+        body: Optional[dict[str, Any]] = None,
+    ) -> Iterator[str]:
+        def lines() -> Iterator[str]:
+            with self._root._http.stream(
+                "POST",
+                f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/stream",
+                json=body or {},
+            ) as response:
+                if response.status_code >= 400:
+                    response.read()
+                    _check_response(response)
+                for line in response.iter_lines():
+                    if line:
+                        yield line
+
+        return lines()
+
 
 class RunsResource:
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
         self.artifacts = RunsArtifactsResource(root)
-        self.eval_results = RunsEvalResultsResource(root)
+        self.scores = RunsScoresResource(root)
         self.feedback = RunsFeedbackResource(root)
         self.trace = RunsTraceResource(root)
 
@@ -505,12 +560,12 @@ class RunsResource:
         return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/events")
 
 
-class RunsEvalResultsResource:
+class RunsScoresResource:
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
 
     def list(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/eval-results")
+        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/scores")
 
 
 class RunsArtifactsResource:
@@ -546,6 +601,64 @@ class RunsFeedbackResource:
 
     def clear(self, run_id: str) -> Any:
         return self._root._request("DELETE", f"/api/v1/runs/{quote(run_id, safe='')}/feedback")
+
+    def list_expected(self, run_id: str) -> Any:
+        return self._root._request(
+            "GET",
+            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected",
+        )
+
+    def copy_output_to_expected(
+        self,
+        run_id: str,
+        output_file_name: str,
+        *,
+        expected_name: Optional[str] = None,
+    ) -> Any:
+        body = {"outputFileName": output_file_name}
+        if expected_name is not None:
+            body["expectedName"] = expected_name
+        return self._root._request(
+            "POST",
+            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected",
+            json=body,
+        )
+
+    def upload_expected(
+        self,
+        run_id: str,
+        file: Path | dict[str, Any] | BinaryIO,
+        *,
+        name: Optional[str] = None,
+    ) -> Any:
+        data = {"name": name} if name is not None else None
+        return self._root._request(
+            "POST",
+            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected",
+            files={"file": to_upload_tuple(file)},
+            data=data,
+        )
+
+    def download_expected(self, run_id: str, filename: str) -> bytes:
+        response = self._root._http.get(
+            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected/{_quote_path(filename)}"
+        )
+        if response.status_code >= 400:
+            _check_response(response)
+        return response.content
+
+    def rename_expected(self, run_id: str, filename: str, new_filename: str) -> Any:
+        return self._root._request(
+            "PATCH",
+            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected/{_quote_path(filename)}",
+            json={"name": new_filename},
+        )
+
+    def delete_expected(self, run_id: str, filename: str) -> Any:
+        return self._root._request(
+            "DELETE",
+            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected/{_quote_path(filename)}",
+        )
 
 
 class RunsTraceResource:

@@ -20,9 +20,10 @@ T = TypeVar("T", bound="EvaluatorConfigUpdate")
 
 @_attrs_define
 class EvaluatorConfigUpdate:
-    """
+    """ Replacement evaluator configuration.
+
         Attributes:
-            yaml (str):
+            yaml (str): Complete evaluator YAML to validate and store.
      """
 
     yaml: str

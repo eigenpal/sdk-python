@@ -112,10 +112,13 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
-    """ Get automation evaluators
+    """ Get evaluators
+
+     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
+    which are separate from human feedback `rating` values.
 
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -143,10 +146,13 @@ def sync(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
-    """ Get automation evaluators
+    """ Get evaluators
+
+     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
+    which are separate from human feedback `rating` values.
 
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -169,10 +175,13 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
 
 ) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
-    """ Get automation evaluators
+    """ Get evaluators
+
+     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
+    which are separate from human feedback `rating` values.
 
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -200,10 +209,13 @@ async def asyncio(
     client: AuthenticatedClient | Client,
 
 ) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
-    """ Get automation evaluators
+    """ Get evaluators
+
+     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
+    which are separate from human feedback `rating` values.
 
     Args:
-        id (str):
+        id (str): Automation id or typed alias.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

@@ -24,11 +24,12 @@ T = TypeVar("T", bound="EvaluatorConfigResponse")
 
 @_attrs_define
 class EvaluatorConfigResponse:
-    """
+    """ Evaluator YAML and parsed evaluator configuration for an automation.
+
         Attributes:
-            automation_id (str):
+            automation_id (str): Automation that owns this evaluator config.
             automation_type (AutomationType):
-            yaml (str):
+            yaml (str): Evaluator configuration YAML.
             config (EvaluatorConfigResponseConfig):
      """
 

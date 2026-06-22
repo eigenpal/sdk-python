@@ -12,7 +12,7 @@ from typing import cast
 
 if TYPE_CHECKING:
   from ..models.run_feedback import RunFeedback
-  from ..models.run_feedback_detail_expected_files_item import RunFeedbackDetailExpectedFilesItem
+  from ..models.run_file import RunFile
 
 
 
@@ -24,16 +24,17 @@ T = TypeVar("T", bound="RunFeedbackDetail")
 
 @_attrs_define
 class RunFeedbackDetail:
-    """
+    """ Complete feedback state for a run: human feedback, expected JSON output, and expected files.
+
         Attributes:
-            feedback (None | RunFeedback):
-            expected (Any | None):
-            expected_files (list[RunFeedbackDetailExpectedFilesItem]):
+            feedback (None | RunFeedback): Human feedback object for the run, or null when no feedback exists.
+            expected (Any | None): Expected JSON output for the run, or null when none is set.
+            expected_files (list[RunFile]): Expected output files attached to this run feedback record.
      """
 
     feedback: None | RunFeedback
     expected: Any | None
-    expected_files: list[RunFeedbackDetailExpectedFilesItem]
+    expected_files: list[RunFile]
 
 
 
@@ -41,7 +42,7 @@ class RunFeedbackDetail:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_feedback import RunFeedback
-        from ..models.run_feedback_detail_expected_files_item import RunFeedbackDetailExpectedFilesItem
+        from ..models.run_file import RunFile
         feedback: dict[str, Any] | None
         if isinstance(self.feedback, RunFeedback):
             feedback = self.feedback.to_dict()
@@ -74,7 +75,7 @@ class RunFeedbackDetail:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_feedback import RunFeedback
-        from ..models.run_feedback_detail_expected_files_item import RunFeedbackDetailExpectedFilesItem
+        from ..models.run_file import RunFile
         d = dict(src_dict)
         def _parse_feedback(data: object) -> None | RunFeedback:
             if data is None:
@@ -105,7 +106,7 @@ class RunFeedbackDetail:
         expected_files = []
         _expected_files = d.pop("expectedFiles")
         for expected_files_item_data in (_expected_files):
-            expected_files_item = RunFeedbackDetailExpectedFilesItem.from_dict(expected_files_item_data)
+            expected_files_item = RunFile.from_dict(expected_files_item_data)
 
 
 

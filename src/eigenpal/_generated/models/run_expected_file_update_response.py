@@ -14,15 +14,16 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunFeedbackDetailExpectedFilesItem")
+T = TypeVar("T", bound="RunExpectedFileUpdateResponse")
 
 
 
 @_attrs_define
-class RunFeedbackDetailExpectedFilesItem:
-    """
+class RunExpectedFileUpdateResponse:
+    """ A file attached to a run input, output, or expected artifact set.
+
         Attributes:
-            name (str):
+            name (str): File name or slash-delimited artifact path.
      """
 
     name: str
@@ -50,8 +51,8 @@ class RunFeedbackDetailExpectedFilesItem:
         d = dict(src_dict)
         name = d.pop("name")
 
-        run_feedback_detail_expected_files_item = cls(
+        run_expected_file_update_response = cls(
             name=name,
         )
 
-        return run_feedback_detail_expected_files_item
+        return run_expected_file_update_response

@@ -15,25 +15,25 @@ from typing import cast
 
 
 
-T = TypeVar("T", bound="RunsTraceGetResponse200")
+T = TypeVar("T", bound="DatasetExampleExpectedFileList")
 
 
 
 @_attrs_define
-class RunsTraceGetResponse200:
+class DatasetExampleExpectedFileList:
     """
         Attributes:
-            events (list[Any]):
+            files (list[str]): Paths under the example expected folder.
      """
 
-    events: list[Any]
+    files: list[str]
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
-        events = self.events
+        files = self.files
 
 
 
@@ -41,7 +41,7 @@ class RunsTraceGetResponse200:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "events": events,
+            "files": files,
         })
 
         return field_dict
@@ -51,11 +51,11 @@ class RunsTraceGetResponse200:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        events = cast(list[Any], d.pop("events"))
+        files = cast(list[str], d.pop("files"))
 
 
-        runs_trace_get_response_200 = cls(
-            events=events,
+        dataset_example_expected_file_list = cls(
+            files=files,
         )
 
-        return runs_trace_get_response_200
+        return dataset_example_expected_file_list

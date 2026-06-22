@@ -143,6 +143,17 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     respx.get("http://localhost:3000/api/v1/automations/workflows.extract-invoice/triggers").mock(
         return_value=httpx.Response(200, json={"triggers": []})
     )
+    respx.get(
+        "http://localhost:3000/api/v1/automations/workflows.extract-invoice/experiments/exp_1/export",
+        params={"format": "csv"},
+    ).mock(return_value=httpx.Response(200, text="experiment_id,score\nexp_1,1\n"))
+    respx.get(
+        "http://localhost:3000/api/v1/automations/workflows.extract-invoice/experiments/export",
+        params={"format": "csv"},
+    ).mock(return_value=httpx.Response(200, text="experiment_id,score\nexp_1,1\n"))
+    respx.post(
+        "http://localhost:3000/api/v1/automations/workflows.extract-invoice/experiments/stream"
+    ).mock(return_value=httpx.Response(200, text='{"event":"completed"}\n'))
     respx.get("http://localhost:3000/api/v1/runs").mock(
         return_value=httpx.Response(200, json={"runs": []})
     )
@@ -165,7 +176,7 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
         return_value=httpx.Response(200, json={"feedback": None})
     )
     respx.get("http://localhost:3000/api/v1/runs/run_123/trace").mock(
-        return_value=httpx.Response(200, json={"lines": []})
+        return_value=httpx.Response(200, json={"events": []})
     )
     respx.post("http://localhost:3000/api/v1/files").mock(
         return_value=httpx.Response(201, json={"id": "file_123", "filename": "input.txt"})
@@ -181,6 +192,13 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.automations.get("workflows.extract-invoice")
     client.automations.versions("workflows.extract-invoice")
     client.automations.triggers("workflows.extract-invoice")
+    client.automations.experiments.export("workflows.extract-invoice", "exp_1")
+    client.automations.experiments.export_all("workflows.extract-invoice")
+    assert list(
+        client.automations.experiments.create_stream(
+            "workflows.extract-invoice", {"exampleIds": ["example_1"]}
+        )
+    ) == ['{"event":"completed"}']
     client.runs.list(type="workflow", status="completed")
     client.runs.get("run_123", expand=["usage", "execution"])
     client.runs.usage("run_123")
@@ -188,12 +206,12 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.runs.events("run_123")
     client.runs.artifacts.list("run_123")
     client.runs.feedback.get("run_123")
-    client.runs.trace.get("run_123")
+    assert client.runs.trace.get("run_123")["events"] == []
     client.files.upload({"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"})
     client.files.get("file_123")
     assert client.files.delete("file_123") is None
 
-    assert len(respx.calls) == 15
+    assert len(respx.calls) == 18
 
 
 @respx.mock

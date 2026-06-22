@@ -123,9 +123,11 @@ def sync_detailed(
     expand: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | Run]:
-    """ Get run
+    """ Get a run
 
-     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
+     Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
+    `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
+    where embedded feedback and expected artifacts appear.
 
     Args:
         id (str): Run id
@@ -160,9 +162,11 @@ def sync(
     expand: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | Run | None:
-    """ Get run
+    """ Get a run
 
-     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
+     Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
+    `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
+    where embedded feedback and expected artifacts appear.
 
     Args:
         id (str): Run id
@@ -192,9 +196,11 @@ async def asyncio_detailed(
     expand: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | Run]:
-    """ Get run
+    """ Get a run
 
-     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
+     Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
+    `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
+    where embedded feedback and expected artifacts appear.
 
     Args:
         id (str): Run id
@@ -229,9 +235,11 @@ async def asyncio(
     expand: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | Run | None:
-    """ Get run
+    """ Get a run
 
-     Fetch one run by id. Use `expand` for input, usage, execution, and debug detail.
+     Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
+    `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
+    where embedded feedback and expected artifacts appear.
 
     Args:
         id (str): Run id

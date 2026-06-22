@@ -22,11 +22,12 @@ T = TypeVar("T", bound="ExperimentCreate")
 
 @_attrs_define
 class ExperimentCreate:
-    """
+    """ Request body for starting an experiment batch.
+
         Attributes:
-            examples (list[str] | Unset):
-            batch_concurrency (int | None | Unset):
-            source_ref (str | Unset):
+            examples (list[str] | Unset): Optional dataset example ids to run. Omit to run the full dataset.
+            batch_concurrency (int | None | Unset): Maximum concurrent example runs for this experiment.
+            source_ref (str | Unset): Optional source version/ref to use for experiment runs.
      """
 
     examples: list[str] | Unset = UNSET

@@ -114,8 +114,12 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Get run feedback
 
+     Returns the complete feedback state for one run, including the human feedback object, expected JSON
+    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
+    feedback embedded in a run response.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,8 +149,12 @@ def sync(
 ) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Get run feedback
 
+     Returns the complete feedback state for one run, including the human feedback object, expected JSON
+    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
+    feedback embedded in a run response.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,8 +179,12 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
     """ Get run feedback
 
+     Returns the complete feedback state for one run, including the human feedback object, expected JSON
+    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
+    feedback embedded in a run response.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -202,8 +214,12 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunFeedbackDetail | None:
     """ Get run feedback
 
+     Returns the complete feedback state for one run, including the human feedback object, expected JSON
+    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
+    feedback embedded in a run response.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

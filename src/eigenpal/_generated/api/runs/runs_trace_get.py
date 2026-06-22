@@ -9,7 +9,7 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.runs_trace_get_response_200 import RunsTraceGetResponse200
+from ...models.run_trace_response import RunTraceResponse
 from typing import cast
 
 
@@ -34,9 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunsTraceGetResponse200 | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunTraceResponse | None:
     if response.status_code == 200:
-        response_200 = RunsTraceGetResponse200.from_dict(response.json())
+        response_200 = RunTraceResponse.from_dict(response.json())
 
 
 
@@ -97,7 +97,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunsTraceGetResponse200]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunTraceResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -111,18 +111,22 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunsTraceGetResponse200]:
+) -> Response[ApiErrorEnvelope | RunTraceResponse]:
     """ Get run trace
 
+     Return low-level execution trace events for debugging one run. Workflow runs expose observability
+    phases or step records; agent runs expose parsed trace.jsonl events. The shape is intentionally
+    extensible, but common fields are documented.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsTraceGetResponse200]
+        Response[ApiErrorEnvelope | RunTraceResponse]
      """
 
 
@@ -142,18 +146,22 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunsTraceGetResponse200 | None:
+) -> ApiErrorEnvelope | RunTraceResponse | None:
     """ Get run trace
 
+     Return low-level execution trace events for debugging one run. Workflow runs expose observability
+    phases or step records; agent runs expose parsed trace.jsonl events. The shape is intentionally
+    extensible, but common fields are documented.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsTraceGetResponse200
+        ApiErrorEnvelope | RunTraceResponse
      """
 
 
@@ -168,18 +176,22 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunsTraceGetResponse200]:
+) -> Response[ApiErrorEnvelope | RunTraceResponse]:
     """ Get run trace
 
+     Return low-level execution trace events for debugging one run. Workflow runs expose observability
+    phases or step records; agent runs expose parsed trace.jsonl events. The shape is intentionally
+    extensible, but common fields are documented.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunsTraceGetResponse200]
+        Response[ApiErrorEnvelope | RunTraceResponse]
      """
 
 
@@ -199,18 +211,22 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunsTraceGetResponse200 | None:
+) -> ApiErrorEnvelope | RunTraceResponse | None:
     """ Get run trace
 
+     Return low-level execution trace events for debugging one run. Workflow runs expose observability
+    phases or step records; agent runs expose parsed trace.jsonl events. The shape is intentionally
+    extensible, but common fields are documented.
+
     Args:
-        id (str):
+        id (str): Run id.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunsTraceGetResponse200
+        ApiErrorEnvelope | RunTraceResponse
      """
 
 

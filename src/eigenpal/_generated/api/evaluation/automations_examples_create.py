@@ -122,11 +122,14 @@ def sync_detailed(
     body: DatasetExampleMutation,
 
 ) -> Response[ApiErrorEnvelope | DatasetExample]:
-    """ Create automation example
+    """ Create dataset example
+
+     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
+    bearing examples.
 
     Args:
-        id (str):
-        body (DatasetExampleMutation):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        body (DatasetExampleMutation): Fields used to create or update a dataset example.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -156,11 +159,14 @@ def sync(
     body: DatasetExampleMutation,
 
 ) -> ApiErrorEnvelope | DatasetExample | None:
-    """ Create automation example
+    """ Create dataset example
+
+     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
+    bearing examples.
 
     Args:
-        id (str):
-        body (DatasetExampleMutation):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        body (DatasetExampleMutation): Fields used to create or update a dataset example.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -185,11 +191,14 @@ async def asyncio_detailed(
     body: DatasetExampleMutation,
 
 ) -> Response[ApiErrorEnvelope | DatasetExample]:
-    """ Create automation example
+    """ Create dataset example
+
+     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
+    bearing examples.
 
     Args:
-        id (str):
-        body (DatasetExampleMutation):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        body (DatasetExampleMutation): Fields used to create or update a dataset example.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -219,11 +228,14 @@ async def asyncio(
     body: DatasetExampleMutation,
 
 ) -> ApiErrorEnvelope | DatasetExample | None:
-    """ Create automation example
+    """ Create dataset example
+
+     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
+    bearing examples.
 
     Args:
-        id (str):
-        body (DatasetExampleMutation):
+        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
+        body (DatasetExampleMutation): Fields used to create or update a dataset example.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

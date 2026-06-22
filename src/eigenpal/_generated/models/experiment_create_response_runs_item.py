@@ -23,8 +23,8 @@ T = TypeVar("T", bound="ExperimentCreateResponseRunsItem")
 class ExperimentCreateResponseRunsItem:
     """
         Attributes:
-            id (str):
-            example_id (None | str):
+            id (str): Run id.
+            example_id (None | str): Dataset example id.
      """
 
     id: str

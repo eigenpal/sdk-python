@@ -20,9 +20,10 @@ T = TypeVar("T", bound="RunFile")
 
 @_attrs_define
 class RunFile:
-    """
+    """ A file attached to a run input, output, or expected artifact set.
+
         Attributes:
-            name (str):
+            name (str): File name or slash-delimited artifact path.
      """
 
     name: str

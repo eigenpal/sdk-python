@@ -23,17 +23,18 @@ T = TypeVar("T", bound="Experiment")
 
 @_attrs_define
 class Experiment:
-    """
+    """ Experiment batch summary for an automation dataset run.
+
         Attributes:
-            id (str):
-            automation_id (str):
+            id (str): Experiment batch id. Some CLI commands historically call this a batch id.
+            automation_id (str): Automation this experiment belongs to.
             automation_type (AutomationType):
-            status (ExperimentStatus):
-            run_count (int):
-            completed_count (int):
-            passed_count (int):
-            failed_count (int):
-            avg_score (float | None):
+            status (ExperimentStatus): Experiment batch status.
+            run_count (int): Total runs in the experiment.
+            completed_count (int): Runs that have completed.
+            passed_count (int): Runs whose evaluator scores passed.
+            failed_count (int): Runs whose evaluator scores failed.
+            avg_score (float | None): Average automated evaluator score.
             created_at (str):
             completed_at (None | str):
             version (None | str):

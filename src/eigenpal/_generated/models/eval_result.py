@@ -21,21 +21,22 @@ T = TypeVar("T", bound="EvalResult")
 
 @_attrs_define
 class EvalResult:
-    """
+    """ Automated evaluator result for one run.
+
         Attributes:
-            id (str):
-            run_id (str):
-            automation_id (None | str):
-            evaluator_name (str):
-            evaluator_type (str):
-            score (float | None):
-            passed (bool | None):
-            label (None | str):
-            weight (float | None):
-            pass_threshold (float | None):
-            description (None | str):
-            details (Any | None):
-            error (None | str):
+            id (str): Evaluator result id.
+            run_id (str): Run this score belongs to.
+            automation_id (None | str): Automation this score belongs to.
+            evaluator_name (str): Evaluator name from configuration.
+            evaluator_type (str): Evaluator implementation type.
+            score (float | None): Automated evaluator score. Do not confuse this with human feedback `rating`.
+            passed (bool | None): Whether this evaluator passed.
+            label (None | str): Optional evaluator label.
+            weight (float | None): Weight used in aggregate scoring.
+            pass_threshold (float | None): Score threshold required for this evaluator to pass.
+            description (None | str): Evaluator description.
+            details (Any | None): Evaluator-specific details.
+            error (None | str): Evaluator error, when scoring failed.
             created_at (str):
      """
 
