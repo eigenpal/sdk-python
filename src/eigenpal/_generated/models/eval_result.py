@@ -29,7 +29,7 @@ class EvalResult:
             automation_id (None | str): Automation this score belongs to.
             evaluator_name (str): Evaluator name from configuration.
             evaluator_type (str): Evaluator implementation type.
-            score (float | None): Automated evaluator score. Do not confuse this with human feedback `rating`.
+            score (float | None): Automated evaluator score. Do not confuse this with a human review verdict.
             passed (bool | None): Whether this evaluator passed.
             label (None | str): Optional evaluator label.
             weight (float | None): Weight used in aggregate scoring.

@@ -9,16 +9,17 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_feedback_detail import RunFeedbackDetail
-from ...models.run_feedback_request import RunFeedbackRequest
+from ...models.run_review_expected_file_update_request import RunReviewExpectedFileUpdateRequest
+from ...models.run_review_expected_file_update_response import RunReviewExpectedFileUpdateResponse
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    filename: str,
     *,
-    body: RunFeedbackRequest,
+    body: RunReviewExpectedFileUpdateRequest,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -29,8 +30,8 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "put",
-        "url": "/api/v1/runs/{id}/feedback".format(id=quote(str(id), safe=""),),
+        "method": "patch",
+        "url": "/api/v1/runs/{id}/reviews/expected/{filename}".format(id=quote(str(id), safe=""),filename=quote(str(filename), safe=""),),
     }
 
     _kwargs["json"] = body.to_dict()
@@ -43,9 +44,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunFeedbackDetail | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse | None:
     if response.status_code == 200:
-        response_200 = RunFeedbackDetail.from_dict(response.json())
+        response_200 = RunReviewExpectedFileUpdateResponse.from_dict(response.json())
 
 
 
@@ -106,7 +107,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -117,32 +118,34 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunFeedbackRequest,
+    body: RunReviewExpectedFileUpdateRequest,
 
-) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
-    """ Update run feedback
+) -> Response[ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse]:
+    """ Rename corrected artifact file
 
-     Partially update human feedback and expected JSON output for a run. Omitted fields are left
-    unchanged. Pass null to clear a field.
+     Renames one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
-        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
-            pass null to clear a field.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
+        body (RunReviewExpectedFileUpdateRequest): Rename one corrected file.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunFeedbackDetail]
+        Response[ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+filename=filename,
 body=body,
 
     )
@@ -155,32 +158,34 @@ body=body,
 
 def sync(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunFeedbackRequest,
+    body: RunReviewExpectedFileUpdateRequest,
 
-) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    """ Update run feedback
+) -> ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse | None:
+    """ Rename corrected artifact file
 
-     Partially update human feedback and expected JSON output for a run. Omitted fields are left
-    unchanged. Pass null to clear a field.
+     Renames one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
-        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
-            pass null to clear a field.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
+        body (RunReviewExpectedFileUpdateRequest): Rename one corrected file.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunFeedbackDetail
+        ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse
      """
 
 
     return sync_detailed(
         id=id,
+filename=filename,
 client=client,
 body=body,
 
@@ -188,32 +193,34 @@ body=body,
 
 async def asyncio_detailed(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunFeedbackRequest,
+    body: RunReviewExpectedFileUpdateRequest,
 
-) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
-    """ Update run feedback
+) -> Response[ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse]:
+    """ Rename corrected artifact file
 
-     Partially update human feedback and expected JSON output for a run. Omitted fields are left
-    unchanged. Pass null to clear a field.
+     Renames one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
-        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
-            pass null to clear a field.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
+        body (RunReviewExpectedFileUpdateRequest): Rename one corrected file.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunFeedbackDetail]
+        Response[ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+filename=filename,
 body=body,
 
     )
@@ -226,32 +233,34 @@ body=body,
 
 async def asyncio(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
-    body: RunFeedbackRequest,
+    body: RunReviewExpectedFileUpdateRequest,
 
-) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    """ Update run feedback
+) -> ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse | None:
+    """ Rename corrected artifact file
 
-     Partially update human feedback and expected JSON output for a run. Omitted fields are left
-    unchanged. Pass null to clear a field.
+     Renames one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
-        body (RunFeedbackRequest): Partial update for run feedback. Omitted fields are preserved;
-            pass null to clear a field.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
+        body (RunReviewExpectedFileUpdateRequest): Rename one corrected file.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunFeedbackDetail
+        ApiErrorEnvelope | RunReviewExpectedFileUpdateResponse
      """
 
 
     return (await asyncio_detailed(
         id=id,
+filename=filename,
 client=client,
 body=body,
 

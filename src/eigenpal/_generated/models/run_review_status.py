@@ -1,9 +1,9 @@
 from enum import Enum
 
-class RunFeedbackRequestStatusType0(str, Enum):
-    IGNORED = "ignored"
+class RunReviewStatus(str, Enum):
+    CLOSED = "closed"
     OPEN = "open"
-    RESOLVED = "resolved"
+    WONT_FIX = "wont_fix"
 
     def __str__(self) -> str:
         return str(self.value)

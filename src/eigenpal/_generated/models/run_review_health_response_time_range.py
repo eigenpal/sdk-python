@@ -14,31 +14,36 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunFile")
+T = TypeVar("T", bound="RunReviewHealthResponseTimeRange")
 
 
 
 @_attrs_define
-class RunFile:
+class RunReviewHealthResponseTimeRange:
     """
         Attributes:
-            name (str):
+            from_ (str):
+            to (str):
      """
 
-    name: str
+    from_: str
+    to: str
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
-        name = self.name
+        from_ = self.from_
+
+        to = self.to
 
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "name": name,
+            "from": from_,
+            "to": to,
         })
 
         return field_dict
@@ -48,10 +53,13 @@ class RunFile:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        name = d.pop("name")
+        from_ = d.pop("from")
 
-        run_file = cls(
-            name=name,
+        to = d.pop("to")
+
+        run_review_health_response_time_range = cls(
+            from_=from_,
+            to=to,
         )
 
-        return run_file
+        return run_review_health_response_time_range

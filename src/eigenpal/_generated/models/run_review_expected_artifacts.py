@@ -17,20 +17,18 @@ if TYPE_CHECKING:
 
 
 
-T = TypeVar("T", bound="RunExpectedArtifacts")
+T = TypeVar("T", bound="RunReviewExpectedArtifacts")
 
 
 
 @_attrs_define
-class RunExpectedArtifacts:
-    """ Expected JSON output and expected files attached to run feedback.
-
+class RunReviewExpectedArtifacts:
+    """
         Attributes:
-            expected (Any | None): Expected JSON output for the run, or null when none is set.
-            files (list[RunFile]): Expected output files attached to this run feedback record.
+            files (list[RunFile]): Corrected artifact files attached to the run review. Corrected JSON output lives on the
+                review object at GET /runs/{id}/reviews.
      """
 
-    expected: Any | None
     files: list[RunFile]
 
 
@@ -39,9 +37,6 @@ class RunExpectedArtifacts:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_file import RunFile
-        expected: Any | None
-        expected = self.expected
-
         files = []
         for files_item_data in self.files:
             files_item = files_item_data.to_dict()
@@ -53,7 +48,6 @@ class RunExpectedArtifacts:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
-            "expected": expected,
             "files": files,
         })
 
@@ -65,14 +59,6 @@ class RunExpectedArtifacts:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_file import RunFile
         d = dict(src_dict)
-        def _parse_expected(data: object) -> Any | None:
-            if data is None:
-                return data
-            return cast(Any | None, data)
-
-        expected = _parse_expected(d.pop("expected"))
-
-
         files = []
         _files = d.pop("files")
         for files_item_data in (_files):
@@ -83,9 +69,8 @@ class RunExpectedArtifacts:
             files.append(files_item)
 
 
-        run_expected_artifacts = cls(
-            expected=expected,
+        run_review_expected_artifacts = cls(
             files=files,
         )
 
-        return run_expected_artifacts
+        return run_review_expected_artifacts

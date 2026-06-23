@@ -21,7 +21,7 @@ T = TypeVar("T", bound="PromoteRunRequest")
 
 @_attrs_define
 class PromoteRunRequest:
-    """ Create or update a dataset example from the run input, actual output, and feedback expected artifacts.
+    """ Create or update a dataset example from the run input, actual output, and review corrections.
 
         Attributes:
             name (str | Unset): Dataset example name to create or update. Defaults to a generated name when omitted.

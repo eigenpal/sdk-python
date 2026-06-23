@@ -9,19 +9,15 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.promote_run_request import PromoteRunRequest
-from ...models.promote_run_response import PromoteRunResponse
+from ...models.run_review_detail import RunReviewDetail
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
-    *,
-    body: PromoteRunRequest,
 
 ) -> dict[str, Any]:
-    headers: dict[str, Any] = {}
 
 
 
@@ -29,23 +25,18 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "post",
-        "url": "/api/v1/runs/{id}/promote".format(id=quote(str(id), safe=""),),
+        "method": "delete",
+        "url": "/api/v1/runs/{id}/reviews".format(id=quote(str(id), safe=""),),
     }
 
-    _kwargs["json"] = body.to_dict()
 
-
-    headers["Content-Type"] = "application/json"
-
-    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | PromoteRunResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunReviewDetail | None:
     if response.status_code == 200:
-        response_200 = PromoteRunResponse.from_dict(response.json())
+        response_200 = RunReviewDetail.from_dict(response.json())
 
 
 
@@ -106,7 +97,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunReviewDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -119,32 +110,26 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PromoteRunRequest,
 
-) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
-    """ Promote run to example
+) -> Response[ApiErrorEnvelope | RunReviewDetail]:
+    """ Clear run review
 
-     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
-    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
-    expected artifacts to capture a regression test.
+     Deletes review metadata, corrections, and corrected files for the run.
 
     Args:
         id (str): Run id.
-        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
-            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | PromoteRunResponse]
+        Response[ApiErrorEnvelope | RunReviewDetail]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-body=body,
 
     )
 
@@ -158,33 +143,27 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PromoteRunRequest,
 
-) -> ApiErrorEnvelope | PromoteRunResponse | None:
-    """ Promote run to example
+) -> ApiErrorEnvelope | RunReviewDetail | None:
+    """ Clear run review
 
-     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
-    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
-    expected artifacts to capture a regression test.
+     Deletes review metadata, corrections, and corrected files for the run.
 
     Args:
         id (str): Run id.
-        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
-            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | PromoteRunResponse
+        ApiErrorEnvelope | RunReviewDetail
      """
 
 
     return sync_detailed(
         id=id,
 client=client,
-body=body,
 
     ).parsed
 
@@ -192,32 +171,26 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PromoteRunRequest,
 
-) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
-    """ Promote run to example
+) -> Response[ApiErrorEnvelope | RunReviewDetail]:
+    """ Clear run review
 
-     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
-    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
-    expected artifacts to capture a regression test.
+     Deletes review metadata, corrections, and corrected files for the run.
 
     Args:
         id (str): Run id.
-        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
-            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | PromoteRunResponse]
+        Response[ApiErrorEnvelope | RunReviewDetail]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-body=body,
 
     )
 
@@ -231,32 +204,26 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PromoteRunRequest,
 
-) -> ApiErrorEnvelope | PromoteRunResponse | None:
-    """ Promote run to example
+) -> ApiErrorEnvelope | RunReviewDetail | None:
+    """ Clear run review
 
-     Turn a reviewed run into a dataset example. The new example uses the run input, the run output, and
-    any expected output/files stored through the feedback endpoints. Use this after adding feedback or
-    expected artifacts to capture a regression test.
+     Deletes review metadata, corrections, and corrected files for the run.
 
     Args:
         id (str): Run id.
-        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
-            output, and feedback expected artifacts.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | PromoteRunResponse
+        ApiErrorEnvelope | RunReviewDetail
      """
 
 
     return (await asyncio_detailed(
         id=id,
 client=client,
-body=body,
 
     )).parsed

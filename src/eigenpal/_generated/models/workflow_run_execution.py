@@ -14,7 +14,7 @@ from typing import cast
 
 if TYPE_CHECKING:
   from ..models.run_execution_retry import RunExecutionRetry
-  from ..models.run_feedback import RunFeedback
+  from ..models.run_review import RunReview
   from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
 
 
@@ -34,8 +34,8 @@ class WorkflowRunExecution:
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
             steps (list[Any]): Per-step executions of the workflow run.
+            review (None | RunReview | Unset):
             definition_snapshot (Any | None | Unset): Workflow definition snapshot captured when the run was created.
-            feedback (None | RunFeedback | Unset):
             expected (WorkflowRunExecutionExpected | Unset): Ground-truth expected output and files.
      """
 
@@ -44,8 +44,8 @@ class WorkflowRunExecution:
     batch_id: None | str
     retry: RunExecutionRetry
     steps: list[Any]
+    review: None | RunReview | Unset = UNSET
     definition_snapshot: Any | None | Unset = UNSET
-    feedback: None | RunFeedback | Unset = UNSET
     expected: WorkflowRunExecutionExpected | Unset = UNSET
 
 
@@ -54,7 +54,7 @@ class WorkflowRunExecution:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_feedback import RunFeedback
+        from ..models.run_review import RunReview
         from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
         status = self.status.value
 
@@ -70,19 +70,19 @@ class WorkflowRunExecution:
 
 
 
+        review: dict[str, Any] | None | Unset
+        if isinstance(self.review, Unset):
+            review = UNSET
+        elif isinstance(self.review, RunReview):
+            review = self.review.to_dict()
+        else:
+            review = self.review
+
         definition_snapshot: Any | None | Unset
         if isinstance(self.definition_snapshot, Unset):
             definition_snapshot = UNSET
         else:
             definition_snapshot = self.definition_snapshot
-
-        feedback: dict[str, Any] | None | Unset
-        if isinstance(self.feedback, Unset):
-            feedback = UNSET
-        elif isinstance(self.feedback, RunFeedback):
-            feedback = self.feedback.to_dict()
-        else:
-            feedback = self.feedback
 
         expected: dict[str, Any] | Unset = UNSET
         if not isinstance(self.expected, Unset):
@@ -98,10 +98,10 @@ class WorkflowRunExecution:
             "retry": retry,
             "steps": steps,
         })
+        if review is not UNSET:
+            field_dict["review"] = review
         if definition_snapshot is not UNSET:
             field_dict["definitionSnapshot"] = definition_snapshot
-        if feedback is not UNSET:
-            field_dict["feedback"] = feedback
         if expected is not UNSET:
             field_dict["expected"] = expected
 
@@ -112,7 +112,7 @@ class WorkflowRunExecution:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_feedback import RunFeedback
+        from ..models.run_review import RunReview
         from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
@@ -144,6 +144,26 @@ class WorkflowRunExecution:
         steps = cast(list[Any], d.pop("steps"))
 
 
+        def _parse_review(data: object) -> None | RunReview | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                review_type_0 = RunReview.from_dict(data)
+
+
+
+                return review_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunReview | Unset, data)
+
+        review = _parse_review(d.pop("review", UNSET))
+
+
         def _parse_definition_snapshot(data: object) -> Any | None | Unset:
             if data is None:
                 return data
@@ -152,26 +172,6 @@ class WorkflowRunExecution:
             return cast(Any | None | Unset, data)
 
         definition_snapshot = _parse_definition_snapshot(d.pop("definitionSnapshot", UNSET))
-
-
-        def _parse_feedback(data: object) -> None | RunFeedback | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                feedback_type_0 = RunFeedback.from_dict(data)
-
-
-
-                return feedback_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            return cast(None | RunFeedback | Unset, data)
-
-        feedback = _parse_feedback(d.pop("feedback", UNSET))
 
 
         _expected = d.pop("expected", UNSET)
@@ -190,8 +190,8 @@ class WorkflowRunExecution:
             batch_id=batch_id,
             retry=retry,
             steps=steps,
+            review=review,
             definition_snapshot=definition_snapshot,
-            feedback=feedback,
             expected=expected,
         )
 

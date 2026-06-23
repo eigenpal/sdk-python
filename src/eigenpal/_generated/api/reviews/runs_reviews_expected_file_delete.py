@@ -9,13 +9,13 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_feedback_detail import RunFeedbackDetail
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    filename: str,
 
 ) -> dict[str, Any]:
 
@@ -26,7 +26,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "delete",
-        "url": "/api/v1/runs/{id}/feedback".format(id=quote(str(id), safe=""),),
+        "url": "/api/v1/runs/{id}/reviews/expected/{filename}".format(id=quote(str(id), safe=""),filename=quote(str(filename), safe=""),),
     }
 
 
@@ -34,13 +34,10 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    if response.status_code == 200:
-        response_200 = RunFeedbackDetail.from_dict(response.json())
-
-
-
-        return response_200
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | None:
+    if response.status_code == 204:
+        response_204 = cast(Any, None)
+        return response_204
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -97,7 +94,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -108,29 +105,32 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
-    """ Clear run feedback
+) -> Response[Any | ApiErrorEnvelope]:
+    """ Delete corrected artifact file
 
-     Deletes all feedback state for the run: human feedback, expected JSON output, and every expected
-    artifact file.
+     Deletes one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunFeedbackDetail]
+        Response[Any | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+filename=filename,
 
     )
 
@@ -142,58 +142,64 @@ def sync_detailed(
 
 def sync(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    """ Clear run feedback
+) -> Any | ApiErrorEnvelope | None:
+    """ Delete corrected artifact file
 
-     Deletes all feedback state for the run: human feedback, expected JSON output, and every expected
-    artifact file.
+     Deletes one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunFeedbackDetail
+        Any | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
         id=id,
+filename=filename,
 client=client,
 
     ).parsed
 
 async def asyncio_detailed(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
-    """ Clear run feedback
+) -> Response[Any | ApiErrorEnvelope]:
+    """ Delete corrected artifact file
 
-     Deletes all feedback state for the run: human feedback, expected JSON output, and every expected
-    artifact file.
+     Deletes one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunFeedbackDetail]
+        Response[Any | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+filename=filename,
 
     )
 
@@ -205,29 +211,32 @@ async def asyncio_detailed(
 
 async def asyncio(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    """ Clear run feedback
+) -> Any | ApiErrorEnvelope | None:
+    """ Delete corrected artifact file
 
-     Deletes all feedback state for the run: human feedback, expected JSON output, and every expected
-    artifact file.
+     Deletes one corrected artifact file attached to the run review.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunFeedbackDetail
+        Any | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
         id=id,
+filename=filename,
 client=client,
 
     )).parsed

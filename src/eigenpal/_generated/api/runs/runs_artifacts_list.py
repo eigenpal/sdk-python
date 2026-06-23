@@ -10,6 +10,7 @@ from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.run_artifacts_response import RunArtifactsResponse
+from ...models.runs_artifacts_list_bundle import RunsArtifactsListBundle
 from ...models.runs_artifacts_list_zip import RunsArtifactsListZip
 from ...types import UNSET, Unset
 from typing import cast
@@ -20,6 +21,7 @@ def _get_kwargs(
     id: str,
     *,
     zip_: RunsArtifactsListZip | Unset = UNSET,
+    bundle: RunsArtifactsListBundle | Unset = UNSET,
     token: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
@@ -34,6 +36,12 @@ def _get_kwargs(
         json_zip_ = zip_.value
 
     params["zip"] = json_zip_
+
+    json_bundle: str | Unset = UNSET
+    if not isinstance(bundle, Unset):
+        json_bundle = bundle.value
+
+    params["bundle"] = json_bundle
 
     params["token"] = token
 
@@ -131,6 +139,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     zip_: RunsArtifactsListZip | Unset = UNSET,
+    bundle: RunsArtifactsListBundle | Unset = UNSET,
     token: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]:
@@ -144,6 +153,8 @@ def sync_detailed(
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those.
+        bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
+            with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
@@ -158,6 +169,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         id=id,
 zip_=zip_,
+bundle=bundle,
 token=token,
 
     )
@@ -173,6 +185,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     zip_: RunsArtifactsListZip | Unset = UNSET,
+    bundle: RunsArtifactsListBundle | Unset = UNSET,
     token: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunArtifactsResponse | bytes | None:
@@ -186,6 +199,8 @@ def sync(
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those.
+        bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
+            with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
@@ -201,6 +216,7 @@ def sync(
         id=id,
 client=client,
 zip_=zip_,
+bundle=bundle,
 token=token,
 
     ).parsed
@@ -210,6 +226,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     zip_: RunsArtifactsListZip | Unset = UNSET,
+    bundle: RunsArtifactsListBundle | Unset = UNSET,
     token: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunArtifactsResponse | bytes]:
@@ -223,6 +240,8 @@ async def asyncio_detailed(
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those.
+        bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
+            with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
@@ -237,6 +256,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         id=id,
 zip_=zip_,
+bundle=bundle,
 token=token,
 
     )
@@ -252,6 +272,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     zip_: RunsArtifactsListZip | Unset = UNSET,
+    bundle: RunsArtifactsListBundle | Unset = UNSET,
     token: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunArtifactsResponse | bytes | None:
@@ -265,6 +286,8 @@ async def asyncio(
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those.
+        bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
+            with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
 
     Raises:
@@ -280,6 +303,7 @@ async def asyncio(
         id=id,
 client=client,
 zip_=zip_,
+bundle=bundle,
 token=token,
 
     )).parsed

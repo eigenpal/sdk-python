@@ -34,6 +34,8 @@ class RunListItem:
             id (str):
             type_ (RunListItemType):
             finished (bool): True when the run has reached a terminal status.
+            sample_rank (float): Deterministic pseudo-random rank in [0, 1) for this run within the tenant. Use with a
+                sample rate threshold to review a stable subset.
             timing (RunTiming):
             source (RunSource):
             trigger (RunTrigger):
@@ -45,6 +47,7 @@ class RunListItem:
     id: str
     type_: RunListItemType
     finished: bool
+    sample_rank: float
     timing: RunTiming
     source: RunSource
     trigger: RunTrigger
@@ -67,6 +70,8 @@ class RunListItem:
         type_ = self.type_.value
 
         finished = self.finished
+
+        sample_rank = self.sample_rank
 
         timing = self.timing.to_dict()
 
@@ -93,6 +98,7 @@ class RunListItem:
             "id": id,
             "type": type_,
             "finished": finished,
+            "sampleRank": sample_rank,
             "timing": timing,
             "source": source,
             "trigger": trigger,
@@ -123,6 +129,8 @@ class RunListItem:
 
 
         finished = d.pop("finished")
+
+        sample_rank = d.pop("sampleRank")
 
         timing = RunTiming.from_dict(d.pop("timing"))
 
@@ -168,6 +176,7 @@ class RunListItem:
             id=id,
             type_=type_,
             finished=finished,
+            sample_rank=sample_rank,
             timing=timing,
             source=source,
             trigger=trigger,

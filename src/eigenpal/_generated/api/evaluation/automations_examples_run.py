@@ -117,7 +117,7 @@ def sync_detailed(
     """ Run dataset example
 
      Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
-    completion and use run scores or feedback endpoints to review the result.
+    completion and use run scores or review endpoints to review the result.
 
     Args:
         id (str): Automation id or typed alias.
@@ -154,7 +154,7 @@ def sync(
     """ Run dataset example
 
      Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
-    completion and use run scores or feedback endpoints to review the result.
+    completion and use run scores or review endpoints to review the result.
 
     Args:
         id (str): Automation id or typed alias.
@@ -186,7 +186,7 @@ async def asyncio_detailed(
     """ Run dataset example
 
      Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
-    completion and use run scores or feedback endpoints to review the result.
+    completion and use run scores or review endpoints to review the result.
 
     Args:
         id (str): Automation id or typed alias.
@@ -223,7 +223,7 @@ async def asyncio(
     """ Run dataset example
 
      Start an asynchronous run using the input from one dataset example. Poll `GET /api/v1/runs/{id}` for
-    completion and use run scores or feedback endpoints to review the result.
+    completion and use run scores or review endpoints to review the result.
 
     Args:
         id (str): Automation id or typed alias.

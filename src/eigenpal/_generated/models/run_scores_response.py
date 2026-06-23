@@ -26,8 +26,8 @@ class RunScoresResponse:
     """ Automated evaluator results attached to a run.
 
         Attributes:
-            scores (list[EvalResult]): Automated evaluator scores for the run. These are separate from human feedback
-                `rating` values.
+            scores (list[EvalResult]): Automated evaluator scores for the run. These are separate from human review
+                verdicts.
      """
 
     scores: list[EvalResult]

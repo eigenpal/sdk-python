@@ -19,16 +19,16 @@ from io import BytesIO
 
 
 
-T = TypeVar("T", bound="RunExpectedFileUploadRequest")
+T = TypeVar("T", bound="RunReviewExpectedFileUploadRequest")
 
 
 
 @_attrs_define
-class RunExpectedFileUploadRequest:
+class RunReviewExpectedFileUploadRequest:
     """
         Attributes:
-            file (File): Expected artifact file to upload.
-            name (str | Unset): Optional stored expected file name. Defaults to the uploaded filename.
+            file (File): Corrected artifact file to upload.
+            name (str | Unset): Optional stored corrected file name. Defaults to the uploaded filename.
      """
 
     file: File
@@ -90,14 +90,14 @@ class RunExpectedFileUploadRequest:
 
         name = d.pop("name", UNSET)
 
-        run_expected_file_upload_request = cls(
+        run_review_expected_file_upload_request = cls(
             file=file,
             name=name,
         )
 
 
-        run_expected_file_upload_request.additional_properties = d
-        return run_expected_file_upload_request
+        run_review_expected_file_upload_request.additional_properties = d
+        return run_review_expected_file_upload_request
 
     @property
     def additional_keys(self) -> list[str]:

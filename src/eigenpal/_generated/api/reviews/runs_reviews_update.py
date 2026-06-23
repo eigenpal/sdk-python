@@ -9,15 +9,19 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_feedback_detail import RunFeedbackDetail
+from ...models.run_review_detail import RunReviewDetail
+from ...models.run_review_request import RunReviewRequest
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    *,
+    body: RunReviewRequest,
 
 ) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
 
 
 
@@ -25,18 +29,23 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/api/v1/runs/{id}/feedback".format(id=quote(str(id), safe=""),),
+        "method": "put",
+        "url": "/api/v1/runs/{id}/reviews".format(id=quote(str(id), safe=""),),
     }
 
+    _kwargs["json"] = body.to_dict()
 
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunFeedbackDetail | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunReviewDetail | None:
     if response.status_code == 200:
-        response_200 = RunFeedbackDetail.from_dict(response.json())
+        response_200 = RunReviewDetail.from_dict(response.json())
 
 
 
@@ -97,7 +106,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunReviewDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -110,28 +119,31 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: RunReviewRequest,
 
-) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
-    """ Get run feedback
+) -> Response[ApiErrorEnvelope | RunReviewDetail]:
+    """ Update run review
 
-     Returns the complete feedback state for one run, including the human feedback object, expected JSON
-    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
-    feedback embedded in a run response.
+     Create or replace review metadata for a run.
 
     Args:
         id (str): Run id.
+        body (RunReviewRequest): Create or replace review metadata for a run. Attribution fields
+            (`reviewedBy`, `closedBy`, and their emails) are read-only and populated from the
+            authenticated user or API key creator.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunFeedbackDetail]
+        Response[ApiErrorEnvelope | RunReviewDetail]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+body=body,
 
     )
 
@@ -145,29 +157,32 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: RunReviewRequest,
 
-) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    """ Get run feedback
+) -> ApiErrorEnvelope | RunReviewDetail | None:
+    """ Update run review
 
-     Returns the complete feedback state for one run, including the human feedback object, expected JSON
-    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
-    feedback embedded in a run response.
+     Create or replace review metadata for a run.
 
     Args:
         id (str): Run id.
+        body (RunReviewRequest): Create or replace review metadata for a run. Attribution fields
+            (`reviewedBy`, `closedBy`, and their emails) are read-only and populated from the
+            authenticated user or API key creator.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunFeedbackDetail
+        ApiErrorEnvelope | RunReviewDetail
      """
 
 
     return sync_detailed(
         id=id,
 client=client,
+body=body,
 
     ).parsed
 
@@ -175,28 +190,31 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: RunReviewRequest,
 
-) -> Response[ApiErrorEnvelope | RunFeedbackDetail]:
-    """ Get run feedback
+) -> Response[ApiErrorEnvelope | RunReviewDetail]:
+    """ Update run review
 
-     Returns the complete feedback state for one run, including the human feedback object, expected JSON
-    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
-    feedback embedded in a run response.
+     Create or replace review metadata for a run.
 
     Args:
         id (str): Run id.
+        body (RunReviewRequest): Create or replace review metadata for a run. Attribution fields
+            (`reviewedBy`, `closedBy`, and their emails) are read-only and populated from the
+            authenticated user or API key creator.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunFeedbackDetail]
+        Response[ApiErrorEnvelope | RunReviewDetail]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+body=body,
 
     )
 
@@ -210,28 +228,31 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: RunReviewRequest,
 
-) -> ApiErrorEnvelope | RunFeedbackDetail | None:
-    """ Get run feedback
+) -> ApiErrorEnvelope | RunReviewDetail | None:
+    """ Update run review
 
-     Returns the complete feedback state for one run, including the human feedback object, expected JSON
-    output, and expected files. Use `GET /api/v1/runs/{id}` with `expand=execution` when you only need
-    feedback embedded in a run response.
+     Create or replace review metadata for a run.
 
     Args:
         id (str): Run id.
+        body (RunReviewRequest): Create or replace review metadata for a run. Attribution fields
+            (`reviewedBy`, `closedBy`, and their emails) are read-only and populated from the
+            authenticated user or API key creator.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunFeedbackDetail
+        ApiErrorEnvelope | RunReviewDetail
      """
 
 
     return (await asyncio_detailed(
         id=id,
 client=client,
+body=body,
 
     )).parsed

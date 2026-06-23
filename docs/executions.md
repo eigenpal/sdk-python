@@ -55,8 +55,8 @@ client.runs.usage(started.id)
 client.runs.steps(started.id)
 client.runs.events(started.id)
 client.runs.trace.get(started.id)
-client.runs.feedback.get(started.id)
-client.runs.feedback.update(started.id, {"body": "Looks wrong", "status": "open"})
+client.runs.reviews.get(started.id)
+client.runs.reviews.update(started.id, {"note": "Looks wrong", "verdict": "incorrect", "status": "open"})
 ```
 
 ## Artifacts
@@ -77,7 +77,7 @@ rerun = client.rerun(started.id, wait_for_completion=60)
 
 ## Promote
 
-Copy a completed run's input, output, feedback, and expected artifacts into a dataset example on the same automation:
+Copy a completed run's input, output, review, and corrected artifacts into a dataset example on the same automation:
 
 ```python
 result = client.runs.promote(started.id, name="golden-invoice")

@@ -9,9 +9,9 @@ from ...types import Response, UNSET, Unset
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_expected_file_copy_request import RunExpectedFileCopyRequest
-from ...models.run_expected_file_mutation_response import RunExpectedFileMutationResponse
-from ...models.run_expected_file_upload_request import RunExpectedFileUploadRequest
+from ...models.run_review_expected_file_copy_request import RunReviewExpectedFileCopyRequest
+from ...models.run_review_expected_file_mutation_response import RunReviewExpectedFileMutationResponse
+from ...models.run_review_expected_file_upload_request import RunReviewExpectedFileUploadRequest
 from typing import cast
 
 
@@ -19,7 +19,7 @@ from typing import cast
 def _get_kwargs(
     id: str,
     *,
-    body:    RunExpectedFileCopyRequest  |     RunExpectedFileUploadRequest  | Unset = UNSET,
+    body:    RunReviewExpectedFileCopyRequest  |     RunReviewExpectedFileUploadRequest  | Unset = UNSET,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -31,15 +31,15 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/api/v1/runs/{id}/feedback/expected".format(id=quote(str(id), safe=""),),
+        "url": "/api/v1/runs/{id}/reviews/expected".format(id=quote(str(id), safe=""),),
     }
 
-    if isinstance(body, RunExpectedFileCopyRequest):
+    if isinstance(body, RunReviewExpectedFileCopyRequest):
         _kwargs["json"] = body.to_dict()
 
 
         headers["Content-Type"] = "application/json"
-    if isinstance(body, RunExpectedFileUploadRequest):
+    if isinstance(body, RunReviewExpectedFileUploadRequest):
         _kwargs["files"] = body.to_multipart()
 
     _kwargs["headers"] = headers
@@ -47,9 +47,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunExpectedFileMutationResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunReviewExpectedFileMutationResponse | None:
     if response.status_code == 201:
-        response_201 = RunExpectedFileMutationResponse.from_dict(response.json())
+        response_201 = RunReviewExpectedFileMutationResponse.from_dict(response.json())
 
 
 
@@ -110,7 +110,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunExpectedFileMutationResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunReviewExpectedFileMutationResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -123,27 +123,27 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body:    RunExpectedFileCopyRequest  |     RunExpectedFileUploadRequest  | Unset = UNSET,
+    body:    RunReviewExpectedFileCopyRequest  |     RunReviewExpectedFileUploadRequest  | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | RunExpectedFileMutationResponse]:
-    """ Add expected file
+) -> Response[ApiErrorEnvelope | RunReviewExpectedFileMutationResponse]:
+    """ Add corrected file
 
-     Attach one expected file to run feedback. Send multipart/form-data with `file` and optional `name`
+     Attach one corrected file to a run review. Send multipart/form-data with `file` and optional `name`
     to upload a local file, or JSON with `outputFileName` and optional `expectedName` to copy an
     existing run output file.
 
     Args:
         id (str): Run id.
-        body (RunExpectedFileCopyRequest): JSON request body for copying one run output file into
-            the expected artifact set.
-        body (RunExpectedFileUploadRequest):
+        body (RunReviewExpectedFileCopyRequest): JSON request body for copying one run output file
+            into the corrected artifact set.
+        body (RunReviewExpectedFileUploadRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunExpectedFileMutationResponse]
+        Response[ApiErrorEnvelope | RunReviewExpectedFileMutationResponse]
      """
 
 
@@ -163,27 +163,27 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body:    RunExpectedFileCopyRequest  |     RunExpectedFileUploadRequest  | Unset = UNSET,
+    body:    RunReviewExpectedFileCopyRequest  |     RunReviewExpectedFileUploadRequest  | Unset = UNSET,
 
-) -> ApiErrorEnvelope | RunExpectedFileMutationResponse | None:
-    """ Add expected file
+) -> ApiErrorEnvelope | RunReviewExpectedFileMutationResponse | None:
+    """ Add corrected file
 
-     Attach one expected file to run feedback. Send multipart/form-data with `file` and optional `name`
+     Attach one corrected file to a run review. Send multipart/form-data with `file` and optional `name`
     to upload a local file, or JSON with `outputFileName` and optional `expectedName` to copy an
     existing run output file.
 
     Args:
         id (str): Run id.
-        body (RunExpectedFileCopyRequest): JSON request body for copying one run output file into
-            the expected artifact set.
-        body (RunExpectedFileUploadRequest):
+        body (RunReviewExpectedFileCopyRequest): JSON request body for copying one run output file
+            into the corrected artifact set.
+        body (RunReviewExpectedFileUploadRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunExpectedFileMutationResponse
+        ApiErrorEnvelope | RunReviewExpectedFileMutationResponse
      """
 
 
@@ -198,27 +198,27 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body:    RunExpectedFileCopyRequest  |     RunExpectedFileUploadRequest  | Unset = UNSET,
+    body:    RunReviewExpectedFileCopyRequest  |     RunReviewExpectedFileUploadRequest  | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | RunExpectedFileMutationResponse]:
-    """ Add expected file
+) -> Response[ApiErrorEnvelope | RunReviewExpectedFileMutationResponse]:
+    """ Add corrected file
 
-     Attach one expected file to run feedback. Send multipart/form-data with `file` and optional `name`
+     Attach one corrected file to a run review. Send multipart/form-data with `file` and optional `name`
     to upload a local file, or JSON with `outputFileName` and optional `expectedName` to copy an
     existing run output file.
 
     Args:
         id (str): Run id.
-        body (RunExpectedFileCopyRequest): JSON request body for copying one run output file into
-            the expected artifact set.
-        body (RunExpectedFileUploadRequest):
+        body (RunReviewExpectedFileCopyRequest): JSON request body for copying one run output file
+            into the corrected artifact set.
+        body (RunReviewExpectedFileUploadRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunExpectedFileMutationResponse]
+        Response[ApiErrorEnvelope | RunReviewExpectedFileMutationResponse]
      """
 
 
@@ -238,27 +238,27 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient | Client,
-    body:    RunExpectedFileCopyRequest  |     RunExpectedFileUploadRequest  | Unset = UNSET,
+    body:    RunReviewExpectedFileCopyRequest  |     RunReviewExpectedFileUploadRequest  | Unset = UNSET,
 
-) -> ApiErrorEnvelope | RunExpectedFileMutationResponse | None:
-    """ Add expected file
+) -> ApiErrorEnvelope | RunReviewExpectedFileMutationResponse | None:
+    """ Add corrected file
 
-     Attach one expected file to run feedback. Send multipart/form-data with `file` and optional `name`
+     Attach one corrected file to a run review. Send multipart/form-data with `file` and optional `name`
     to upload a local file, or JSON with `outputFileName` and optional `expectedName` to copy an
     existing run output file.
 
     Args:
         id (str): Run id.
-        body (RunExpectedFileCopyRequest): JSON request body for copying one run output file into
-            the expected artifact set.
-        body (RunExpectedFileUploadRequest):
+        body (RunReviewExpectedFileCopyRequest): JSON request body for copying one run output file
+            into the corrected artifact set.
+        body (RunReviewExpectedFileUploadRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunExpectedFileMutationResponse
+        ApiErrorEnvelope | RunReviewExpectedFileMutationResponse
      """
 
 

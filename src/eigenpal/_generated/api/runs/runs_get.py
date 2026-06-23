@@ -127,7 +127,7 @@ def sync_detailed(
 
      Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
     `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
-    where embedded feedback and expected artifacts appear.
+    where embedded review and expected artifacts appear.
 
     Args:
         id (str): Run id
@@ -166,7 +166,7 @@ def sync(
 
      Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
     `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
-    where embedded feedback and expected artifacts appear.
+    where embedded review and expected artifacts appear.
 
     Args:
         id (str): Run id
@@ -200,7 +200,7 @@ async def asyncio_detailed(
 
      Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
     `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
-    where embedded feedback and expected artifacts appear.
+    where embedded review and expected artifacts appear.
 
     Args:
         id (str): Run id
@@ -239,7 +239,7 @@ async def asyncio(
 
      Fetch one run by id. By default this returns core metadata plus terminal output/error fields. Pass
     `?expand=input,usage,execution,debug` to include detailed sub-objects; `expand=execution` is also
-    where embedded feedback and expected artifacts appear.
+    where embedded review and expected artifacts appear.
 
     Args:
         id (str): Run id

@@ -36,6 +36,23 @@ def _get_kwargs(
     offset: int | Unset = UNSET,
     limit: int | Unset = UNSET,
     ids: str | Unset = UNSET,
+    experiments: str | Unset = UNSET,
+    sort: str | Unset = UNSET,
+    order: str | Unset = UNSET,
+    review_status: str | Unset = UNSET,
+    review_verdict: str | Unset = UNSET,
+    has_review: str | Unset = UNSET,
+    no_review: str | Unset = UNSET,
+    has_corrections: str | Unset = UNSET,
+    review_note_contains: str | Unset = UNSET,
+    review_created_after: str | Unset = UNSET,
+    review_created_before: str | Unset = UNSET,
+    review_updated_after: str | Unset = UNSET,
+    review_updated_before: str | Unset = UNSET,
+    review_closed_after: str | Unset = UNSET,
+    review_closed_before: str | Unset = UNSET,
+    since_last_closed: str | Unset = UNSET,
+    sample_rate: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
@@ -81,6 +98,40 @@ def _get_kwargs(
     params["limit"] = limit
 
     params["ids"] = ids
+
+    params["experiments"] = experiments
+
+    params["sort"] = sort
+
+    params["order"] = order
+
+    params["reviewStatus"] = review_status
+
+    params["reviewVerdict"] = review_verdict
+
+    params["hasReview"] = has_review
+
+    params["noReview"] = no_review
+
+    params["hasCorrections"] = has_corrections
+
+    params["reviewNoteContains"] = review_note_contains
+
+    params["reviewCreatedAfter"] = review_created_after
+
+    params["reviewCreatedBefore"] = review_created_before
+
+    params["reviewUpdatedAfter"] = review_updated_after
+
+    params["reviewUpdatedBefore"] = review_updated_before
+
+    params["reviewClosedAfter"] = review_closed_after
+
+    params["reviewClosedBefore"] = review_closed_before
+
+    params["sinceLastClosed"] = since_last_closed
+
+    params["sampleRate"] = sample_rate
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -191,6 +242,23 @@ def sync_detailed(
     offset: int | Unset = UNSET,
     limit: int | Unset = UNSET,
     ids: str | Unset = UNSET,
+    experiments: str | Unset = UNSET,
+    sort: str | Unset = UNSET,
+    order: str | Unset = UNSET,
+    review_status: str | Unset = UNSET,
+    review_verdict: str | Unset = UNSET,
+    has_review: str | Unset = UNSET,
+    no_review: str | Unset = UNSET,
+    has_corrections: str | Unset = UNSET,
+    review_note_contains: str | Unset = UNSET,
+    review_created_after: str | Unset = UNSET,
+    review_created_before: str | Unset = UNSET,
+    review_updated_after: str | Unset = UNSET,
+    review_updated_before: str | Unset = UNSET,
+    review_closed_after: str | Unset = UNSET,
+    review_closed_before: str | Unset = UNSET,
+    since_last_closed: str | Unset = UNSET,
+    sample_rate: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunsListResponse]:
     """ List runs
@@ -217,6 +285,24 @@ def sync_detailed(
         offset (int | Unset):
         limit (int | Unset):
         ids (str | Unset):
+        experiments (str | Unset):
+        sort (str | Unset):
+        order (str | Unset):
+        review_status (str | Unset):
+        review_verdict (str | Unset):
+        has_review (str | Unset):
+        no_review (str | Unset):
+        has_corrections (str | Unset):
+        review_note_contains (str | Unset):
+        review_created_after (str | Unset):
+        review_created_before (str | Unset):
+        review_updated_after (str | Unset):
+        review_updated_before (str | Unset):
+        review_closed_after (str | Unset):
+        review_closed_before (str | Unset):
+        since_last_closed (str | Unset):
+        sample_rate (str | Unset): Keep runs whose `sampleRank` is below this threshold (0–1).
+            Pages may return fewer than `limit` rows when filtered.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -247,6 +333,23 @@ cursor=cursor,
 offset=offset,
 limit=limit,
 ids=ids,
+experiments=experiments,
+sort=sort,
+order=order,
+review_status=review_status,
+review_verdict=review_verdict,
+has_review=has_review,
+no_review=no_review,
+has_corrections=has_corrections,
+review_note_contains=review_note_contains,
+review_created_after=review_created_after,
+review_created_before=review_created_before,
+review_updated_after=review_updated_after,
+review_updated_before=review_updated_before,
+review_closed_after=review_closed_after,
+review_closed_before=review_closed_before,
+since_last_closed=since_last_closed,
+sample_rate=sample_rate,
 
     )
 
@@ -278,6 +381,23 @@ def sync(
     offset: int | Unset = UNSET,
     limit: int | Unset = UNSET,
     ids: str | Unset = UNSET,
+    experiments: str | Unset = UNSET,
+    sort: str | Unset = UNSET,
+    order: str | Unset = UNSET,
+    review_status: str | Unset = UNSET,
+    review_verdict: str | Unset = UNSET,
+    has_review: str | Unset = UNSET,
+    no_review: str | Unset = UNSET,
+    has_corrections: str | Unset = UNSET,
+    review_note_contains: str | Unset = UNSET,
+    review_created_after: str | Unset = UNSET,
+    review_created_before: str | Unset = UNSET,
+    review_updated_after: str | Unset = UNSET,
+    review_updated_before: str | Unset = UNSET,
+    review_closed_after: str | Unset = UNSET,
+    review_closed_before: str | Unset = UNSET,
+    since_last_closed: str | Unset = UNSET,
+    sample_rate: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunsListResponse | None:
     """ List runs
@@ -304,6 +424,24 @@ def sync(
         offset (int | Unset):
         limit (int | Unset):
         ids (str | Unset):
+        experiments (str | Unset):
+        sort (str | Unset):
+        order (str | Unset):
+        review_status (str | Unset):
+        review_verdict (str | Unset):
+        has_review (str | Unset):
+        no_review (str | Unset):
+        has_corrections (str | Unset):
+        review_note_contains (str | Unset):
+        review_created_after (str | Unset):
+        review_created_before (str | Unset):
+        review_updated_after (str | Unset):
+        review_updated_before (str | Unset):
+        review_closed_after (str | Unset):
+        review_closed_before (str | Unset):
+        since_last_closed (str | Unset):
+        sample_rate (str | Unset): Keep runs whose `sampleRank` is below this threshold (0–1).
+            Pages may return fewer than `limit` rows when filtered.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -335,6 +473,23 @@ cursor=cursor,
 offset=offset,
 limit=limit,
 ids=ids,
+experiments=experiments,
+sort=sort,
+order=order,
+review_status=review_status,
+review_verdict=review_verdict,
+has_review=has_review,
+no_review=no_review,
+has_corrections=has_corrections,
+review_note_contains=review_note_contains,
+review_created_after=review_created_after,
+review_created_before=review_created_before,
+review_updated_after=review_updated_after,
+review_updated_before=review_updated_before,
+review_closed_after=review_closed_after,
+review_closed_before=review_closed_before,
+since_last_closed=since_last_closed,
+sample_rate=sample_rate,
 
     ).parsed
 
@@ -360,6 +515,23 @@ async def asyncio_detailed(
     offset: int | Unset = UNSET,
     limit: int | Unset = UNSET,
     ids: str | Unset = UNSET,
+    experiments: str | Unset = UNSET,
+    sort: str | Unset = UNSET,
+    order: str | Unset = UNSET,
+    review_status: str | Unset = UNSET,
+    review_verdict: str | Unset = UNSET,
+    has_review: str | Unset = UNSET,
+    no_review: str | Unset = UNSET,
+    has_corrections: str | Unset = UNSET,
+    review_note_contains: str | Unset = UNSET,
+    review_created_after: str | Unset = UNSET,
+    review_created_before: str | Unset = UNSET,
+    review_updated_after: str | Unset = UNSET,
+    review_updated_before: str | Unset = UNSET,
+    review_closed_after: str | Unset = UNSET,
+    review_closed_before: str | Unset = UNSET,
+    since_last_closed: str | Unset = UNSET,
+    sample_rate: str | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | RunsListResponse]:
     """ List runs
@@ -386,6 +558,24 @@ async def asyncio_detailed(
         offset (int | Unset):
         limit (int | Unset):
         ids (str | Unset):
+        experiments (str | Unset):
+        sort (str | Unset):
+        order (str | Unset):
+        review_status (str | Unset):
+        review_verdict (str | Unset):
+        has_review (str | Unset):
+        no_review (str | Unset):
+        has_corrections (str | Unset):
+        review_note_contains (str | Unset):
+        review_created_after (str | Unset):
+        review_created_before (str | Unset):
+        review_updated_after (str | Unset):
+        review_updated_before (str | Unset):
+        review_closed_after (str | Unset):
+        review_closed_before (str | Unset):
+        since_last_closed (str | Unset):
+        sample_rate (str | Unset): Keep runs whose `sampleRank` is below this threshold (0–1).
+            Pages may return fewer than `limit` rows when filtered.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -416,6 +606,23 @@ cursor=cursor,
 offset=offset,
 limit=limit,
 ids=ids,
+experiments=experiments,
+sort=sort,
+order=order,
+review_status=review_status,
+review_verdict=review_verdict,
+has_review=has_review,
+no_review=no_review,
+has_corrections=has_corrections,
+review_note_contains=review_note_contains,
+review_created_after=review_created_after,
+review_created_before=review_created_before,
+review_updated_after=review_updated_after,
+review_updated_before=review_updated_before,
+review_closed_after=review_closed_after,
+review_closed_before=review_closed_before,
+since_last_closed=since_last_closed,
+sample_rate=sample_rate,
 
     )
 
@@ -447,6 +654,23 @@ async def asyncio(
     offset: int | Unset = UNSET,
     limit: int | Unset = UNSET,
     ids: str | Unset = UNSET,
+    experiments: str | Unset = UNSET,
+    sort: str | Unset = UNSET,
+    order: str | Unset = UNSET,
+    review_status: str | Unset = UNSET,
+    review_verdict: str | Unset = UNSET,
+    has_review: str | Unset = UNSET,
+    no_review: str | Unset = UNSET,
+    has_corrections: str | Unset = UNSET,
+    review_note_contains: str | Unset = UNSET,
+    review_created_after: str | Unset = UNSET,
+    review_created_before: str | Unset = UNSET,
+    review_updated_after: str | Unset = UNSET,
+    review_updated_before: str | Unset = UNSET,
+    review_closed_after: str | Unset = UNSET,
+    review_closed_before: str | Unset = UNSET,
+    since_last_closed: str | Unset = UNSET,
+    sample_rate: str | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | RunsListResponse | None:
     """ List runs
@@ -473,6 +697,24 @@ async def asyncio(
         offset (int | Unset):
         limit (int | Unset):
         ids (str | Unset):
+        experiments (str | Unset):
+        sort (str | Unset):
+        order (str | Unset):
+        review_status (str | Unset):
+        review_verdict (str | Unset):
+        has_review (str | Unset):
+        no_review (str | Unset):
+        has_corrections (str | Unset):
+        review_note_contains (str | Unset):
+        review_created_after (str | Unset):
+        review_created_before (str | Unset):
+        review_updated_after (str | Unset):
+        review_updated_before (str | Unset):
+        review_closed_after (str | Unset):
+        review_closed_before (str | Unset):
+        since_last_closed (str | Unset):
+        sample_rate (str | Unset): Keep runs whose `sampleRank` is below this threshold (0–1).
+            Pages may return fewer than `limit` rows when filtered.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -504,5 +746,22 @@ cursor=cursor,
 offset=offset,
 limit=limit,
 ids=ids,
+experiments=experiments,
+sort=sort,
+order=order,
+review_status=review_status,
+review_verdict=review_verdict,
+has_review=has_review,
+no_review=no_review,
+has_corrections=has_corrections,
+review_note_contains=review_note_contains,
+review_created_after=review_created_after,
+review_created_before=review_created_before,
+review_updated_after=review_updated_after,
+review_updated_before=review_updated_before,
+review_closed_after=review_closed_after,
+review_closed_before=review_closed_before,
+since_last_closed=since_last_closed,
+sample_rate=sample_rate,
 
     )).parsed

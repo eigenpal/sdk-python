@@ -114,8 +114,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | RunScoresResponse]:
     """ List run evaluator scores
 
-     List automated evaluator results for one run. Use `score` for evaluator output and `rating` on run
-    feedback for human verdicts.
+     List automated evaluator results for one run. Use `score` for evaluator output and run reviews for
+    human verdicts.
 
     Args:
         id (str): Run id.
@@ -148,8 +148,8 @@ def sync(
 ) -> ApiErrorEnvelope | RunScoresResponse | None:
     """ List run evaluator scores
 
-     List automated evaluator results for one run. Use `score` for evaluator output and `rating` on run
-    feedback for human verdicts.
+     List automated evaluator results for one run. Use `score` for evaluator output and run reviews for
+    human verdicts.
 
     Args:
         id (str): Run id.
@@ -177,8 +177,8 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | RunScoresResponse]:
     """ List run evaluator scores
 
-     List automated evaluator results for one run. Use `score` for evaluator output and `rating` on run
-    feedback for human verdicts.
+     List automated evaluator results for one run. Use `score` for evaluator output and run reviews for
+    human verdicts.
 
     Args:
         id (str): Run id.
@@ -211,8 +211,8 @@ async def asyncio(
 ) -> ApiErrorEnvelope | RunScoresResponse | None:
     """ List run evaluator scores
 
-     List automated evaluator results for one run. Use `score` for evaluator output and `rating` on run
-    feedback for human verdicts.
+     List automated evaluator results for one run. Use `score` for evaluator output and run reviews for
+    human verdicts.
 
     Args:
         id (str): Run id.

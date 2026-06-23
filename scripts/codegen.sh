@@ -75,7 +75,7 @@ for path in out_dir.rglob("*.py"):
 
 for relative in [
     "api/evaluation/automations_dataset_export.py",
-    "api/runs/runs_feedback_expected_file_get.py",
+    "api/reviews/runs_reviews_expected_file_get.py",
 ]:
     path = out_dir / relative
     text = path.read_text()
@@ -128,7 +128,7 @@ text = text.replace(
 )
 runs_artifacts.write_text(text)
 
-runs_expected_create = out_dir / "api/runs/runs_feedback_expected_create.py"
+runs_expected_create = out_dir / "api/reviews/runs_reviews_expected_create.py"
 replace(
     runs_expected_create,
     """

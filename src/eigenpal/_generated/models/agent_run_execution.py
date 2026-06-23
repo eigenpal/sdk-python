@@ -16,7 +16,7 @@ if TYPE_CHECKING:
   from ..models.agent_run_execution_expected import AgentRunExecutionExpected
   from ..models.agent_run_execution_files import AgentRunExecutionFiles
   from ..models.run_execution_retry import RunExecutionRetry
-  from ..models.run_feedback import RunFeedback
+  from ..models.run_review import RunReview
 
 
 
@@ -35,7 +35,7 @@ class AgentRunExecution:
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
             files (AgentRunExecutionFiles):
-            feedback (None | RunFeedback | Unset):
+            review (None | RunReview | Unset):
             expected (AgentRunExecutionExpected | Unset): Ground-truth expected output and files.
             comparison (Any | Unset): Expected-vs-actual comparison for eval runs (terminal runs only).
      """
@@ -45,7 +45,7 @@ class AgentRunExecution:
     batch_id: None | str
     retry: RunExecutionRetry
     files: AgentRunExecutionFiles
-    feedback: None | RunFeedback | Unset = UNSET
+    review: None | RunReview | Unset = UNSET
     expected: AgentRunExecutionExpected | Unset = UNSET
     comparison: Any | Unset = UNSET
 
@@ -57,7 +57,7 @@ class AgentRunExecution:
         from ..models.agent_run_execution_expected import AgentRunExecutionExpected
         from ..models.agent_run_execution_files import AgentRunExecutionFiles
         from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_feedback import RunFeedback
+        from ..models.run_review import RunReview
         status = self.status.value
 
         schema_valid: bool | None
@@ -70,13 +70,13 @@ class AgentRunExecution:
 
         files = self.files.to_dict()
 
-        feedback: dict[str, Any] | None | Unset
-        if isinstance(self.feedback, Unset):
-            feedback = UNSET
-        elif isinstance(self.feedback, RunFeedback):
-            feedback = self.feedback.to_dict()
+        review: dict[str, Any] | None | Unset
+        if isinstance(self.review, Unset):
+            review = UNSET
+        elif isinstance(self.review, RunReview):
+            review = self.review.to_dict()
         else:
-            feedback = self.feedback
+            review = self.review
 
         expected: dict[str, Any] | Unset = UNSET
         if not isinstance(self.expected, Unset):
@@ -94,8 +94,8 @@ class AgentRunExecution:
             "retry": retry,
             "files": files,
         })
-        if feedback is not UNSET:
-            field_dict["feedback"] = feedback
+        if review is not UNSET:
+            field_dict["review"] = review
         if expected is not UNSET:
             field_dict["expected"] = expected
         if comparison is not UNSET:
@@ -110,7 +110,7 @@ class AgentRunExecution:
         from ..models.agent_run_execution_expected import AgentRunExecutionExpected
         from ..models.agent_run_execution_files import AgentRunExecutionFiles
         from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_feedback import RunFeedback
+        from ..models.run_review import RunReview
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
 
@@ -143,7 +143,7 @@ class AgentRunExecution:
 
 
 
-        def _parse_feedback(data: object) -> None | RunFeedback | Unset:
+        def _parse_review(data: object) -> None | RunReview | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
@@ -151,16 +151,16 @@ class AgentRunExecution:
             try:
                 if not isinstance(data, dict):
                     raise TypeError()
-                feedback_type_0 = RunFeedback.from_dict(data)
+                review_type_0 = RunReview.from_dict(data)
 
 
 
-                return feedback_type_0
+                return review_type_0
             except (TypeError, ValueError, AttributeError, KeyError):
                 pass
-            return cast(None | RunFeedback | Unset, data)
+            return cast(None | RunReview | Unset, data)
 
-        feedback = _parse_feedback(d.pop("feedback", UNSET))
+        review = _parse_review(d.pop("review", UNSET))
 
 
         _expected = d.pop("expected", UNSET)
@@ -181,7 +181,7 @@ class AgentRunExecution:
             batch_id=batch_id,
             retry=retry,
             files=files,
-            feedback=feedback,
+            review=review,
             expected=expected,
             comparison=comparison,
         )

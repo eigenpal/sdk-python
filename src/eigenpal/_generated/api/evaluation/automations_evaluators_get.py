@@ -115,7 +115,7 @@ def sync_detailed(
     """ Get evaluators
 
      Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human feedback `rating` values.
+    which are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
@@ -149,7 +149,7 @@ def sync(
     """ Get evaluators
 
      Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human feedback `rating` values.
+    which are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
@@ -178,7 +178,7 @@ async def asyncio_detailed(
     """ Get evaluators
 
      Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human feedback `rating` values.
+    which are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
@@ -212,7 +212,7 @@ async def asyncio(
     """ Get evaluators
 
      Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human feedback `rating` values.
+    which are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.

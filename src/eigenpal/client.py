@@ -293,6 +293,7 @@ class AutomationsResource:
         self.examples = AutomationExamplesResource(root)
         self.evaluators = AutomationEvaluatorsResource(root)
         self.experiments = AutomationExperimentsResource(root)
+        self.reviews = AutomationReviewsResource(root)
 
     def list(
         self,
@@ -328,6 +329,18 @@ class AutomationsResource:
         return self._root._request(
             "POST",
             f"/api/v1/automations/{quote(automation_id, safe='')}/sync",
+        )
+
+
+class AutomationReviewsResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def health(self, automation_id: str, **query: Any) -> Any:
+        return self._root._request(
+            "GET",
+            f"/api/v1/automations/{quote(automation_id, safe='')}/reviews/health",
+            params=query or None,
         )
 
 
@@ -521,7 +534,7 @@ class RunsResource:
         self._root = root
         self.artifacts = RunsArtifactsResource(root)
         self.scores = RunsScoresResource(root)
-        self.feedback = RunsFeedbackResource(root)
+        self.reviews = RunsReviewsResource(root)
         self.trace = RunsTraceResource(root)
 
     def list(self, **query: Any) -> Any:
@@ -585,27 +598,34 @@ class RunsArtifactsResource:
         return response.content
 
 
-class RunsFeedbackResource:
+class RunsReviewsResource:
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
 
     def get(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/feedback")
+        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/reviews")
 
     def update(self, run_id: str, body: dict[str, Any]) -> Any:
         return self._root._request(
             "PUT",
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews",
             json=body,
         )
 
+    def close(self, run_id: str, body: Optional[dict[str, Any]] = None) -> Any:
+        return self._root._request(
+            "PATCH",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews",
+            json=body or {},
+        )
+
     def clear(self, run_id: str) -> Any:
-        return self._root._request("DELETE", f"/api/v1/runs/{quote(run_id, safe='')}/feedback")
+        return self._root._request("DELETE", f"/api/v1/runs/{quote(run_id, safe='')}/reviews")
 
     def list_expected(self, run_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected",
         )
 
     def copy_output_to_expected(
@@ -620,7 +640,7 @@ class RunsFeedbackResource:
             body["expectedName"] = expected_name
         return self._root._request(
             "POST",
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected",
             json=body,
         )
 
@@ -634,14 +654,14 @@ class RunsFeedbackResource:
         data = {"name": name} if name is not None else None
         return self._root._request(
             "POST",
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected",
             files={"file": to_upload_tuple(file)},
             data=data,
         )
 
     def download_expected(self, run_id: str, filename: str) -> bytes:
         response = self._root._http.get(
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected/{_quote_path(filename)}"
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}"
         )
         if response.status_code >= 400:
             _check_response(response)
@@ -650,14 +670,14 @@ class RunsFeedbackResource:
     def rename_expected(self, run_id: str, filename: str, new_filename: str) -> Any:
         return self._root._request(
             "PATCH",
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected/{_quote_path(filename)}",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}",
             json={"name": new_filename},
         )
 
     def delete_expected(self, run_id: str, filename: str) -> Any:
         return self._root._request(
             "DELETE",
-            f"/api/v1/runs/{quote(run_id, safe='')}/feedback/expected/{_quote_path(filename)}",
+            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}",
         )
 
 

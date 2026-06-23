@@ -9,13 +9,13 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_expected_artifacts import RunExpectedArtifacts
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    filename: str,
 
 ) -> dict[str, Any]:
 
@@ -26,7 +26,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/runs/{id}/feedback/expected".format(id=quote(str(id), safe=""),),
+        "url": "/api/v1/runs/{id}/reviews/expected/{filename}".format(id=quote(str(id), safe=""),filename=quote(str(filename), safe=""),),
     }
 
 
@@ -34,12 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunExpectedArtifacts | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | bytes | None:
     if response.status_code == 200:
-        response_200 = RunExpectedArtifacts.from_dict(response.json())
-
-
-
+        response_200 = response.content
         return response_200
 
     if response.status_code == 400:
@@ -97,7 +94,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunExpectedArtifacts]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | bytes]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -108,28 +105,33 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunExpectedArtifacts]:
-    """ Get expected output
+) -> Response[ApiErrorEnvelope | bytes]:
+    """ Download corrected artifact file
 
-     Returns the expected JSON output and expected files currently attached to the run feedback record.
+     Downloads one corrected artifact file attached to the run review. Use the `filename` returned by the
+    corrected-output collection endpoint.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunExpectedArtifacts]
+        Response[ApiErrorEnvelope | bytes]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+filename=filename,
 
     )
 
@@ -141,56 +143,66 @@ def sync_detailed(
 
 def sync(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunExpectedArtifacts | None:
-    """ Get expected output
+) -> ApiErrorEnvelope | bytes | None:
+    """ Download corrected artifact file
 
-     Returns the expected JSON output and expected files currently attached to the run feedback record.
+     Downloads one corrected artifact file attached to the run review. Use the `filename` returned by the
+    corrected-output collection endpoint.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunExpectedArtifacts
+        ApiErrorEnvelope | bytes
      """
 
 
     return sync_detailed(
         id=id,
+filename=filename,
 client=client,
 
     ).parsed
 
 async def asyncio_detailed(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunExpectedArtifacts]:
-    """ Get expected output
+) -> Response[ApiErrorEnvelope | bytes]:
+    """ Download corrected artifact file
 
-     Returns the expected JSON output and expected files currently attached to the run feedback record.
+     Downloads one corrected artifact file attached to the run review. Use the `filename` returned by the
+    corrected-output collection endpoint.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunExpectedArtifacts]
+        Response[ApiErrorEnvelope | bytes]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+filename=filename,
 
     )
 
@@ -202,28 +214,33 @@ async def asyncio_detailed(
 
 async def asyncio(
     id: str,
+    filename: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunExpectedArtifacts | None:
-    """ Get expected output
+) -> ApiErrorEnvelope | bytes | None:
+    """ Download corrected artifact file
 
-     Returns the expected JSON output and expected files currently attached to the run feedback record.
+     Downloads one corrected artifact file attached to the run review. Use the `filename` returned by the
+    corrected-output collection endpoint.
 
     Args:
         id (str): Run id.
+        filename (str): Corrected artifact file name or slash-delimited path, as returned by `GET
+            /runs/{id}/reviews/expected`.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunExpectedArtifacts
+        ApiErrorEnvelope | bytes
      """
 
 
     return (await asyncio_detailed(
         id=id,
+filename=filename,
 client=client,
 
     )).parsed

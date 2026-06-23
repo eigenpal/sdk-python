@@ -172,8 +172,8 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     respx.get("http://localhost:3000/api/v1/runs/run_123/artifacts").mock(
         return_value=httpx.Response(200, json={"artifacts": []})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/feedback").mock(
-        return_value=httpx.Response(200, json={"feedback": None})
+    respx.get("http://localhost:3000/api/v1/runs/run_123/reviews").mock(
+        return_value=httpx.Response(200, json={"review": None})
     )
     respx.get("http://localhost:3000/api/v1/runs/run_123/trace").mock(
         return_value=httpx.Response(200, json={"events": []})
@@ -205,7 +205,7 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.runs.steps("run_123")
     client.runs.events("run_123")
     client.runs.artifacts.list("run_123")
-    client.runs.feedback.get("run_123")
+    client.runs.reviews.get("run_123")
     assert client.runs.trace.get("run_123")["events"] == []
     client.files.upload({"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"})
     client.files.get("file_123")

@@ -14,16 +14,15 @@ from ..types import UNSET, Unset
 
 
 
-T = TypeVar("T", bound="RunExpectedFileMutationResponse")
+T = TypeVar("T", bound="RunReviewExpectedFileUpdateResponse")
 
 
 
 @_attrs_define
-class RunExpectedFileMutationResponse:
-    """ A file attached to a run input, output, or expected artifact set.
-
+class RunReviewExpectedFileUpdateResponse:
+    """
         Attributes:
-            name (str): File name or slash-delimited artifact path.
+            name (str):
      """
 
     name: str
@@ -51,8 +50,8 @@ class RunExpectedFileMutationResponse:
         d = dict(src_dict)
         name = d.pop("name")
 
-        run_expected_file_mutation_response = cls(
+        run_review_expected_file_update_response = cls(
             name=name,
         )
 
-        return run_expected_file_mutation_response
+        return run_review_expected_file_update_response

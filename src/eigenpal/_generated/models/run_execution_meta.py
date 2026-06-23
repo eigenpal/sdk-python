@@ -9,10 +9,12 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from ..models.execution_status import ExecutionStatus
+from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
   from ..models.run_execution_retry import RunExecutionRetry
+  from ..models.run_review_summary import RunReviewSummary
 
 
 
@@ -30,12 +32,14 @@ class RunExecutionMeta:
             schema_valid (bool | None): Whether the completed output matched the workflow or agent output schema.
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
+            review (None | RunReviewSummary | Unset): Lightweight review state for run list rows.
      """
 
     status: ExecutionStatus
     schema_valid: bool | None
     batch_id: None | str
     retry: RunExecutionRetry
+    review: None | RunReviewSummary | Unset = UNSET
 
 
 
@@ -43,6 +47,7 @@ class RunExecutionMeta:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_review_summary import RunReviewSummary
         status = self.status.value
 
         schema_valid: bool | None
@@ -53,6 +58,14 @@ class RunExecutionMeta:
 
         retry = self.retry.to_dict()
 
+        review: dict[str, Any] | None | Unset
+        if isinstance(self.review, Unset):
+            review = UNSET
+        elif isinstance(self.review, RunReviewSummary):
+            review = self.review.to_dict()
+        else:
+            review = self.review
+
 
         field_dict: dict[str, Any] = {}
 
@@ -62,6 +75,8 @@ class RunExecutionMeta:
             "batchId": batch_id,
             "retry": retry,
         })
+        if review is not UNSET:
+            field_dict["review"] = review
 
         return field_dict
 
@@ -70,6 +85,7 @@ class RunExecutionMeta:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_review_summary import RunReviewSummary
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
 
@@ -97,11 +113,32 @@ class RunExecutionMeta:
 
 
 
+        def _parse_review(data: object) -> None | RunReviewSummary | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                review_type_0 = RunReviewSummary.from_dict(data)
+
+
+
+                return review_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunReviewSummary | Unset, data)
+
+        review = _parse_review(d.pop("review", UNSET))
+
+
         run_execution_meta = cls(
             status=status,
             schema_valid=schema_valid,
             batch_id=batch_id,
             retry=retry,
+            review=review,
         )
 
         return run_execution_meta

@@ -8,29 +8,25 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from ..types import UNSET, Unset
 
 
 
 
 
 
-T = TypeVar("T", bound="RunExpectedFileCopyRequest")
+T = TypeVar("T", bound="RunReviewExpectedFileUpdateRequest")
 
 
 
 @_attrs_define
-class RunExpectedFileCopyRequest:
-    """ JSON request body for copying one run output file into the expected artifact set.
+class RunReviewExpectedFileUpdateRequest:
+    """ Rename one corrected file.
 
         Attributes:
-            output_file_name (str): Name of an existing run output file to copy into expected artifacts.
-            expected_name (str | Unset): Optional name for the copied expected file. Defaults to the original output file
-                name.
+            name (str): New corrected file name.
      """
 
-    output_file_name: str
-    expected_name: str | Unset = UNSET
+    name: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -38,18 +34,14 @@ class RunExpectedFileCopyRequest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        output_file_name = self.output_file_name
-
-        expected_name = self.expected_name
+        name = self.name
 
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({
-            "outputFileName": output_file_name,
+            "name": name,
         })
-        if expected_name is not UNSET:
-            field_dict["expectedName"] = expected_name
 
         return field_dict
 
@@ -58,18 +50,15 @@ class RunExpectedFileCopyRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        output_file_name = d.pop("outputFileName")
+        name = d.pop("name")
 
-        expected_name = d.pop("expectedName", UNSET)
-
-        run_expected_file_copy_request = cls(
-            output_file_name=output_file_name,
-            expected_name=expected_name,
+        run_review_expected_file_update_request = cls(
+            name=name,
         )
 
 
-        run_expected_file_copy_request.additional_properties = d
-        return run_expected_file_copy_request
+        run_review_expected_file_update_request.additional_properties = d
+        return run_review_expected_file_update_request
 
     @property
     def additional_keys(self) -> list[str]:

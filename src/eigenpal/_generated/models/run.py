@@ -41,6 +41,8 @@ class Run:
             id (str):
             type_ (RunType):
             finished (bool): True when the run has reached a terminal status.
+            sample_rank (float): Deterministic pseudo-random rank in [0, 1) for this run within the tenant. Use with a
+                sample rate threshold to review a stable subset.
             timing (RunTiming):
             source (RunSource):
             trigger (RunTrigger):
@@ -59,6 +61,7 @@ class Run:
     id: str
     type_: RunType
     finished: bool
+    sample_rank: float
     timing: RunTiming
     source: RunSource
     trigger: RunTrigger
@@ -93,6 +96,8 @@ class Run:
         type_ = self.type_.value
 
         finished = self.finished
+
+        sample_rank = self.sample_rank
 
         timing = self.timing.to_dict()
 
@@ -159,6 +164,7 @@ class Run:
             "id": id,
             "type": type_,
             "finished": finished,
+            "sampleRank": sample_rank,
             "timing": timing,
             "source": source,
             "trigger": trigger,
@@ -206,6 +212,8 @@ class Run:
 
 
         finished = d.pop("finished")
+
+        sample_rank = d.pop("sampleRank")
 
         timing = RunTiming.from_dict(d.pop("timing"))
 
@@ -350,6 +358,7 @@ class Run:
             id=id,
             type_=type_,
             finished=finished,
+            sample_rank=sample_rank,
             timing=timing,
             source=source,
             trigger=trigger,

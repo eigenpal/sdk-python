@@ -9,15 +9,19 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.promote_run_request import PromoteRunRequest
+from ...models.promote_run_response import PromoteRunResponse
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
-    filename: str,
+    *,
+    body: PromoteRunRequest,
 
 ) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
 
 
 
@@ -25,19 +29,27 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "delete",
-        "url": "/api/v1/runs/{id}/feedback/expected/{filename}".format(id=quote(str(id), safe=""),filename=quote(str(filename), safe=""),),
+        "method": "post",
+        "url": "/api/v1/runs/{id}/promote".format(id=quote(str(id), safe=""),),
     }
 
+    _kwargs["json"] = body.to_dict()
 
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | None:
-    if response.status_code == 204:
-        response_204 = cast(Any, None)
-        return response_204
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | PromoteRunResponse | None:
+    if response.status_code == 200:
+        response_200 = PromoteRunResponse.from_dict(response.json())
+
+
+
+        return response_200
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -94,7 +106,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -105,33 +117,33 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
-    filename: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PromoteRunRequest,
 
-) -> Response[Any | ApiErrorEnvelope]:
-    """ Delete expected artifact file
+) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
+    """ Promote run to example
 
-     Deletes one expected artifact file attached to the run feedback record. The feedback text and
-    expected JSON output are left unchanged.
+     Turn a reviewed run into a dataset example. The new example uses the run input and any corrected
+    output/files stored through the review endpoints.
 
     Args:
         id (str): Run id.
-        filename (str): Expected artifact file name or slash-delimited path, as returned by `GET
-            /runs/{id}/feedback/expected`.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and review corrections.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | PromoteRunResponse]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-filename=filename,
+body=body,
 
     )
 
@@ -143,66 +155,66 @@ filename=filename,
 
 def sync(
     id: str,
-    filename: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PromoteRunRequest,
 
-) -> Any | ApiErrorEnvelope | None:
-    """ Delete expected artifact file
+) -> ApiErrorEnvelope | PromoteRunResponse | None:
+    """ Promote run to example
 
-     Deletes one expected artifact file attached to the run feedback record. The feedback text and
-    expected JSON output are left unchanged.
+     Turn a reviewed run into a dataset example. The new example uses the run input and any corrected
+    output/files stored through the review endpoints.
 
     Args:
         id (str): Run id.
-        filename (str): Expected artifact file name or slash-delimited path, as returned by `GET
-            /runs/{id}/feedback/expected`.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and review corrections.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Any | ApiErrorEnvelope
+        ApiErrorEnvelope | PromoteRunResponse
      """
 
 
     return sync_detailed(
         id=id,
-filename=filename,
 client=client,
+body=body,
 
     ).parsed
 
 async def asyncio_detailed(
     id: str,
-    filename: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PromoteRunRequest,
 
-) -> Response[Any | ApiErrorEnvelope]:
-    """ Delete expected artifact file
+) -> Response[ApiErrorEnvelope | PromoteRunResponse]:
+    """ Promote run to example
 
-     Deletes one expected artifact file attached to the run feedback record. The feedback text and
-    expected JSON output are left unchanged.
+     Turn a reviewed run into a dataset example. The new example uses the run input and any corrected
+    output/files stored through the review endpoints.
 
     Args:
         id (str): Run id.
-        filename (str): Expected artifact file name or slash-delimited path, as returned by `GET
-            /runs/{id}/feedback/expected`.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and review corrections.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | PromoteRunResponse]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
-filename=filename,
+body=body,
 
     )
 
@@ -214,33 +226,33 @@ filename=filename,
 
 async def asyncio(
     id: str,
-    filename: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PromoteRunRequest,
 
-) -> Any | ApiErrorEnvelope | None:
-    """ Delete expected artifact file
+) -> ApiErrorEnvelope | PromoteRunResponse | None:
+    """ Promote run to example
 
-     Deletes one expected artifact file attached to the run feedback record. The feedback text and
-    expected JSON output are left unchanged.
+     Turn a reviewed run into a dataset example. The new example uses the run input and any corrected
+    output/files stored through the review endpoints.
 
     Args:
         id (str): Run id.
-        filename (str): Expected artifact file name or slash-delimited path, as returned by `GET
-            /runs/{id}/feedback/expected`.
+        body (PromoteRunRequest): Create or update a dataset example from the run input, actual
+            output, and review corrections.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Any | ApiErrorEnvelope
+        ApiErrorEnvelope | PromoteRunResponse
      """
 
 
     return (await asyncio_detailed(
         id=id,
-filename=filename,
 client=client,
+body=body,
 
     )).parsed
