@@ -103,7 +103,6 @@ from .run_list_item_type import RunListItemType
 from .run_output_type_0 import RunOutputType0
 from .run_review import RunReview
 from .run_review_correction import RunReviewCorrection
-from .run_review_correction_file_verdict_type_0 import RunReviewCorrectionFileVerdictType0
 from .run_review_correction_kind import RunReviewCorrectionKind
 from .run_review_detail import RunReviewDetail
 from .run_review_expected_artifacts import RunReviewExpectedArtifacts
@@ -122,7 +121,6 @@ from .run_review_health_rolling_point import RunReviewHealthRollingPoint
 from .run_review_health_summary import RunReviewHealthSummary
 from .run_review_request import RunReviewRequest
 from .run_review_request_corrections_item import RunReviewRequestCorrectionsItem
-from .run_review_request_corrections_item_file_verdict_type_0 import RunReviewRequestCorrectionsItemFileVerdictType0
 from .run_review_request_corrections_item_kind import RunReviewRequestCorrectionsItemKind
 from .run_review_request_status import RunReviewRequestStatus
 from .run_review_request_verdict_type_0 import RunReviewRequestVerdictType0
@@ -264,7 +262,6 @@ __all__ = (
     "RunOutputType0",
     "RunReview",
     "RunReviewCorrection",
-    "RunReviewCorrectionFileVerdictType0",
     "RunReviewCorrectionKind",
     "RunReviewDetail",
     "RunReviewExpectedArtifacts",
@@ -283,7 +280,6 @@ __all__ = (
     "RunReviewHealthSummary",
     "RunReviewRequest",
     "RunReviewRequestCorrectionsItem",
-    "RunReviewRequestCorrectionsItemFileVerdictType0",
     "RunReviewRequestCorrectionsItemKind",
     "RunReviewRequestStatus",
     "RunReviewRequestVerdictType0",

@@ -8,7 +8,6 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from ..models.run_review_correction_file_verdict_type_0 import RunReviewCorrectionFileVerdictType0
 from ..models.run_review_correction_kind import RunReviewCorrectionKind
 from ..types import UNSET, Unset
 from typing import cast
@@ -35,7 +34,6 @@ class RunReviewCorrection:
             updated_at (str):
             original_value (Any | None | Unset):
             corrected_value (Any | None | Unset):
-            file_verdict (None | RunReviewCorrectionFileVerdictType0 | Unset):
             corrected_artifact_path (None | str | Unset):
      """
 
@@ -48,7 +46,6 @@ class RunReviewCorrection:
     updated_at: str
     original_value: Any | None | Unset = UNSET
     corrected_value: Any | None | Unset = UNSET
-    file_verdict: None | RunReviewCorrectionFileVerdictType0 | Unset = UNSET
     corrected_artifact_path: None | str | Unset = UNSET
 
 
@@ -83,14 +80,6 @@ class RunReviewCorrection:
         else:
             corrected_value = self.corrected_value
 
-        file_verdict: None | str | Unset
-        if isinstance(self.file_verdict, Unset):
-            file_verdict = UNSET
-        elif isinstance(self.file_verdict, RunReviewCorrectionFileVerdictType0):
-            file_verdict = self.file_verdict.value
-        else:
-            file_verdict = self.file_verdict
-
         corrected_artifact_path: None | str | Unset
         if isinstance(self.corrected_artifact_path, Unset):
             corrected_artifact_path = UNSET
@@ -113,8 +102,6 @@ class RunReviewCorrection:
             field_dict["originalValue"] = original_value
         if corrected_value is not UNSET:
             field_dict["correctedValue"] = corrected_value
-        if file_verdict is not UNSET:
-            field_dict["fileVerdict"] = file_verdict
         if corrected_artifact_path is not UNSET:
             field_dict["correctedArtifactPath"] = corrected_artifact_path
 
@@ -168,26 +155,6 @@ class RunReviewCorrection:
         corrected_value = _parse_corrected_value(d.pop("correctedValue", UNSET))
 
 
-        def _parse_file_verdict(data: object) -> None | RunReviewCorrectionFileVerdictType0 | Unset:
-            if data is None:
-                return data
-            if isinstance(data, Unset):
-                return data
-            try:
-                if not isinstance(data, str):
-                    raise TypeError()
-                file_verdict_type_0 = RunReviewCorrectionFileVerdictType0(data)
-
-
-
-                return file_verdict_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            return cast(None | RunReviewCorrectionFileVerdictType0 | Unset, data)
-
-        file_verdict = _parse_file_verdict(d.pop("fileVerdict", UNSET))
-
-
         def _parse_corrected_artifact_path(data: object) -> None | str | Unset:
             if data is None:
                 return data
@@ -208,7 +175,6 @@ class RunReviewCorrection:
             updated_at=updated_at,
             original_value=original_value,
             corrected_value=corrected_value,
-            file_verdict=file_verdict,
             corrected_artifact_path=corrected_artifact_path,
         )
 
