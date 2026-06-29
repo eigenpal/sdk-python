@@ -33,8 +33,8 @@ class RunStartBody:
         Attributes:
             target (str): Automation target without a version suffix, e.g. workflows.invoice or agents.support.
             input_ (RunStartBodyInput | Unset): Scalar and structured automation arguments.
-            files (RunStartBodyFiles | Unset): File inputs as references (`{ fileId, filename?, mimeType? }`). Upload bytes
-                via multipart `files.<fieldName>` parts instead.
+            files (RunStartBodyFiles | Unset): File inputs as ingress references (`{ "$fileId": "file_..." }` or `{
+                "$inline": { filename, mimeType, base64 } }`). Upload bytes via multipart `files.<fieldName>` parts instead.
             overrides (RunStartBodyOverrides | Unset): Per-step output overrides. Workflow runs only.
             metadata (RunStartBodyMetadata | Unset): Caller-supplied run metadata.
      """

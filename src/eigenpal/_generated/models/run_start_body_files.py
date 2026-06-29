@@ -11,8 +11,10 @@ from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
-  from ..models.run_start_body_files_additional_property_type_0 import RunStartBodyFilesAdditionalPropertyType0
-  from ..models.run_start_body_files_additional_property_type_1_item import RunStartBodyFilesAdditionalPropertyType1Item
+  from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0
+  from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1
+  from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0
+  from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1
 
 
 
@@ -24,30 +26,39 @@ T = TypeVar("T", bound="RunStartBodyFiles")
 
 @_attrs_define
 class RunStartBodyFiles:
-    """ File inputs as references (`{ fileId, filename?, mimeType? }`). Upload bytes via multipart `files.<fieldName>` parts
-    instead.
+    """ File inputs as ingress references (`{ "$fileId": "file_..." }` or `{ "$inline": { filename, mimeType, base64 } }`).
+    Upload bytes via multipart `files.<fieldName>` parts instead.
 
      """
 
-    additional_properties: dict[str, list[RunStartBodyFilesAdditionalPropertyType1Item] | RunStartBodyFilesAdditionalPropertyType0] = _attrs_field(init=False, factory=dict)
+    additional_properties: dict[str, list[RunStartBodyFilesAdditionalPropertyType1ItemType0 | RunStartBodyFilesAdditionalPropertyType1ItemType1] | RunStartBodyFilesAdditionalPropertyType0Type0 | RunStartBodyFilesAdditionalPropertyType0Type1] = _attrs_field(init=False, factory=dict)
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_start_body_files_additional_property_type_0 import RunStartBodyFilesAdditionalPropertyType0
-        from ..models.run_start_body_files_additional_property_type_1_item import RunStartBodyFilesAdditionalPropertyType1Item
+        from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0
+        from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1
+        from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0
+        from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
 
-            if isinstance(prop, RunStartBodyFilesAdditionalPropertyType0):
+            if isinstance(prop, RunStartBodyFilesAdditionalPropertyType0Type0):
+                field_dict[prop_name] = prop.to_dict()
+            elif isinstance(prop, RunStartBodyFilesAdditionalPropertyType0Type1):
                 field_dict[prop_name] = prop.to_dict()
             else:
                 field_dict[prop_name] = []
                 for additional_property_type_1_item_data in prop:
-                    additional_property_type_1_item = additional_property_type_1_item_data.to_dict()
+                    additional_property_type_1_item: dict[str, Any]
+                    if isinstance(additional_property_type_1_item_data, RunStartBodyFilesAdditionalPropertyType1ItemType0):
+                        additional_property_type_1_item = additional_property_type_1_item_data.to_dict()
+                    else:
+                        additional_property_type_1_item = additional_property_type_1_item_data.to_dict()
+
                     field_dict[prop_name].append(additional_property_type_1_item)
 
 
@@ -60,8 +71,10 @@ class RunStartBodyFiles:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_start_body_files_additional_property_type_0 import RunStartBodyFilesAdditionalPropertyType0
-        from ..models.run_start_body_files_additional_property_type_1_item import RunStartBodyFilesAdditionalPropertyType1Item
+        from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0
+        from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1
+        from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0
+        from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1
         d = dict(src_dict)
         run_start_body_files = cls(
         )
@@ -69,15 +82,25 @@ class RunStartBodyFiles:
 
         additional_properties = {}
         for prop_name, prop_dict in d.items():
-            def _parse_additional_property(data: object) -> list[RunStartBodyFilesAdditionalPropertyType1Item] | RunStartBodyFilesAdditionalPropertyType0:
+            def _parse_additional_property(data: object) -> list[RunStartBodyFilesAdditionalPropertyType1ItemType0 | RunStartBodyFilesAdditionalPropertyType1ItemType1] | RunStartBodyFilesAdditionalPropertyType0Type0 | RunStartBodyFilesAdditionalPropertyType0Type1:
                 try:
                     if not isinstance(data, dict):
                         raise TypeError()
-                    additional_property_type_0 = RunStartBodyFilesAdditionalPropertyType0.from_dict(data)
+                    additional_property_type_0_type_0 = RunStartBodyFilesAdditionalPropertyType0Type0.from_dict(data)
 
 
 
-                    return additional_property_type_0
+                    return additional_property_type_0_type_0
+                except (TypeError, ValueError, AttributeError, KeyError):
+                    pass
+                try:
+                    if not isinstance(data, dict):
+                        raise TypeError()
+                    additional_property_type_0_type_1 = RunStartBodyFilesAdditionalPropertyType0Type1.from_dict(data)
+
+
+
+                    return additional_property_type_0_type_1
                 except (TypeError, ValueError, AttributeError, KeyError):
                     pass
                 if not isinstance(data, list):
@@ -85,9 +108,26 @@ class RunStartBodyFiles:
                 additional_property_type_1 = []
                 _additional_property_type_1 = data
                 for additional_property_type_1_item_data in (_additional_property_type_1):
-                    additional_property_type_1_item = RunStartBodyFilesAdditionalPropertyType1Item.from_dict(additional_property_type_1_item_data)
+                    def _parse_additional_property_type_1_item(data: object) -> RunStartBodyFilesAdditionalPropertyType1ItemType0 | RunStartBodyFilesAdditionalPropertyType1ItemType1:
+                        try:
+                            if not isinstance(data, dict):
+                                raise TypeError()
+                            additional_property_type_1_item_type_0 = RunStartBodyFilesAdditionalPropertyType1ItemType0.from_dict(data)
 
 
+
+                            return additional_property_type_1_item_type_0
+                        except (TypeError, ValueError, AttributeError, KeyError):
+                            pass
+                        if not isinstance(data, dict):
+                            raise TypeError()
+                        additional_property_type_1_item_type_1 = RunStartBodyFilesAdditionalPropertyType1ItemType1.from_dict(data)
+
+
+
+                        return additional_property_type_1_item_type_1
+
+                    additional_property_type_1_item = _parse_additional_property_type_1_item(additional_property_type_1_item_data)
 
                     additional_property_type_1.append(additional_property_type_1_item)
 
@@ -104,10 +144,10 @@ class RunStartBodyFiles:
     def additional_keys(self) -> list[str]:
         return list(self.additional_properties.keys())
 
-    def __getitem__(self, key: str) -> list[RunStartBodyFilesAdditionalPropertyType1Item] | RunStartBodyFilesAdditionalPropertyType0:
+    def __getitem__(self, key: str) -> list[RunStartBodyFilesAdditionalPropertyType1ItemType0 | RunStartBodyFilesAdditionalPropertyType1ItemType1] | RunStartBodyFilesAdditionalPropertyType0Type0 | RunStartBodyFilesAdditionalPropertyType0Type1:
         return self.additional_properties[key]
 
-    def __setitem__(self, key: str, value: list[RunStartBodyFilesAdditionalPropertyType1Item] | RunStartBodyFilesAdditionalPropertyType0) -> None:
+    def __setitem__(self, key: str, value: list[RunStartBodyFilesAdditionalPropertyType1ItemType0 | RunStartBodyFilesAdditionalPropertyType1ItemType1] | RunStartBodyFilesAdditionalPropertyType0Type0 | RunStartBodyFilesAdditionalPropertyType0Type1) -> None:
         self.additional_properties[key] = value
 
     def __delitem__(self, key: str) -> None:

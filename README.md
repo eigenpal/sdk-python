@@ -78,14 +78,14 @@ uploaded = client.files.upload(Path("contract.pdf"))
 
 started = client.run(
     "workflows.extract-invoice",
-    input={"contract_document": {"fileId": uploaded.id}},
+    input={"contract_document": {"$fileId": uploaded.id}},
 )
 
 artifacts = client.runs.artifacts.list(started.id)
 content = client.runs.artifacts.download(started.id, artifacts.artifacts[0].path)
 ```
 
-You can also pass a `Path`, file handle, or `{"content": bytes, "filename": str, "mime_type": str}` directly to `client.run`; the SDK sends multipart form data automatically.
+You can also pass a `Path`, file handle, or `{"content": bytes, "filename": str, "mime_type": str}` directly to `client.run`; the SDK sends multipart form data automatically. Durable run inputs and dataset examples store scoped `{"$file": "input/..."}` artifact refs after ingestion.
 
 ## Errors
 

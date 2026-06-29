@@ -134,8 +134,12 @@ from .run_source import RunSource
 from .run_source_git import RunSourceGit
 from .run_start_body import RunStartBody
 from .run_start_body_files import RunStartBodyFiles
-from .run_start_body_files_additional_property_type_0 import RunStartBodyFilesAdditionalPropertyType0
-from .run_start_body_files_additional_property_type_1_item import RunStartBodyFilesAdditionalPropertyType1Item
+from .run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0
+from .run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1
+from .run_start_body_files_additional_property_type_0_type_1_inline import RunStartBodyFilesAdditionalPropertyType0Type1Inline
+from .run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0
+from .run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1
+from .run_start_body_files_additional_property_type_1_item_type_1_inline import RunStartBodyFilesAdditionalPropertyType1ItemType1Inline
 from .run_start_body_input import RunStartBodyInput
 from .run_start_body_metadata import RunStartBodyMetadata
 from .run_start_body_overrides import RunStartBodyOverrides
@@ -296,8 +300,12 @@ __all__ = (
     "RunSourceGit",
     "RunStartBody",
     "RunStartBodyFiles",
-    "RunStartBodyFilesAdditionalPropertyType0",
-    "RunStartBodyFilesAdditionalPropertyType1Item",
+    "RunStartBodyFilesAdditionalPropertyType0Type0",
+    "RunStartBodyFilesAdditionalPropertyType0Type1",
+    "RunStartBodyFilesAdditionalPropertyType0Type1Inline",
+    "RunStartBodyFilesAdditionalPropertyType1ItemType0",
+    "RunStartBodyFilesAdditionalPropertyType1ItemType1",
+    "RunStartBodyFilesAdditionalPropertyType1ItemType1Inline",
     "RunStartBodyInput",
     "RunStartBodyMetadata",
     "RunStartBodyOverrides",
