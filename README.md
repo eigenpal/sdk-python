@@ -12,7 +12,7 @@ Trigger and inspect Eigenpal automations from Python.
 pip install eigenpal
 ```
 
-Requires Python 3.9+. Get an API key at **studio.eigenpal.com -> Settings -> API Keys**.
+Requires Python 3.10+. Get an API key at **studio.eigenpal.com -> Settings -> API Keys**.
 
 ## Quick Start
 

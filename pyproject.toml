@@ -1,9 +1,9 @@
 [project]
 name = "eigenpal"
-version = "0.10.7"
+version = "0.10.8"
 description = "Official Python SDK for the EigenPal API"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [{ name = "EigenPal", email = "support@eigenpal.com" }]
 maintainers = [{ name = "EigenPal", email = "support@eigenpal.com" }]
@@ -28,7 +28,6 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
