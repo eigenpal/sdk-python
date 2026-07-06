@@ -10,6 +10,8 @@ from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.automations_experiments_export_format import AutomationsExperimentsExportFormat
+from ...models.automations_experiments_export_include_trace import AutomationsExperimentsExportIncludeTrace
+from ...types import UNSET, Unset
 from typing import cast
 
 
@@ -19,6 +21,7 @@ def _get_kwargs(
     experiment_id: str,
     *,
     format_: AutomationsExperimentsExportFormat,
+    include_trace: AutomationsExperimentsExportIncludeTrace | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
@@ -29,6 +32,12 @@ def _get_kwargs(
 
     json_format_ = format_.value
     params["format"] = json_format_
+
+    json_include_trace: str | Unset = UNSET
+    if not isinstance(include_trace, Unset):
+        json_include_trace = include_trace.value
+
+    params["includeTrace"] = json_include_trace
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -120,6 +129,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     format_: AutomationsExperimentsExportFormat,
+    include_trace: AutomationsExperimentsExportIncludeTrace | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | str]:
     """ Export experiment eval results
@@ -130,6 +140,7 @@ def sync_detailed(
         id (str):
         experiment_id (str):
         format_ (AutomationsExperimentsExportFormat):
+        include_trace (AutomationsExperimentsExportIncludeTrace | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,6 +155,7 @@ def sync_detailed(
         id=id,
 experiment_id=experiment_id,
 format_=format_,
+include_trace=include_trace,
 
     )
 
@@ -159,6 +171,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     format_: AutomationsExperimentsExportFormat,
+    include_trace: AutomationsExperimentsExportIncludeTrace | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | str | None:
     """ Export experiment eval results
@@ -169,6 +182,7 @@ def sync(
         id (str):
         experiment_id (str):
         format_ (AutomationsExperimentsExportFormat):
+        include_trace (AutomationsExperimentsExportIncludeTrace | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -184,6 +198,7 @@ def sync(
 experiment_id=experiment_id,
 client=client,
 format_=format_,
+include_trace=include_trace,
 
     ).parsed
 
@@ -193,6 +208,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     format_: AutomationsExperimentsExportFormat,
+    include_trace: AutomationsExperimentsExportIncludeTrace | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | str]:
     """ Export experiment eval results
@@ -203,6 +219,7 @@ async def asyncio_detailed(
         id (str):
         experiment_id (str):
         format_ (AutomationsExperimentsExportFormat):
+        include_trace (AutomationsExperimentsExportIncludeTrace | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -217,6 +234,7 @@ async def asyncio_detailed(
         id=id,
 experiment_id=experiment_id,
 format_=format_,
+include_trace=include_trace,
 
     )
 
@@ -232,6 +250,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     format_: AutomationsExperimentsExportFormat,
+    include_trace: AutomationsExperimentsExportIncludeTrace | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | str | None:
     """ Export experiment eval results
@@ -242,6 +261,7 @@ async def asyncio(
         id (str):
         experiment_id (str):
         format_ (AutomationsExperimentsExportFormat):
+        include_trace (AutomationsExperimentsExportIncludeTrace | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -257,5 +277,6 @@ async def asyncio(
 experiment_id=experiment_id,
 client=client,
 format_=format_,
+include_trace=include_trace,
 
     )).parsed

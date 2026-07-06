@@ -19,6 +19,7 @@ from .automation_type import AutomationType
 from .automation_version import AutomationVersion
 from .automations_experiments_export_all_format import AutomationsExperimentsExportAllFormat
 from .automations_experiments_export_format import AutomationsExperimentsExportFormat
+from .automations_experiments_export_include_trace import AutomationsExperimentsExportIncludeTrace
 from .automations_experiments_list_response_200 import AutomationsExperimentsListResponse200
 from .automations_list_type import AutomationsListType
 from .automations_reviews_health_bucket import AutomationsReviewsHealthBucket
@@ -177,6 +178,7 @@ __all__ = (
     "AutomationDetailOutputSchemaType0",
     "AutomationsExperimentsExportAllFormat",
     "AutomationsExperimentsExportFormat",
+    "AutomationsExperimentsExportIncludeTrace",
     "AutomationsExperimentsListResponse200",
     "AutomationsListType",
     "AutomationsReviewsHealthBucket",
