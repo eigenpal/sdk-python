@@ -75,7 +75,7 @@ wheels = [
 
 [[package]]
 name = "eigenpal"
-version = "0.10.22"
+version = "0.10.23"
 source = { editable = "." }
 dependencies = [
     { name = "attrs" },
