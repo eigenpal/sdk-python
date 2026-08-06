@@ -26,7 +26,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/runs/{id}/artifacts/{path}".format(id=quote(str(id), safe=""),path=quote(str(path), safe=""),),
+        "url": "/v1/runs/{id}/artifacts/{path}".format(id=quote(str(id), safe=""),path=quote(str(path), safe=""),),
     }
 
 
@@ -38,6 +38,10 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
     if response.status_code == 200:
         response_200 = cast(Any, None)
         return response_200
+
+    if response.status_code == 302:
+        response_302 = cast(Any, None)
+        return response_302
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -112,7 +116,8 @@ def sync_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download run artifact
 
-     Download one artifact by path.
+     Download one artifact by path. Cloud deployments may redirect to a short-lived storage URL for large
+    files.
 
     Args:
         id (str):
@@ -148,7 +153,8 @@ def sync(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download run artifact
 
-     Download one artifact by path.
+     Download one artifact by path. Cloud deployments may redirect to a short-lived storage URL for large
+    files.
 
     Args:
         id (str):
@@ -179,7 +185,8 @@ async def asyncio_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download run artifact
 
-     Download one artifact by path.
+     Download one artifact by path. Cloud deployments may redirect to a short-lived storage URL for large
+    files.
 
     Args:
         id (str):
@@ -215,7 +222,8 @@ async def asyncio(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download run artifact
 
-     Download one artifact by path.
+     Download one artifact by path. Cloud deployments may redirect to a short-lived storage URL for large
+    files.
 
     Args:
         id (str):

@@ -9,16 +9,16 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.dataset_example import DatasetExample
-from ...models.dataset_example_mutation import DatasetExampleMutation
+from ...models.create_file_upload_session_request import CreateFileUploadSessionRequest
+from ...models.multipart_file_upload_fallback import MultipartFileUploadFallback
+from ...models.presigned_file_upload_session import PresignedFileUploadSession
 from typing import cast
 
 
 
 def _get_kwargs(
-    id: str,
     *,
-    body: DatasetExampleMutation,
+    body: CreateFileUploadSessionRequest,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -30,7 +30,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/v1/automations/{id}/examples".format(id=quote(str(id), safe=""),),
+        "url": "/v1/files/uploads",
     }
 
     _kwargs["json"] = body.to_dict()
@@ -43,13 +43,30 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | DatasetExample | None:
-    if response.status_code == 201:
-        response_201 = DatasetExample.from_dict(response.json())
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession | None:
+    if response.status_code == 200:
+        def _parse_response_200(data: object) -> MultipartFileUploadFallback | PresignedFileUploadSession:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_200_type_0 = PresignedFileUploadSession.from_dict(data)
 
 
 
-        return response_201
+                return response_200_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            response_200_type_1 = MultipartFileUploadFallback.from_dict(data)
+
+
+
+            return response_200_type_1
+
+        response_200 = _parse_response_200(response.json())
+
+        return response_200
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -106,7 +123,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | DatasetExample]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -116,33 +133,31 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: DatasetExampleMutation,
+    body: CreateFileUploadSessionRequest,
 
-) -> Response[ApiErrorEnvelope | DatasetExample]:
-    """ Create dataset example
+) -> Response[ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession]:
+    """ Prepare file upload
 
-     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
-    bearing examples.
+     Negotiate multipart when the file fits the deployment body limit (or direct storage is disabled),
+    otherwise return a short-lived signed storage PUT. The response transport is authoritative; clients
+    must not guess from file size alone.
 
     Args:
-        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
-        body (DatasetExampleMutation): Fields used to create or update a dataset example.
+        body (CreateFileUploadSessionRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | DatasetExample]
+        Response[ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
-body=body,
+        body=body,
 
     )
 
@@ -153,65 +168,61 @@ body=body,
     return _build_response(client=client, response=response)
 
 def sync(
-    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: DatasetExampleMutation,
+    body: CreateFileUploadSessionRequest,
 
-) -> ApiErrorEnvelope | DatasetExample | None:
-    """ Create dataset example
+) -> ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession | None:
+    """ Prepare file upload
 
-     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
-    bearing examples.
+     Negotiate multipart when the file fits the deployment body limit (or direct storage is disabled),
+    otherwise return a short-lived signed storage PUT. The response transport is authoritative; clients
+    must not guess from file size alone.
 
     Args:
-        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
-        body (DatasetExampleMutation): Fields used to create or update a dataset example.
+        body (CreateFileUploadSessionRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | DatasetExample
+        ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession
      """
 
 
     return sync_detailed(
-        id=id,
-client=client,
+        client=client,
 body=body,
 
     ).parsed
 
 async def asyncio_detailed(
-    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: DatasetExampleMutation,
+    body: CreateFileUploadSessionRequest,
 
-) -> Response[ApiErrorEnvelope | DatasetExample]:
-    """ Create dataset example
+) -> Response[ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession]:
+    """ Prepare file upload
 
-     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
-    bearing examples.
+     Negotiate multipart when the file fits the deployment body limit (or direct storage is disabled),
+    otherwise return a short-lived signed storage PUT. The response transport is authoritative; clients
+    must not guess from file size alone.
 
     Args:
-        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
-        body (DatasetExampleMutation): Fields used to create or update a dataset example.
+        body (CreateFileUploadSessionRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | DatasetExample]
+        Response[ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
-body=body,
+        body=body,
 
     )
 
@@ -222,33 +233,31 @@ body=body,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: DatasetExampleMutation,
+    body: CreateFileUploadSessionRequest,
 
-) -> ApiErrorEnvelope | DatasetExample | None:
-    """ Create dataset example
+) -> ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession | None:
+    """ Prepare file upload
 
-     Create one dataset example from JSON fields. Use dataset import for archive-based uploads and file-
-    bearing examples.
+     Negotiate multipart when the file fits the deployment body limit (or direct storage is disabled),
+    otherwise return a short-lived signed storage PUT. The response transport is authoritative; clients
+    must not guess from file size alone.
 
     Args:
-        id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
-        body (DatasetExampleMutation): Fields used to create or update a dataset example.
+        body (CreateFileUploadSessionRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | DatasetExample
+        ApiErrorEnvelope | MultipartFileUploadFallback | PresignedFileUploadSession
      """
 
 
     return (await asyncio_detailed(
-        id=id,
-client=client,
+        client=client,
 body=body,
 
     )).parsed

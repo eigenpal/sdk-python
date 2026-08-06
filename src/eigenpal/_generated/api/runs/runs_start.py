@@ -42,7 +42,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/api/v1/runs",
+        "url": "/v1/runs",
         "params": params,
     }
 

@@ -29,7 +29,9 @@ class File:
             content_type (None | str):
             size (int | None):
             created_at (str):
-            purpose (None | str | Unset):
+            purpose (None | str | Unset): Optional lifecycle marker. `run-input` marks a retry-safe temporary run pre-upload
+                reaped after 24 hours. `builder-attachment` marks a Studio builder intermediary (any MIME) with the same TTL.
+                Omitted/null means a durable reusable file.
      """
 
     id: str

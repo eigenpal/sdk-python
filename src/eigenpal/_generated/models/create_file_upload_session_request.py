@@ -5,37 +5,37 @@ from typing import Any, TypeVar, BinaryIO, TextIO, TYPE_CHECKING, Generator
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-import json
-from .. import types
 
 from ..types import UNSET, Unset
 
-from ..models.create_file_multipart_request_purpose import CreateFileMultipartRequestPurpose
-from ..types import File, FileTypes
+from ..models.create_file_upload_session_request_purpose import CreateFileUploadSessionRequestPurpose
 from ..types import UNSET, Unset
-from io import BytesIO
 
 
 
 
 
 
-T = TypeVar("T", bound="CreateFileMultipartRequest")
+T = TypeVar("T", bound="CreateFileUploadSessionRequest")
 
 
 
 @_attrs_define
-class CreateFileMultipartRequest:
+class CreateFileUploadSessionRequest:
     """
         Attributes:
-            file (File): Binary file field
-            purpose (CreateFileMultipartRequestPurpose | Unset): Optional lifecycle marker. `run-input` marks a retry-safe
-                temporary run pre-upload reaped after 24 hours. `builder-attachment` marks a Studio builder intermediary (any
-                MIME) with the same TTL.
+            filename (str):
+            content_type (str):
+            size (int):
+            purpose (CreateFileUploadSessionRequestPurpose | Unset):
+            idempotency_key (str | Unset):
      """
 
-    file: File
-    purpose: CreateFileMultipartRequestPurpose | Unset = UNSET
+    filename: str
+    content_type: str
+    size: int
+    purpose: CreateFileUploadSessionRequestPurpose | Unset = UNSET
+    idempotency_key: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
@@ -43,75 +43,68 @@ class CreateFileMultipartRequest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        file = self.file.to_tuple()
+        filename = self.filename
 
+        content_type = self.content_type
+
+        size = self.size
 
         purpose: str | Unset = UNSET
         if not isinstance(self.purpose, Unset):
             purpose = self.purpose.value
 
 
+        idempotency_key = self.idempotency_key
+
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({
-            "file": file,
+            "filename": filename,
+            "contentType": content_type,
+            "size": size,
         })
         if purpose is not UNSET:
             field_dict["purpose"] = purpose
+        if idempotency_key is not UNSET:
+            field_dict["idempotencyKey"] = idempotency_key
 
         return field_dict
 
-
-    def to_multipart(self) -> types.RequestFiles:
-        files: types.RequestFiles = []
-
-        files.append(("file", self.file.to_tuple()))
-
-
-
-        if not isinstance(self.purpose, Unset):
-            files.append(("purpose",  (None, str(self.purpose.value).encode(), "text/plain")))
-
-
-
-
-        for prop_name, prop in self.additional_properties.items():
-            files.append((prop_name, (None, str(prop).encode(), "text/plain")))
-
-
-
-        return files
 
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        file = File(
-             payload = BytesIO(d.pop("file"))
-        )
+        filename = d.pop("filename")
 
+        content_type = d.pop("contentType")
 
-
+        size = d.pop("size")
 
         _purpose = d.pop("purpose", UNSET)
-        purpose: CreateFileMultipartRequestPurpose | Unset
+        purpose: CreateFileUploadSessionRequestPurpose | Unset
         if isinstance(_purpose,  Unset):
             purpose = UNSET
         else:
-            purpose = CreateFileMultipartRequestPurpose(_purpose)
+            purpose = CreateFileUploadSessionRequestPurpose(_purpose)
 
 
 
 
-        create_file_multipart_request = cls(
-            file=file,
+        idempotency_key = d.pop("idempotencyKey", UNSET)
+
+        create_file_upload_session_request = cls(
+            filename=filename,
+            content_type=content_type,
+            size=size,
             purpose=purpose,
+            idempotency_key=idempotency_key,
         )
 
 
-        create_file_multipart_request.additional_properties = d
-        return create_file_multipart_request
+        create_file_upload_session_request.additional_properties = d
+        return create_file_upload_session_request
 
     @property
     def additional_keys(self) -> list[str]:

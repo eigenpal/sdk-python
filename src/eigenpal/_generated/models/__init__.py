@@ -1,5 +1,6 @@
 """ Contains all the data models used in inputs/outputs """
 
+from .abort_file_upload_response import AbortFileUploadResponse
 from .agent_run_execution import AgentRunExecution
 from .agent_run_execution_expected import AgentRunExecutionExpected
 from .agent_run_execution_files import AgentRunExecutionFiles
@@ -29,6 +30,9 @@ from .automations_sync_response_200_automation_status import AutomationsSyncResp
 from .automations_sync_response_200_automation_type import AutomationsSyncResponse200AutomationType
 from .automations_sync_response_200_release import AutomationsSyncResponse200Release
 from .create_file_multipart_request import CreateFileMultipartRequest
+from .create_file_multipart_request_purpose import CreateFileMultipartRequestPurpose
+from .create_file_upload_session_request import CreateFileUploadSessionRequest
+from .create_file_upload_session_request_purpose import CreateFileUploadSessionRequestPurpose
 from .dataset_example import DatasetExample
 from .dataset_example_expected_file_list import DatasetExampleExpectedFileList
 from .dataset_example_expected_file_rename_request import DatasetExampleExpectedFileRenameRequest
@@ -76,6 +80,9 @@ from .experiment_status import ExperimentStatus
 from .file import File
 from .list_automation_versions_response import ListAutomationVersionsResponse
 from .list_automations_response import ListAutomationsResponse
+from .multipart_file_upload_fallback import MultipartFileUploadFallback
+from .presigned_file_upload_session import PresignedFileUploadSession
+from .presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders
 from .promote_run_request import PromoteRunRequest
 from .promote_run_response import PromoteRunResponse
 from .promote_run_response_automation_type import PromoteRunResponseAutomationType
@@ -164,6 +171,7 @@ from .workflow_run_execution import WorkflowRunExecution
 from .workflow_run_execution_expected import WorkflowRunExecutionExpected
 
 __all__ = (
+    "AbortFileUploadResponse",
     "AgentRunExecution",
     "AgentRunExecutionExpected",
     "AgentRunExecutionFiles",
@@ -193,6 +201,9 @@ __all__ = (
     "AutomationType",
     "AutomationVersion",
     "CreateFileMultipartRequest",
+    "CreateFileMultipartRequestPurpose",
+    "CreateFileUploadSessionRequest",
+    "CreateFileUploadSessionRequestPurpose",
     "DatasetExample",
     "DatasetExampleExpectedFileList",
     "DatasetExampleExpectedFileRenameRequest",
@@ -240,6 +251,9 @@ __all__ = (
     "File",
     "ListAutomationsResponse",
     "ListAutomationVersionsResponse",
+    "MultipartFileUploadFallback",
+    "PresignedFileUploadSession",
+    "PresignedFileUploadSessionHeaders",
     "PromoteRunRequest",
     "PromoteRunResponse",
     "PromoteRunResponseAutomationType",

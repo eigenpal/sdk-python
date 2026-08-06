@@ -25,7 +25,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/files/{id}/content".format(id=quote(str(id), safe=""),),
+        "url": "/v1/files/{id}/content".format(id=quote(str(id), safe=""),),
     }
 
 
@@ -37,6 +37,10 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
     if response.status_code == 200:
         response_200 = cast(Any, None)
         return response_200
+
+    if response.status_code == 302:
+        response_302 = cast(Any, None)
+        return response_302
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -110,7 +114,9 @@ def sync_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download file content
 
-     Download bytes for a reusable uploaded file.
+     Download bytes for a reusable uploaded file. Direct-enabled deployments redirect responses above
+    their configured body limit to a short-lived signed storage URL; multipart-only/on-prem deployments
+    stream through the API.
 
     Args:
         id (str): File id
@@ -143,7 +149,9 @@ def sync(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download file content
 
-     Download bytes for a reusable uploaded file.
+     Download bytes for a reusable uploaded file. Direct-enabled deployments redirect responses above
+    their configured body limit to a short-lived signed storage URL; multipart-only/on-prem deployments
+    stream through the API.
 
     Args:
         id (str): File id
@@ -171,7 +179,9 @@ async def asyncio_detailed(
 ) -> Response[Any | ApiErrorEnvelope]:
     """ Download file content
 
-     Download bytes for a reusable uploaded file.
+     Download bytes for a reusable uploaded file. Direct-enabled deployments redirect responses above
+    their configured body limit to a short-lived signed storage URL; multipart-only/on-prem deployments
+    stream through the API.
 
     Args:
         id (str): File id
@@ -204,7 +214,9 @@ async def asyncio(
 ) -> Any | ApiErrorEnvelope | None:
     """ Download file content
 
-     Download bytes for a reusable uploaded file.
+     Download bytes for a reusable uploaded file. Direct-enabled deployments redirect responses above
+    their configured body limit to a short-lived signed storage URL; multipart-only/on-prem deployments
+    stream through the API.
 
     Args:
         id (str): File id

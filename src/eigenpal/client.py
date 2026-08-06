@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import time
+import uuid
 from pathlib import Path
 from typing import Any, BinaryIO, Iterator, Literal, Optional, Sequence, Union
 from urllib.parse import quote
@@ -15,11 +16,86 @@ from eigenpal._files import has_file_input, is_file_input, to_upload_tuple
 from eigenpal._telemetry import build_telemetry_headers
 from eigenpal.errors import EigenpalError, EigenpalTimeoutError, error_from_response
 
-DEFAULT_BASE_URL = "https://studio.eigenpal.com"
+DEFAULT_BASE_URL = "https://api.eigenpal.com"
 DEFAULT_TIMEOUT_SECONDS = 60.0
 DEFAULT_POLL_INTERVAL_SECONDS = 2.0
 DEFAULT_RUN_AND_WAIT_TIMEOUT_SECONDS = 5 * 60.0
+# Default to Vercel's ~4.5 MiB function body limit.
+DEFAULT_MULTIPART_MAX_BYTES = int(4.5 * 1024 * 1024)
+# Backward-compatible internal alias.
+DIRECT_UPLOAD_BYTE_THRESHOLD = DEFAULT_MULTIPART_MAX_BYTES
+MULTIPART_ENVELOPE_HEADROOM_BYTES = 256 * 1024
 TERMINAL_STATUSES = frozenset({"completed", "failed", "cancelled", "rejected"})
+
+
+def _resolve_multipart_max_bytes(
+    explicit: Union[int, None, Literal["env"]],
+) -> Optional[int]:
+    if explicit != "env":
+        if explicit is None:
+            return None
+        if isinstance(explicit, int) and not isinstance(explicit, bool) and explicit >= 0:
+            return explicit
+        raise EigenpalError(
+            "multipart_max_bytes must be a non-negative integer or None.",
+            status=0,
+        )
+
+    raw = os.getenv("EIGENPAL_MULTIPART_MAX_BYTES")
+    if raw is None or not raw.strip():
+        return DEFAULT_MULTIPART_MAX_BYTES
+    normalized = raw.strip().lower()
+    if normalized in {"none", "null", "unlimited"}:
+        return None
+    try:
+        parsed = int(normalized)
+    except ValueError as exc:
+        raise EigenpalError(
+            "EIGENPAL_MULTIPART_MAX_BYTES must be a non-negative integer "
+            "or one of: none, null, unlimited.",
+            status=0,
+        ) from exc
+    if parsed < 0:
+        raise EigenpalError(
+            "EIGENPAL_MULTIPART_MAX_BYTES must be non-negative.",
+            status=0,
+        )
+    return parsed
+
+
+def _multipart_file_byte_budget(
+    multipart_max_bytes: Optional[int] = DEFAULT_MULTIPART_MAX_BYTES,
+) -> Optional[int]:
+    if multipart_max_bytes is None:
+        return None
+    return max(0, multipart_max_bytes - MULTIPART_ENVELOPE_HEADROOM_BYTES)
+
+
+def _keys_requiring_pre_upload(
+    files: list[tuple[str, int]],
+    multipart_max_bytes: Optional[int] = DEFAULT_MULTIPART_MAX_BYTES,
+) -> set[str]:
+    """Return keys that must be pre-uploaded so aggregate multipart stays under budget."""
+    budget = _multipart_file_byte_budget(multipart_max_bytes)
+    to_pre_upload: set[str] = set()
+    if budget is None:
+        return to_pre_upload
+    for key, size in files:
+        if size > budget:
+            to_pre_upload.add(key)
+
+    multipart_total = sum(size for key, size in files if key not in to_pre_upload)
+    candidates = sorted(
+        ((key, size) for key, size in files if key not in to_pre_upload),
+        key=lambda item: (-item[1], item[0]),
+    )
+    for key, size in candidates:
+        if multipart_total <= budget:
+            break
+        to_pre_upload.add(key)
+        multipart_total -= size
+    return to_pre_upload
+
 
 RunTarget = Union[
     str,
@@ -70,7 +146,7 @@ def _assert_json_response(response: httpx.Response) -> None:
     raise EigenpalError(
         f'Expected a JSON response from the API but got Content-Type "{content_type}". '
         "Set `base_url` to your Eigenpal instance root, "
-        'e.g. "https://studio.eigenpal.com".',
+        'e.g. "https://api.eigenpal.com".',
         status=response.status_code,
     )
 
@@ -95,7 +171,9 @@ def _check_response(response: httpx.Response) -> Any:
         retry_after = int(response.headers.get("retry-after", ""))
     except ValueError:
         pass
-    raise error_from_response(response.status_code, _parse_json_error(response), retry_after)
+    raise error_from_response(
+        response.status_code, _parse_json_error(response), retry_after
+    )
 
 
 def _is_retriable(status: int) -> bool:
@@ -116,7 +194,9 @@ def _path_target(target: RunTarget) -> tuple[str, Optional[str]]:
     kind = target.get("type")
     id_or_slug = target.get("slug") or target.get("id")
     if kind not in ("workflow", "agent") or not isinstance(id_or_slug, str):
-        raise EigenpalError("Run target objects require `type` plus `slug` or `id`.", status=0)
+        raise EigenpalError(
+            "Run target objects require `type` plus `slug` or `id`.", status=0
+        )
 
     if kind == "agent":
         if "." in id_or_slug and not id_or_slug.startswith("agents."):
@@ -124,7 +204,9 @@ def _path_target(target: RunTarget) -> tuple[str, Optional[str]]:
                 f'Agent target must be rooted at "agents.", got "{id_or_slug}".',
                 status=0,
             )
-        path_target = id_or_slug if id_or_slug.startswith("agents.") else f"agents.{id_or_slug}"
+        path_target = (
+            id_or_slug if id_or_slug.startswith("agents.") else f"agents.{id_or_slug}"
+        )
     else:
         path_target = f"workflows.{id_or_slug}"
 
@@ -146,6 +228,7 @@ class EigenpalClient:
         base_url: Optional[str] = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         max_retries: int = 3,
+        multipart_max_bytes: Union[int, None, Literal["env"]] = "env",
         default_headers: Optional[dict[str, str]] = None,
         httpx_args: Optional[dict[str, Any]] = None,
     ) -> None:
@@ -156,9 +239,12 @@ class EigenpalClient:
                 status=0,
             )
 
-        self.base_url = (base_url or os.getenv("EIGENPAL_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
+        self.base_url = (
+            base_url or os.getenv("EIGENPAL_BASE_URL") or DEFAULT_BASE_URL
+        ).rstrip("/")
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
+        self.multipart_max_bytes = _resolve_multipart_max_bytes(multipart_max_bytes)
         self._http = httpx.Client(
             base_url=self.base_url,
             timeout=timeout_seconds,
@@ -217,11 +303,13 @@ class EigenpalClient:
         if version:
             params["version"] = version
 
-        if has_file_input(input):
+        prepared_input = self._prepare_run_file_inputs(input) if input else input
+
+        if has_file_input(prepared_input):
             fields: dict[str, Any] = {"target": (None, path_target)}
-            if input:
+            if prepared_input:
                 scalar_input: dict[str, Any] = {}
-                for key, value in input.items():
+                for key, value in prepared_input.items():
                     if is_file_input(value):
                         fields[f"files.{key}"] = to_upload_tuple(value)
                     else:
@@ -231,16 +319,53 @@ class EigenpalClient:
                 fields["overrides"] = (None, json.dumps(overrides), "application/json")
             if metadata:
                 fields["metadata"] = (None, json.dumps(metadata), "application/json")
-            return self._request("POST", "/api/v1/runs", params=params or None, files=fields)
+            return self._request(
+                "POST", "/v1/runs", params=params or None, files=fields
+            )
 
         body: dict[str, Any] = {"target": path_target}
-        if input is not None:
-            body["input"] = input
+        if prepared_input is not None:
+            body["input"] = prepared_input
         if overrides:
             body["overrides"] = overrides
         if metadata:
             body["metadata"] = metadata
-        return self._request("POST", "/api/v1/runs", params=params or None, json=body)
+        return self._request("POST", "/v1/runs", params=params or None, json=body)
+
+    def _prepare_run_file_inputs(
+        self, input_dict: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Pre-upload files when aggregate multipart bytes exceed the configured limit."""
+        if not has_file_input(input_dict):
+            return input_dict
+
+        resolved: list[tuple[str, str, bytes, str]] = []
+        for key, value in input_dict.items():
+            if not is_file_input(value):
+                continue
+            filename, content, mime_type = to_upload_tuple(value)
+            resolved.append((key, filename, content, mime_type))
+
+        pre_upload_keys = _keys_requiring_pre_upload(
+            [(key, len(content)) for key, _filename, content, _mime in resolved],
+            self.multipart_max_bytes,
+        )
+
+        next_input = dict(input_dict)
+        for key, filename, content, mime_type in resolved:
+            if key in pre_upload_keys:
+                uploaded = self.files.upload(
+                    {"content": content, "filename": filename, "mime_type": mime_type},
+                    purpose="run-input",
+                )
+                next_input[key] = {"$fileId": uploaded["id"]}
+            else:
+                next_input[key] = {
+                    "content": content,
+                    "filename": filename,
+                    "mime_type": mime_type,
+                }
+        return next_input
 
     def rerun(
         self,
@@ -254,7 +379,9 @@ class EigenpalClient:
             params["version"] = version
         if wait_for_completion is not None:
             params["wait_for_completion"] = wait_for_completion
-        return self._request("POST", f"/api/v1/runs/{quote(run_id, safe='')}/rerun", params=params or None)
+        return self._request(
+            "POST", f"/v1/runs/{quote(run_id, safe='')}/rerun", params=params or None
+        )
 
     def run_and_wait(
         self,
@@ -271,11 +398,15 @@ class EigenpalClient:
         deadline = time.monotonic() + timeout_seconds
         while time.monotonic() < deadline:
             current = self.runs.get(run_id)
-            status = (((current.get("execution") or {}) if isinstance(current, dict) else {}).get("status"))
+            status = (
+                (current.get("execution") or {}) if isinstance(current, dict) else {}
+            ).get("status")
             if status in TERMINAL_STATUSES or current.get("finished") is True:
                 return current
             time.sleep(poll_interval_seconds)
-        raise EigenpalTimeoutError(f"Run {run_id} did not finish within {timeout_seconds:g}s")
+        raise EigenpalTimeoutError(
+            f"Run {run_id} did not finish within {timeout_seconds:g}s"
+        )
 
 
 class AuthResource:
@@ -283,7 +414,7 @@ class AuthResource:
         self._root = root
 
     def check(self) -> Any:
-        return self._root._request("GET", "/api/v1/auth/check")
+        return self._root._request("GET", "/v1/auth/check")
 
 
 class AutomationsResource:
@@ -306,29 +437,31 @@ class AutomationsResource:
         params = {"search": search, "type": type, "limit": limit, "offset": offset}
         return self._root._request(
             "GET",
-            "/api/v1/automations",
+            "/v1/automations",
             params={k: v for k, v in params.items() if v is not None} or None,
         )
 
     def get(self, automation_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/automations/{quote(automation_id, safe='')}")
+        return self._root._request(
+            "GET", f"/v1/automations/{quote(automation_id, safe='')}"
+        )
 
     def versions(self, automation_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/versions",
+            f"/v1/automations/{quote(automation_id, safe='')}/versions",
         )
 
     def triggers(self, automation_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/triggers",
+            f"/v1/automations/{quote(automation_id, safe='')}/triggers",
         )
 
     def sync(self, automation_id: str) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/sync",
+            f"/v1/automations/{quote(automation_id, safe='')}/sync",
         )
 
 
@@ -339,7 +472,7 @@ class AutomationReviewsResource:
     def health(self, automation_id: str, **query: Any) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/reviews/health",
+            f"/v1/automations/{quote(automation_id, safe='')}/reviews/health",
             params=query or None,
         )
 
@@ -348,11 +481,14 @@ class AutomationDatasetResource:
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
 
-    def export(self, automation_id: str, *, example_ids: Optional[Sequence[str]] = None) -> bytes:
+    def export(
+        self, automation_id: str, *, example_ids: Optional[Sequence[str]] = None
+    ) -> bytes:
         params = {"exampleIds": ",".join(example_ids)} if example_ids else None
         response = self._root._http.get(
-            f"/api/v1/automations/{quote(automation_id, safe='')}/dataset/export",
+            f"/v1/automations/{quote(automation_id, safe='')}/dataset/export",
             params=params,
+            follow_redirects=True,
         )
         if response.status_code >= 400:
             _check_response(response)
@@ -367,7 +503,7 @@ class AutomationDatasetResource:
     ) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/dataset/import",
+            f"/v1/automations/{quote(automation_id, safe='')}/dataset/import",
             files={"file": to_upload_tuple(file)},
             data={"mode": mode},
         )
@@ -387,40 +523,40 @@ class AutomationExamplesResource:
         params = {"limit": limit, "offset": offset}
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/examples",
+            f"/v1/automations/{quote(automation_id, safe='')}/examples",
             params={k: v for k, v in params.items() if v is not None} or None,
         )
 
     def create(self, automation_id: str, body: dict[str, Any]) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/examples",
+            f"/v1/automations/{quote(automation_id, safe='')}/examples",
             json=body,
         )
 
     def get(self, automation_id: str, example_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}",
+            f"/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}",
         )
 
     def update(self, automation_id: str, example_id: str, body: dict[str, Any]) -> Any:
         return self._root._request(
             "PATCH",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}",
+            f"/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}",
             json=body,
         )
 
     def delete(self, automation_id: str, example_id: str) -> Any:
         return self._root._request(
             "DELETE",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}",
+            f"/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}",
         )
 
     def run(self, automation_id: str, example_id: str) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}/run",
+            f"/v1/automations/{quote(automation_id, safe='')}/examples/{quote(example_id, safe='')}/run",
         )
 
 
@@ -431,13 +567,13 @@ class AutomationEvaluatorsResource:
     def get(self, automation_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/evaluators",
+            f"/v1/automations/{quote(automation_id, safe='')}/evaluators",
         )
 
     def update(self, automation_id: str, yaml: str) -> Any:
         return self._root._request(
             "PUT",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/evaluators",
+            f"/v1/automations/{quote(automation_id, safe='')}/evaluators",
             json={"yaml": yaml},
         )
 
@@ -456,27 +592,27 @@ class AutomationExperimentsResource:
         params = {"limit": limit, "offset": offset}
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments",
+            f"/v1/automations/{quote(automation_id, safe='')}/experiments",
             params={k: v for k, v in params.items() if v is not None} or None,
         )
 
     def create(self, automation_id: str, body: Optional[dict[str, Any]] = None) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments",
+            f"/v1/automations/{quote(automation_id, safe='')}/experiments",
             json=body or {},
         )
 
     def get(self, automation_id: str, experiment_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}",
+            f"/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}",
         )
 
     def cancel(self, automation_id: str, experiment_id: str) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/cancel",
+            f"/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/cancel",
         )
 
     def export(
@@ -487,7 +623,7 @@ class AutomationExperimentsResource:
         format: Literal["csv", "json"] = "csv",
     ) -> str:
         response = self._root._http.get(
-            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/export",
+            f"/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/export",
             params={"format": format},
         )
         if response.status_code >= 400:
@@ -501,7 +637,7 @@ class AutomationExperimentsResource:
         format: Literal["csv", "json"] = "csv",
     ) -> str:
         response = self._root._http.get(
-            f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/export",
+            f"/v1/automations/{quote(automation_id, safe='')}/experiments/export",
             params={"format": format},
         )
         if response.status_code >= 400:
@@ -516,7 +652,7 @@ class AutomationExperimentsResource:
         def lines() -> Iterator[str]:
             with self._root._http.stream(
                 "POST",
-                f"/api/v1/automations/{quote(automation_id, safe='')}/experiments/stream",
+                f"/v1/automations/{quote(automation_id, safe='')}/experiments/stream",
                 json=body or {},
             ) as response:
                 if response.status_code >= 400:
@@ -538,19 +674,21 @@ class RunsResource:
         self.trace = RunsTraceResource(root)
 
     def list(self, **query: Any) -> Any:
-        return self._root._request("GET", "/api/v1/runs", params=query or None)
+        return self._root._request("GET", "/v1/runs", params=query or None)
 
     def get(self, run_id: str, *, expand: Optional[RunExpand] = None) -> Any:
         params = {"expand": _format_run_expand(expand)} if expand is not None else None
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}", params=params)
+        return self._root._request(
+            "GET", f"/v1/runs/{quote(run_id, safe='')}", params=params
+        )
 
     def cancel(self, run_id: str) -> Any:
-        return self._root._request("POST", f"/api/v1/runs/{quote(run_id, safe='')}/cancel")
+        return self._root._request("POST", f"/v1/runs/{quote(run_id, safe='')}/cancel")
 
     def promote(self, run_id: str, body: Optional[dict[str, Any]] = None) -> Any:
         return self._root._request(
             "POST",
-            f"/api/v1/runs/{quote(run_id, safe='')}/promote",
+            f"/v1/runs/{quote(run_id, safe='')}/promote",
             json=body or {},
         )
 
@@ -561,16 +699,18 @@ class RunsResource:
         version: Optional[str] = None,
         wait_for_completion: Optional[int] = None,
     ) -> Any:
-        return self._root.rerun(run_id, version=version, wait_for_completion=wait_for_completion)
+        return self._root.rerun(
+            run_id, version=version, wait_for_completion=wait_for_completion
+        )
 
     def usage(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/usage")
+        return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/usage")
 
     def steps(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/steps")
+        return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/steps")
 
     def events(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/events")
+        return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/events")
 
 
 class RunsScoresResource:
@@ -578,7 +718,7 @@ class RunsScoresResource:
         self._root = root
 
     def list(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/scores")
+        return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/scores")
 
 
 class RunsArtifactsResource:
@@ -586,11 +726,14 @@ class RunsArtifactsResource:
         self._root = root
 
     def list(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/artifacts")
+        return self._root._request(
+            "GET", f"/v1/runs/{quote(run_id, safe='')}/artifacts"
+        )
 
     def download(self, run_id: str, path: str) -> BinaryIO | bytes:
         response = self._root._http.get(
-            f"/api/v1/runs/{quote(run_id, safe='')}/artifacts/{_quote_path(path)}"
+            f"/v1/runs/{quote(run_id, safe='')}/artifacts/{_quote_path(path)}",
+            follow_redirects=True,
         )
         _assert_json_response(response) if response.status_code >= 400 else None
         if response.status_code >= 400:
@@ -603,29 +746,31 @@ class RunsReviewsResource:
         self._root = root
 
     def get(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/reviews")
+        return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/reviews")
 
     def update(self, run_id: str, body: dict[str, Any]) -> Any:
         return self._root._request(
             "PUT",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews",
             json=body,
         )
 
     def close(self, run_id: str, body: Optional[dict[str, Any]] = None) -> Any:
         return self._root._request(
             "PATCH",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews",
             json=body or {},
         )
 
     def clear(self, run_id: str) -> Any:
-        return self._root._request("DELETE", f"/api/v1/runs/{quote(run_id, safe='')}/reviews")
+        return self._root._request(
+            "DELETE", f"/v1/runs/{quote(run_id, safe='')}/reviews"
+        )
 
     def list_expected(self, run_id: str) -> Any:
         return self._root._request(
             "GET",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews/expected",
         )
 
     def copy_output_to_expected(
@@ -640,7 +785,7 @@ class RunsReviewsResource:
             body["expectedName"] = expected_name
         return self._root._request(
             "POST",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews/expected",
             json=body,
         )
 
@@ -654,14 +799,14 @@ class RunsReviewsResource:
         data = {"name": name} if name is not None else None
         return self._root._request(
             "POST",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews/expected",
             files={"file": to_upload_tuple(file)},
             data=data,
         )
 
     def download_expected(self, run_id: str, filename: str) -> bytes:
         response = self._root._http.get(
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}"
+            f"/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}"
         )
         if response.status_code >= 400:
             _check_response(response)
@@ -670,14 +815,14 @@ class RunsReviewsResource:
     def rename_expected(self, run_id: str, filename: str, new_filename: str) -> Any:
         return self._root._request(
             "PATCH",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}",
             json={"name": new_filename},
         )
 
     def delete_expected(self, run_id: str, filename: str) -> Any:
         return self._root._request(
             "DELETE",
-            f"/api/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}",
+            f"/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}",
         )
 
 
@@ -686,24 +831,108 @@ class RunsTraceResource:
         self._root = root
 
     def get(self, run_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/runs/{quote(run_id, safe='')}/trace")
+        return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/trace")
 
 
 class FilesResource:
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
 
-    def upload(self, file: Path | dict[str, Any] | BinaryIO) -> Any:
-        return self._root._request("POST", "/api/v1/files", files={"file": to_upload_tuple(file)})
+    def upload(
+        self,
+        file: Path | dict[str, Any] | BinaryIO,
+        *,
+        idempotency_key: Optional[str] = None,
+        purpose: Optional[Literal["run-input"]] = None,
+    ) -> Any:
+        filename, content, mime_type = to_upload_tuple(file)
+        key = idempotency_key or str(uuid.uuid4())
+        negotiation = self.create_upload(
+            filename=filename,
+            content_type=mime_type,
+            size=len(content),
+            idempotency_key=key,
+            purpose=purpose,
+        )
+        if negotiation["transport"] == "multipart":
+            data: dict[str, Any] = {}
+            if purpose is not None:
+                data["purpose"] = purpose
+            return self._root._request(
+                "POST",
+                negotiation["url"],
+                files={"file": (filename, content, mime_type)},
+                data=data or None,
+            )
+
+        headers = {
+            name: value
+            for name, value in negotiation.get("headers", {}).items()
+            if name.lower() != "content-length"
+        }
+        try:
+            response = httpx.put(
+                negotiation["url"],
+                content=content,
+                headers=headers,
+                timeout=self._root.timeout_seconds,
+            )
+            response.raise_for_status()
+        except (httpx.HTTPError, httpx.TransportError):
+            try:
+                self.abort_upload(negotiation["uploadId"])
+            except Exception:
+                pass
+            raise
+        return self.complete_upload(negotiation["uploadId"])
+
+    def create_upload(
+        self,
+        *,
+        filename: str,
+        content_type: str,
+        size: int,
+        idempotency_key: Optional[str] = None,
+        purpose: Optional[Literal["run-input"]] = None,
+    ) -> Any:
+        body: dict[str, Any] = {
+            "filename": filename,
+            "contentType": content_type,
+            "size": size,
+        }
+        if idempotency_key is not None:
+            body["idempotencyKey"] = idempotency_key
+        if purpose is not None:
+            body["purpose"] = purpose
+        return self._root._request(
+            "POST",
+            "/v1/files/uploads",
+            json=body,
+        )
+
+    def complete_upload(self, upload_id: str) -> Any:
+        return self._root._request(
+            "POST",
+            f"/v1/files/uploads/{quote(upload_id, safe='')}/complete",
+        )
+
+    def abort_upload(self, upload_id: str) -> Any:
+        return self._root._request(
+            "DELETE",
+            f"/v1/files/uploads/{quote(upload_id, safe='')}",
+        )
 
     def get(self, file_id: str) -> Any:
-        return self._root._request("GET", f"/api/v1/files/{quote(file_id, safe='')}")
+        return self._root._request("GET", f"/v1/files/{quote(file_id, safe='')}")
 
     def download(self, file_id: str) -> bytes:
-        response = self._root._http.get(f"/api/v1/files/{quote(file_id, safe='')}/content")
+        response = self._root._http.get(
+            f"/v1/files/{quote(file_id, safe='')}/content",
+            follow_redirects=True,
+        )
         if response.status_code >= 400:
             _check_response(response)
         return response.content
 
     def delete(self, file_id: str) -> Any:
-        return self._root._request("DELETE", f"/api/v1/files/{quote(file_id, safe='')}")
+        return self._root._request("DELETE", f"/v1/files/{quote(file_id, safe='')}")

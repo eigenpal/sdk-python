@@ -19,7 +19,9 @@ from eigenpal import (
 
 @pytest.fixture
 def client() -> EigenpalClient:
-    return EigenpalClient(api_key="eg_test_key", base_url="http://localhost:3000", max_retries=0)
+    return EigenpalClient(
+        api_key="eg_test_key", base_url="http://localhost:3000", max_retries=0
+    )
 
 
 def run_accepted(**overrides: object) -> dict[str, object]:
@@ -38,7 +40,7 @@ def run_summary(**overrides: object) -> dict[str, object]:
 
 @respx.mock
 def test_attaches_bearer_auth_and_telemetry(client: EigenpalClient) -> None:
-    route = respx.get("http://localhost:3000/api/v1/automations").mock(
+    route = respx.get("http://localhost:3000/v1/automations").mock(
         return_value=httpx.Response(200, json={"data": []})
     )
 
@@ -52,9 +54,9 @@ def test_attaches_bearer_auth_and_telemetry(client: EigenpalClient) -> None:
 
 @respx.mock
 def test_run_returns_id_and_sends_canonical_body(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/runs", params={"version": "1.2.3"}).mock(
-        return_value=httpx.Response(202, json=run_accepted(id="run_abc"))
-    )
+    route = respx.post(
+        "http://localhost:3000/v1/runs", params={"version": "1.2.3"}
+    ).mock(return_value=httpx.Response(202, json=run_accepted(id="run_abc")))
 
     result = client.run("workflows.extract-invoice@1.2.3", input={"language": "en"})
 
@@ -67,7 +69,7 @@ def test_run_returns_id_and_sends_canonical_body(client: EigenpalClient) -> None
 
 @respx.mock
 def test_run_forwards_metadata_in_json_body(client: EigenpalClient) -> None:
-    route = respx.post("http://localhost:3000/api/v1/runs").mock(
+    route = respx.post("http://localhost:3000/v1/runs").mock(
         return_value=httpx.Response(202, json=run_accepted(id="run_meta"))
     )
 
@@ -86,11 +88,13 @@ def test_run_forwards_metadata_in_json_body(client: EigenpalClient) -> None:
 
 
 @respx.mock
-def test_run_forwards_metadata_as_multipart_field(tmp_path, client: EigenpalClient) -> None:
+def test_run_forwards_metadata_as_multipart_field(
+    tmp_path, client: EigenpalClient
+) -> None:
     pdf = tmp_path / "contract.pdf"
     pdf.write_bytes(b"%PDF-1.4 fake content")
 
-    route = respx.post("http://localhost:3000/api/v1/runs").mock(
+    route = respx.post("http://localhost:3000/v1/runs").mock(
         return_value=httpx.Response(202, json=run_accepted(id="run_meta"))
     )
 
@@ -106,8 +110,10 @@ def test_run_forwards_metadata_as_multipart_field(tmp_path, client: EigenpalClie
 
 
 @respx.mock
-def test_run_object_targets_mirror_canonical_target_grammar(client: EigenpalClient) -> None:
-    respx.post("http://localhost:3000/api/v1/runs").mock(
+def test_run_object_targets_mirror_canonical_target_grammar(
+    client: EigenpalClient,
+) -> None:
+    respx.post("http://localhost:3000/v1/runs").mock(
         return_value=httpx.Response(202, json=run_accepted())
     )
 
@@ -131,60 +137,74 @@ def test_run_rejects_ambiguous_rooted_agent_targets(client: EigenpalClient) -> N
 
 @respx.mock
 def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
-    respx.get("http://localhost:3000/api/v1/automations").mock(
+    respx.get("http://localhost:3000/v1/automations").mock(
         return_value=httpx.Response(200, json={"data": []})
     )
-    respx.get("http://localhost:3000/api/v1/automations/workflows.extract-invoice").mock(
+    respx.get("http://localhost:3000/v1/automations/workflows.extract-invoice").mock(
         return_value=httpx.Response(200, json={"id": "workflows.extract-invoice"})
     )
-    respx.get("http://localhost:3000/api/v1/automations/workflows.extract-invoice/versions").mock(
-        return_value=httpx.Response(200, json={"data": []})
-    )
-    respx.get("http://localhost:3000/api/v1/automations/workflows.extract-invoice/triggers").mock(
-        return_value=httpx.Response(200, json={"triggers": []})
-    )
     respx.get(
-        "http://localhost:3000/api/v1/automations/workflows.extract-invoice/experiments/exp_1/export",
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/versions"
+    ).mock(return_value=httpx.Response(200, json={"data": []}))
+    respx.get(
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/triggers"
+    ).mock(return_value=httpx.Response(200, json={"triggers": []}))
+    respx.get(
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/experiments/exp_1/export",
         params={"format": "csv"},
     ).mock(return_value=httpx.Response(200, text="experiment_id,score\nexp_1,1\n"))
     respx.get(
-        "http://localhost:3000/api/v1/automations/workflows.extract-invoice/experiments/export",
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/experiments/export",
         params={"format": "csv"},
     ).mock(return_value=httpx.Response(200, text="experiment_id,score\nexp_1,1\n"))
     respx.post(
-        "http://localhost:3000/api/v1/automations/workflows.extract-invoice/experiments/stream"
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/experiments/stream"
     ).mock(return_value=httpx.Response(200, text='{"event":"completed"}\n'))
-    respx.get("http://localhost:3000/api/v1/runs").mock(
+    respx.get("http://localhost:3000/v1/runs").mock(
         return_value=httpx.Response(200, json={"runs": []})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123").mock(
         return_value=httpx.Response(200, json=run_summary())
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/usage").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123/usage").mock(
         return_value=httpx.Response(200, json={"usage": None})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/steps").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123/steps").mock(
         return_value=httpx.Response(200, json={"steps": []})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/events").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123/events").mock(
         return_value=httpx.Response(200, json={"events": []})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/artifacts").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123/artifacts").mock(
         return_value=httpx.Response(200, json={"artifacts": []})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/reviews").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123/reviews").mock(
         return_value=httpx.Response(200, json={"review": None})
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123/trace").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123/trace").mock(
         return_value=httpx.Response(200, json={"events": []})
     )
-    respx.post("http://localhost:3000/api/v1/files").mock(
-        return_value=httpx.Response(201, json={"id": "file_123", "filename": "input.txt"})
+    respx.post("http://localhost:3000/v1/files/uploads").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "transport": "multipart",
+                "url": "/v1/files",
+                "maxFileSizeBytes": 100 * 1024 * 1024,
+            },
+        )
     )
-    respx.get("http://localhost:3000/api/v1/files/file_123").mock(
-        return_value=httpx.Response(200, json={"id": "file_123", "filename": "input.txt"})
+    respx.post("http://localhost:3000/v1/files").mock(
+        return_value=httpx.Response(
+            201, json={"id": "file_123", "filename": "input.txt"}
+        )
     )
-    respx.delete("http://localhost:3000/api/v1/files/file_123").mock(
+    respx.get("http://localhost:3000/v1/files/file_123").mock(
+        return_value=httpx.Response(
+            200, json={"id": "file_123", "filename": "input.txt"}
+        )
+    )
+    respx.delete("http://localhost:3000/v1/files/file_123").mock(
         return_value=httpx.Response(204)
     )
 
@@ -207,20 +227,22 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.runs.artifacts.list("run_123")
     client.runs.reviews.get("run_123")
     assert client.runs.trace.get("run_123")["events"] == []
-    client.files.upload({"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"})
+    client.files.upload(
+        {"content": b"hello", "filename": "input.txt", "mime_type": "text/plain"}
+    )
     client.files.get("file_123")
     assert client.files.delete("file_123") is None
 
-    assert len(respx.calls) == 18
+    assert len(respx.calls) == 19
 
 
 @respx.mock
 def test_run_control_routes(client: EigenpalClient) -> None:
-    cancel_route = respx.post("http://localhost:3000/api/v1/runs/run_123/cancel").mock(
+    cancel_route = respx.post("http://localhost:3000/v1/runs/run_123/cancel").mock(
         return_value=httpx.Response(200, json=run_summary(id="run_123"))
     )
     rerun_route = respx.post(
-        "http://localhost:3000/api/v1/runs/run_123/rerun",
+        "http://localhost:3000/v1/runs/run_123/rerun",
         params={"wait_for_completion": "30"},
     ).mock(return_value=httpx.Response(202, json=run_accepted(id="run_456")))
 
@@ -233,15 +255,21 @@ def test_run_control_routes(client: EigenpalClient) -> None:
 
 @respx.mock
 def test_401_404_429_and_400_raise_typed_errors(client: EigenpalClient) -> None:
-    respx.get("http://localhost:3000/api/v1/automations").mock(
+    respx.get("http://localhost:3000/v1/automations").mock(
         side_effect=[
-            httpx.Response(401, json={"issues": [{"field": "<root>", "message": "invalid"}]}),
+            httpx.Response(
+                401, json={"issues": [{"field": "<root>", "message": "invalid"}]}
+            ),
             httpx.Response(429, headers={"retry-after": "12"}, json={"issues": []}),
-            httpx.Response(400, json={"issues": [{"field": "target", "message": "required"}]}),
+            httpx.Response(
+                400, json={"issues": [{"field": "target", "message": "required"}]}
+            ),
         ]
     )
-    respx.get("http://localhost:3000/api/v1/automations/missing").mock(
-        return_value=httpx.Response(404, json={"issues": [{"field": "<root>", "message": "missing"}]})
+    respx.get("http://localhost:3000/v1/automations/missing").mock(
+        return_value=httpx.Response(
+            404, json={"issues": [{"field": "<root>", "message": "missing"}]}
+        )
     )
 
     with pytest.raises(EigenpalAuthError):
@@ -256,12 +284,17 @@ def test_401_404_429_and_400_raise_typed_errors(client: EigenpalClient) -> None:
 
 @respx.mock
 def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
-    respx.post("http://localhost:3000/api/v1/runs").mock(
+    respx.post("http://localhost:3000/v1/runs").mock(
         return_value=httpx.Response(202, json=run_accepted(id="run_123"))
     )
-    respx.get("http://localhost:3000/api/v1/runs/run_123").mock(
+    respx.get("http://localhost:3000/v1/runs/run_123").mock(
         side_effect=[
-            httpx.Response(200, json=run_summary(id="run_123", finished=False, execution={"status": "running"})),
+            httpx.Response(
+                200,
+                json=run_summary(
+                    id="run_123", finished=False, execution={"status": "running"}
+                ),
+            ),
             httpx.Response(200, json=run_summary(id="run_123", output={"total": 42})),
         ]
     )

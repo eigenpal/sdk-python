@@ -31,7 +31,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/api/v1/runs/{id}/reviews/expected".format(id=quote(str(id), safe=""),),
+        "url": "/v1/runs/{id}/reviews/expected".format(id=quote(str(id), safe=""),),
     }
 
     if isinstance(body, RunReviewExpectedFileCopyRequest):

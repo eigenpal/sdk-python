@@ -51,7 +51,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/runs/{id}/artifacts".format(id=quote(str(id), safe=""),),
+        "url": "/v1/runs/{id}/artifacts".format(id=quote(str(id), safe=""),),
         "params": params,
     }
 
@@ -152,7 +152,9 @@ def sync_detailed(
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
-            `GET /runs/{id}/trace` for those.
+            `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
+            inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
+            a smaller `files=` subset.
         bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
             with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
@@ -198,7 +200,9 @@ def sync(
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
-            `GET /runs/{id}/trace` for those.
+            `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
+            inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
+            a smaller `files=` subset.
         bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
             with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
@@ -239,7 +243,9 @@ async def asyncio_detailed(
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
-            `GET /runs/{id}/trace` for those.
+            `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
+            inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
+            a smaller `files=` subset.
         bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
             with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).
@@ -285,7 +291,9 @@ async def asyncio(
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
             listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
-            `GET /runs/{id}/trace` for those.
+            `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
+            inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
+            a smaller `files=` subset.
         bundle (RunsArtifactsListBundle | Unset): With `zip=1`, use `review` to download a ZIP
             with `output/` and `expected/` folders (corrected review artifacts).
         token (str | Unset): Signed email download token (zip only; no Bearer required).

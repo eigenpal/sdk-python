@@ -8,15 +8,14 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
+from ...models.abort_file_upload_response import AbortFileUploadResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.experiment_detail import ExperimentDetail
 from typing import cast
 
 
 
 def _get_kwargs(
-    id: str,
-    experiment_id: str,
+    upload_id: str,
 
 ) -> dict[str, Any]:
 
@@ -26,8 +25,8 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/v1/automations/{id}/experiments/{experiment_id}".format(id=quote(str(id), safe=""),experiment_id=quote(str(experiment_id), safe=""),),
+        "method": "delete",
+        "url": "/v1/files/uploads/{upload_id}".format(upload_id=quote(str(upload_id), safe=""),),
     }
 
 
@@ -35,9 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ExperimentDetail | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = ExperimentDetail.from_dict(response.json())
+        response_200 = AbortFileUploadResponse.from_dict(response.json())
 
 
 
@@ -98,7 +97,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ExperimentDetail]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -108,32 +107,29 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    id: str,
-    experiment_id: str,
+    upload_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | ExperimentDetail]:
-    """ Get experiment
+) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
+    """ Abort file upload
 
-     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
+     Abort a pending storage-direct upload and remove its pending object.
 
     Args:
-        id (str): Automation id or typed alias.
-        experiment_id (str): Experiment batch id.
+        upload_id (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ExperimentDetail]
+        Response[AbortFileUploadResponse | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
-experiment_id=experiment_id,
+        upload_id=upload_id,
 
     )
 
@@ -144,63 +140,57 @@ experiment_id=experiment_id,
     return _build_response(client=client, response=response)
 
 def sync(
-    id: str,
-    experiment_id: str,
+    upload_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | ExperimentDetail | None:
-    """ Get experiment
+) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
+    """ Abort file upload
 
-     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
+     Abort a pending storage-direct upload and remove its pending object.
 
     Args:
-        id (str): Automation id or typed alias.
-        experiment_id (str): Experiment batch id.
+        upload_id (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ExperimentDetail
+        AbortFileUploadResponse | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
-        id=id,
-experiment_id=experiment_id,
+        upload_id=upload_id,
 client=client,
 
     ).parsed
 
 async def asyncio_detailed(
-    id: str,
-    experiment_id: str,
+    upload_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | ExperimentDetail]:
-    """ Get experiment
+) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
+    """ Abort file upload
 
-     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
+     Abort a pending storage-direct upload and remove its pending object.
 
     Args:
-        id (str): Automation id or typed alias.
-        experiment_id (str): Experiment batch id.
+        upload_id (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ExperimentDetail]
+        Response[AbortFileUploadResponse | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
-        id=id,
-experiment_id=experiment_id,
+        upload_id=upload_id,
 
     )
 
@@ -211,32 +201,29 @@ experiment_id=experiment_id,
     return _build_response(client=client, response=response)
 
 async def asyncio(
-    id: str,
-    experiment_id: str,
+    upload_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | ExperimentDetail | None:
-    """ Get experiment
+) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
+    """ Abort file upload
 
-     Fetch one experiment batch with its run summaries and evaluator results grouped by run id.
+     Abort a pending storage-direct upload and remove its pending object.
 
     Args:
-        id (str): Automation id or typed alias.
-        experiment_id (str): Experiment batch id.
+        upload_id (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ExperimentDetail
+        AbortFileUploadResponse | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
-        id=id,
-experiment_id=experiment_id,
+        upload_id=upload_id,
 client=client,
 
     )).parsed

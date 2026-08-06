@@ -34,7 +34,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/api/v1/automations/{id}/dataset/export".format(id=quote(str(id), safe=""),),
+        "url": "/v1/automations/{id}/dataset/export".format(id=quote(str(id), safe=""),),
         "params": params,
     }
 
@@ -43,10 +43,14 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | bytes | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | bytes | None:
     if response.status_code == 200:
         response_200 = response.content
         return response_200
+
+    if response.status_code == 302:
+        response_302 = cast(Any, None)
+        return response_302
 
     if response.status_code == 400:
         response_400 = ApiErrorEnvelope.from_dict(response.json())
@@ -103,7 +107,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | bytes]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope | bytes]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -118,12 +122,12 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | bytes]:
+) -> Response[Any | ApiErrorEnvelope | bytes]:
     """ Export automation dataset
 
      Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
     examples/<name>/expected folder convention, so it can be re-imported into another automation or
-    environment.
+    environment. Cloud deployments may redirect large archives to a short-lived storage URL.
 
     Args:
         id (str): Automation id or typed alias.
@@ -135,7 +139,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | bytes]
+        Response[Any | ApiErrorEnvelope | bytes]
      """
 
 
@@ -157,12 +161,12 @@ def sync(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | bytes | None:
+) -> Any | ApiErrorEnvelope | bytes | None:
     """ Export automation dataset
 
      Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
     examples/<name>/expected folder convention, so it can be re-imported into another automation or
-    environment.
+    environment. Cloud deployments may redirect large archives to a short-lived storage URL.
 
     Args:
         id (str): Automation id or typed alias.
@@ -174,7 +178,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | bytes
+        Any | ApiErrorEnvelope | bytes
      """
 
 
@@ -191,12 +195,12 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | bytes]:
+) -> Response[Any | ApiErrorEnvelope | bytes]:
     """ Export automation dataset
 
      Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
     examples/<name>/expected folder convention, so it can be re-imported into another automation or
-    environment.
+    environment. Cloud deployments may redirect large archives to a short-lived storage URL.
 
     Args:
         id (str): Automation id or typed alias.
@@ -208,7 +212,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | bytes]
+        Response[Any | ApiErrorEnvelope | bytes]
      """
 
 
@@ -230,12 +234,12 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     example_ids: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | bytes | None:
+) -> Any | ApiErrorEnvelope | bytes | None:
     """ Export automation dataset
 
      Download the automation dataset as a ZIP archive. The archive uses the examples/<name>/input and
     examples/<name>/expected folder convention, so it can be re-imported into another automation or
-    environment.
+    environment. Cloud deployments may redirect large archives to a short-lived storage URL.
 
     Args:
         id (str): Automation id or typed alias.
@@ -247,7 +251,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | bytes
+        Any | ApiErrorEnvelope | bytes
      """
 
 
