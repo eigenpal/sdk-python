@@ -40,6 +40,8 @@ class RunListItem:
             source (RunSource):
             trigger (RunTrigger):
             execution (RunExecutionMeta):
+            parent_execution_id (str | Unset): Parent run id when this run was started by an invoke-workflow step. Omitted
+                for top-level runs.
             eval_ (RunEval | Unset):
             error (None | str | Unset):
      """
@@ -52,6 +54,7 @@ class RunListItem:
     source: RunSource
     trigger: RunTrigger
     execution: RunExecutionMeta
+    parent_execution_id: str | Unset = UNSET
     eval_: RunEval | Unset = UNSET
     error: None | str | Unset = UNSET
 
@@ -81,6 +84,8 @@ class RunListItem:
 
         execution = self.execution.to_dict()
 
+        parent_execution_id = self.parent_execution_id
+
         eval_: dict[str, Any] | Unset = UNSET
         if not isinstance(self.eval_, Unset):
             eval_ = self.eval_.to_dict()
@@ -104,6 +109,8 @@ class RunListItem:
             "trigger": trigger,
             "execution": execution,
         })
+        if parent_execution_id is not UNSET:
+            field_dict["parentExecutionId"] = parent_execution_id
         if eval_ is not UNSET:
             field_dict["eval"] = eval_
         if error is not UNSET:
@@ -152,6 +159,8 @@ class RunListItem:
 
 
 
+        parent_execution_id = d.pop("parentExecutionId", UNSET)
+
         _eval_ = d.pop("eval", UNSET)
         eval_: RunEval | Unset
         if isinstance(_eval_,  Unset):
@@ -181,6 +190,7 @@ class RunListItem:
             source=source,
             trigger=trigger,
             execution=execution,
+            parent_execution_id=parent_execution_id,
             eval_=eval_,
             error=error,
         )

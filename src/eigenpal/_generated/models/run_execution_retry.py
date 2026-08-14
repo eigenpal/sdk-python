@@ -27,7 +27,8 @@ class RunExecutionRetry:
         Attributes:
             number (float): Retry attempt index (0 = original run).
             previous_run_id (None | str): Run id of the prior attempt in the retry chain.
-            next_run (None | RunExecutionRetryNextRunType0): Retry run spawned from this run, if any.
+            next_run (None | RunExecutionRetryNextRunType0): Retry run spawned from this run, if any. Present on list and
+                detail without `expand`. `status` here is the later retry, not this run.
      """
 
     number: float

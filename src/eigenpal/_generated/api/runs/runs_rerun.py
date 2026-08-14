@@ -50,74 +50,23 @@ def _get_kwargs(
 
 def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | Run | RunAccepted | None:
     if response.status_code == 200:
-        def _parse_response_200(data: object) -> Run | RunAccepted:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_run_rerun_response_type_0 = RunAccepted.from_dict(data)
+        response_200 = Run.from_dict(response.json())
 
 
-
-                return componentsschemas_run_rerun_response_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_run_rerun_response_type_1 = Run.from_dict(data)
-
-
-
-            return componentsschemas_run_rerun_response_type_1
-
-        response_200 = _parse_response_200(response.json())
 
         return response_200
 
     if response.status_code == 201:
-        def _parse_response_201(data: object) -> Run | RunAccepted:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_run_rerun_response_type_0 = RunAccepted.from_dict(data)
+        response_201 = RunAccepted.from_dict(response.json())
 
 
-
-                return componentsschemas_run_rerun_response_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_run_rerun_response_type_1 = Run.from_dict(data)
-
-
-
-            return componentsschemas_run_rerun_response_type_1
-
-        response_201 = _parse_response_201(response.json())
 
         return response_201
 
     if response.status_code == 202:
-        def _parse_response_202(data: object) -> Run | RunAccepted:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_run_rerun_response_type_0 = RunAccepted.from_dict(data)
+        response_202 = RunAccepted.from_dict(response.json())
 
 
-
-                return componentsschemas_run_rerun_response_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_run_rerun_response_type_1 = Run.from_dict(data)
-
-
-
-            return componentsschemas_run_rerun_response_type_1
-
-        response_202 = _parse_response_202(response.json())
 
         return response_202
 

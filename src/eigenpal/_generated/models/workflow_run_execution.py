@@ -33,9 +33,12 @@ class WorkflowRunExecution:
             schema_valid (bool | None): Whether the completed output matched the workflow or agent output schema.
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
-            steps (list[Any]): Per-step executions of the workflow run.
+            steps (list[Any]): Per-step executions of the workflow run (`expand=execution`).
             review (None | RunReview | Unset):
-            definition_snapshot (Any | None | Unset): Workflow definition snapshot captured when the run was created.
+            child_executions (list[Any] | Unset): Child invoke-workflow runs and their steps (`expand=execution`, workflow
+                runs only). Omitted when there are no children.
+            definition_snapshot (Any | None | Unset): Workflow definition snapshot captured when the run was created
+                (`expand=execution`).
             expected (WorkflowRunExecutionExpected | Unset): Ground-truth expected output and files.
      """
 
@@ -45,6 +48,7 @@ class WorkflowRunExecution:
     retry: RunExecutionRetry
     steps: list[Any]
     review: None | RunReview | Unset = UNSET
+    child_executions: list[Any] | Unset = UNSET
     definition_snapshot: Any | None | Unset = UNSET
     expected: WorkflowRunExecutionExpected | Unset = UNSET
 
@@ -78,6 +82,12 @@ class WorkflowRunExecution:
         else:
             review = self.review
 
+        child_executions: list[Any] | Unset = UNSET
+        if not isinstance(self.child_executions, Unset):
+            child_executions = self.child_executions
+
+
+
         definition_snapshot: Any | None | Unset
         if isinstance(self.definition_snapshot, Unset):
             definition_snapshot = UNSET
@@ -100,6 +110,8 @@ class WorkflowRunExecution:
         })
         if review is not UNSET:
             field_dict["review"] = review
+        if child_executions is not UNSET:
+            field_dict["childExecutions"] = child_executions
         if definition_snapshot is not UNSET:
             field_dict["definitionSnapshot"] = definition_snapshot
         if expected is not UNSET:
@@ -164,6 +176,9 @@ class WorkflowRunExecution:
         review = _parse_review(d.pop("review", UNSET))
 
 
+        child_executions = cast(list[Any], d.pop("childExecutions", UNSET))
+
+
         def _parse_definition_snapshot(data: object) -> Any | None | Unset:
             if data is None:
                 return data
@@ -191,6 +206,7 @@ class WorkflowRunExecution:
             retry=retry,
             steps=steps,
             review=review,
+            child_executions=child_executions,
             definition_snapshot=definition_snapshot,
             expected=expected,
         )

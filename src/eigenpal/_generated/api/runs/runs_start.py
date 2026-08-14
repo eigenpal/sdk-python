@@ -64,74 +64,23 @@ def _get_kwargs(
 
 def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | Run | RunAccepted | None:
     if response.status_code == 200:
-        def _parse_response_200(data: object) -> Run | RunAccepted:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_run_start_response_type_0 = RunAccepted.from_dict(data)
+        response_200 = Run.from_dict(response.json())
 
 
-
-                return componentsschemas_run_start_response_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_run_start_response_type_1 = Run.from_dict(data)
-
-
-
-            return componentsschemas_run_start_response_type_1
-
-        response_200 = _parse_response_200(response.json())
 
         return response_200
 
     if response.status_code == 201:
-        def _parse_response_201(data: object) -> Run | RunAccepted:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_run_start_response_type_0 = RunAccepted.from_dict(data)
+        response_201 = RunAccepted.from_dict(response.json())
 
 
-
-                return componentsschemas_run_start_response_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_run_start_response_type_1 = Run.from_dict(data)
-
-
-
-            return componentsschemas_run_start_response_type_1
-
-        response_201 = _parse_response_201(response.json())
 
         return response_201
 
     if response.status_code == 202:
-        def _parse_response_202(data: object) -> Run | RunAccepted:
-            try:
-                if not isinstance(data, dict):
-                    raise TypeError()
-                componentsschemas_run_start_response_type_0 = RunAccepted.from_dict(data)
+        response_202 = RunAccepted.from_dict(response.json())
 
 
-
-                return componentsschemas_run_start_response_type_0
-            except (TypeError, ValueError, AttributeError, KeyError):
-                pass
-            if not isinstance(data, dict):
-                raise TypeError()
-            componentsschemas_run_start_response_type_1 = Run.from_dict(data)
-
-
-
-            return componentsschemas_run_start_response_type_1
-
-        response_202 = _parse_response_202(response.json())
 
         return response_202
 
@@ -211,6 +160,11 @@ def sync_detailed(
 
      Start a run. Send JSON or multipart/form-data.
 
+    How to read a run: the envelope is at the root. The automation business result is in `output` (per-
+    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
+    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
+    on eval-scoped runs.
+
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
@@ -253,6 +207,11 @@ def sync(
 
      Start a run. Send JSON or multipart/form-data.
 
+    How to read a run: the envelope is at the root. The automation business result is in `output` (per-
+    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
+    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
+    on eval-scoped runs.
+
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
@@ -289,6 +248,11 @@ async def asyncio_detailed(
     """ Start a run
 
      Start a run. Send JSON or multipart/form-data.
+
+    How to read a run: the envelope is at the root. The automation business result is in `output` (per-
+    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
+    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
+    on eval-scoped runs.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
@@ -331,6 +295,11 @@ async def asyncio(
     """ Start a run
 
      Start a run. Send JSON or multipart/form-data.
+
+    How to read a run: the envelope is at the root. The automation business result is in `output` (per-
+    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
+    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
+    on eval-scoped runs.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.

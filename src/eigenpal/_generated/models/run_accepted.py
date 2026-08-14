@@ -26,6 +26,10 @@ T = TypeVar("T", bound="RunAccepted")
 @_attrs_define
 class RunAccepted:
     """
+        Example:
+            {'id': 'wfx_01HZXEXAMPLE', 'type': 'workflow', 'finished': False, 'source': {'id': 'wf_invoice', 'name':
+                'Invoice extraction', 'version': None}}
+
         Attributes:
             id (str):
             type_ (RunAcceptedType):

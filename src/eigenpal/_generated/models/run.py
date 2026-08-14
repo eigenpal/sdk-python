@@ -37,6 +37,17 @@ T = TypeVar("T", bound="Run")
 @_attrs_define
 class Run:
     """
+        Example:
+            {'id': 'wfx_01HZXEXAMPLE', 'type': 'workflow', 'finished': True, 'sampleRank': 0.42, 'timing': {'createdAt':
+                datetime.datetime(2026, 1, 15, 10, 0, tzinfo=datetime.timezone(datetime.timedelta(0), 'Z')), 'startedAt':
+                datetime.datetime(2026, 1, 15, 10, 0, 1, tzinfo=datetime.timezone(datetime.timedelta(0), 'Z')), 'completedAt':
+                datetime.datetime(2026, 1, 15, 10, 0, 8, tzinfo=datetime.timezone(datetime.timedelta(0), 'Z')), 'durationMs':
+                7000, 'cancelRequestedAt': None}, 'source': {'id': 'wf_invoice', 'name': 'Invoice extraction', 'version': '3',
+                'versionId': 'wfh_3'}, 'trigger': {'type': 'api', 'by': None}, 'output': {'vendor': 'Acme', 'total': 149.5},
+                'files': [{'name': 'file_1-invoice.json', 'role': 'output', 'path': 'output/extract/file_1-invoice.json',
+                'stepName': 'extract'}], 'error': None, 'execution': {'status': 'completed', 'schemaValid': True, 'batchId':
+                None, 'retry': {'number': 0, 'previousRunId': None, 'nextRun': None}}}
+
         Attributes:
             id (str):
             type_ (RunType):
@@ -46,15 +57,19 @@ class Run:
             timing (RunTiming):
             source (RunSource):
             trigger (RunTrigger):
-            execution (AgentRunExecution | RunExecutionMeta | WorkflowRunExecution): Slim execution metadata always present.
-                Pass `expand=execution` to replace with full RunExecution (WorkflowRunExecution or AgentRunExecution depending
-                on run type).
+            execution (AgentRunExecution | RunExecutionMeta | WorkflowRunExecution): Slim execution metadata always present
+                (`status`, `schemaValid`, `batchId`, `retry`). Pass `expand=execution` to replace with full RunExecution
+                (WorkflowRunExecution or AgentRunExecution depending on run type).
+            parent_execution_id (str | Unset): Parent run id when this run was started by an invoke-workflow step. Omitted
+                for top-level runs.
             eval_ (RunEval | Unset):
-            output (None | RunOutputType0 | Unset): Completed runs only.
+            output (None | RunOutputType0 | Unset): Completed runs only. Per-automation business result — not a generic
+                schema. Absent until the run completes.
             files (list[RunArtifact] | Unset): Completed runs only. Download with GET /api/v1/runs/:id/artifacts/:path.
+                Absent until the run completes.
             error (None | str | Unset):
             input_ (RunInput | Unset):
-            usage (None | RunUsage | Unset): `expand=usage`. Null for old runs without telemetry.
+            usage (None | RunUsage | Unset): Present only with `expand=usage`. Null for old runs without telemetry.
             debug (RunDebug | Unset):
      """
 
@@ -66,6 +81,7 @@ class Run:
     source: RunSource
     trigger: RunTrigger
     execution: AgentRunExecution | RunExecutionMeta | WorkflowRunExecution
+    parent_execution_id: str | Unset = UNSET
     eval_: RunEval | Unset = UNSET
     output: None | RunOutputType0 | Unset = UNSET
     files: list[RunArtifact] | Unset = UNSET
@@ -113,6 +129,8 @@ class Run:
         else:
             execution = self.execution.to_dict()
 
+
+        parent_execution_id = self.parent_execution_id
 
         eval_: dict[str, Any] | Unset = UNSET
         if not isinstance(self.eval_, Unset):
@@ -170,6 +188,8 @@ class Run:
             "trigger": trigger,
             "execution": execution,
         })
+        if parent_execution_id is not UNSET:
+            field_dict["parentExecutionId"] = parent_execution_id
         if eval_ is not UNSET:
             field_dict["eval"] = eval_
         if output is not UNSET:
@@ -261,6 +281,8 @@ class Run:
 
         execution = _parse_execution(d.pop("execution"))
 
+
+        parent_execution_id = d.pop("parentExecutionId", UNSET)
 
         _eval_ = d.pop("eval", UNSET)
         eval_: RunEval | Unset
@@ -363,6 +385,7 @@ class Run:
             source=source,
             trigger=trigger,
             execution=execution,
+            parent_execution_id=parent_execution_id,
             eval_=eval_,
             output=output,
             files=files,
