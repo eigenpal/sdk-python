@@ -452,6 +452,66 @@ class AutomationsResource:
             f"/v1/automations/{quote(automation_id, safe='')}/versions",
         )
 
+    def create_version(
+        self,
+        automation_id: str,
+        *,
+        version: str,
+        yaml: Optional[str] = None,
+        history_id: Optional[str] = None,
+        activate: Optional[bool] = None,
+    ) -> Any:
+        """Create a tagged workflow candidate from YAML or by copying a snapshot.
+
+        Provide exactly one of ``yaml`` or ``history_id``. Copy creates a new
+        tagged row and does not retag the source. ``activate=False`` keeps the
+        candidate off live traffic until ``promote_version`` and requires an
+        existing current version.
+        """
+        body: dict[str, Any] = {"version": version}
+        if yaml is not None:
+            body["yaml"] = yaml
+        if history_id is not None:
+            body["historyId"] = history_id
+        if activate is not None:
+            body["activate"] = activate
+        return self._root._request(
+            "POST",
+            f"/v1/automations/{quote(automation_id, safe='')}/versions",
+            json=body,
+        )
+
+    def restore_version(
+        self,
+        automation_id: str,
+        version_id: str,
+        *,
+        message: Optional[str] = None,
+    ) -> Any:
+        """Restore a snapshot by creating a new untagged current version.
+
+        The source tag is unchanged. ``message`` is optional; omit it to send
+        ``{}``. The new HEAD cannot be promoted until you create a tagged copy.
+        """
+        body: dict[str, Any] = {}
+        if message is not None:
+            body["message"] = message
+        return self._root._request(
+            "POST",
+            f"/v1/automations/{quote(automation_id, safe='')}/versions/{quote(version_id, safe='')}/restore",
+            json=body,
+        )
+
+    def promote_version(self, automation_id: str, version_id: str) -> Any:
+        """Make a tagged candidate current without creating another history row.
+
+        Untagged snapshots (for example after restore) and unknown ids return 404.
+        """
+        return self._root._request(
+            "POST",
+            f"/v1/automations/{quote(automation_id, safe='')}/versions/{quote(version_id, safe='')}/promote",
+        )
+
     def triggers(self, automation_id: str) -> Any:
         return self._root._request(
             "GET",
@@ -519,8 +579,9 @@ class AutomationExamplesResource:
         *,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
+        include: Optional[str] = None,
     ) -> Any:
-        params = {"limit": limit, "offset": offset}
+        params = {"limit": limit, "offset": offset, "include": include}
         return self._root._request(
             "GET",
             f"/v1/automations/{quote(automation_id, safe='')}/examples",

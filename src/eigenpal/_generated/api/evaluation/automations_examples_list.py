@@ -9,6 +9,7 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.automations_examples_list_include import AutomationsExamplesListInclude
 from ...models.dataset_example_list import DatasetExampleList
 from ...types import UNSET, Unset
 from typing import cast
@@ -20,6 +21,7 @@ def _get_kwargs(
     *,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include: AutomationsExamplesListInclude | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
@@ -31,6 +33,12 @@ def _get_kwargs(
     params["limit"] = limit
 
     params["offset"] = offset
+
+    json_include: str | Unset = UNSET
+    if not isinstance(include, Unset):
+        json_include = include.value
+
+    params["include"] = json_include
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -125,17 +133,22 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include: AutomationsExamplesListInclude | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | DatasetExampleList]:
     """ List dataset examples
 
      List dataset examples for one automation. Examples contain input, expected output, expected files,
-    metadata, and optional overrides used by evaluation runs.
+    metadata, and optional overrides used by evaluation runs. Pass `include=metadata` to return ids,
+    names, metadata, and expected file refs without loading input or expected JSON.
 
     Args:
         id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
         limit (int | Unset): Maximum number of examples to return.
         offset (int | Unset): Zero-based offset for paging through examples.
+        include (AutomationsExamplesListInclude | Unset): Response payload scope. `metadata`
+            returns ids, names, metadata, and expected file refs without loading input or expected
+            JSON.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,6 +163,7 @@ def sync_detailed(
         id=id,
 limit=limit,
 offset=offset,
+include=include,
 
     )
 
@@ -165,17 +179,22 @@ def sync(
     client: AuthenticatedClient | Client,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include: AutomationsExamplesListInclude | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | DatasetExampleList | None:
     """ List dataset examples
 
      List dataset examples for one automation. Examples contain input, expected output, expected files,
-    metadata, and optional overrides used by evaluation runs.
+    metadata, and optional overrides used by evaluation runs. Pass `include=metadata` to return ids,
+    names, metadata, and expected file refs without loading input or expected JSON.
 
     Args:
         id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
         limit (int | Unset): Maximum number of examples to return.
         offset (int | Unset): Zero-based offset for paging through examples.
+        include (AutomationsExamplesListInclude | Unset): Response payload scope. `metadata`
+            returns ids, names, metadata, and expected file refs without loading input or expected
+            JSON.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -191,6 +210,7 @@ def sync(
 client=client,
 limit=limit,
 offset=offset,
+include=include,
 
     ).parsed
 
@@ -200,17 +220,22 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include: AutomationsExamplesListInclude | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | DatasetExampleList]:
     """ List dataset examples
 
      List dataset examples for one automation. Examples contain input, expected output, expected files,
-    metadata, and optional overrides used by evaluation runs.
+    metadata, and optional overrides used by evaluation runs. Pass `include=metadata` to return ids,
+    names, metadata, and expected file refs without loading input or expected JSON.
 
     Args:
         id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
         limit (int | Unset): Maximum number of examples to return.
         offset (int | Unset): Zero-based offset for paging through examples.
+        include (AutomationsExamplesListInclude | Unset): Response payload scope. `metadata`
+            returns ids, names, metadata, and expected file refs without loading input or expected
+            JSON.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -225,6 +250,7 @@ async def asyncio_detailed(
         id=id,
 limit=limit,
 offset=offset,
+include=include,
 
     )
 
@@ -240,17 +266,22 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
+    include: AutomationsExamplesListInclude | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | DatasetExampleList | None:
     """ List dataset examples
 
      List dataset examples for one automation. Examples contain input, expected output, expected files,
-    metadata, and optional overrides used by evaluation runs.
+    metadata, and optional overrides used by evaluation runs. Pass `include=metadata` to return ids,
+    names, metadata, and expected file refs without loading input or expected JSON.
 
     Args:
         id (str): Automation id or typed alias, such as `workflows.slug` or `agents.slug`.
         limit (int | Unset): Maximum number of examples to return.
         offset (int | Unset): Zero-based offset for paging through examples.
+        include (AutomationsExamplesListInclude | Unset): Response payload scope. `metadata`
+            returns ids, names, metadata, and expected file refs without loading input or expected
+            JSON.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -266,5 +297,6 @@ async def asyncio(
 client=client,
 limit=limit,
 offset=offset,
+include=include,
 
     )).parsed

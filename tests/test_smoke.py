@@ -9,11 +9,16 @@ import pytest
 import respx
 
 from eigenpal import (
+    ApiErrorEnvelope,
+    CreateAutomationVersionRequest,
+    CreateAutomationVersionRequestType0,
     EigenpalAuthError,
     EigenpalClient,
+    EigenpalError,
     EigenpalNotFoundError,
     EigenpalRateLimitError,
     EigenpalValidationError,
+    RestoreAutomationVersionRequest,
 )
 
 
@@ -146,6 +151,27 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     respx.get(
         "http://localhost:3000/v1/automations/workflows.extract-invoice/versions"
     ).mock(return_value=httpx.Response(200, json={"data": []}))
+    respx.post(
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/versions"
+    ).mock(
+        return_value=httpx.Response(
+            201, json={"id": "wfh_new", "automationId": "wf_1", "version": "1.2.0"}
+        )
+    )
+    respx.post(
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/versions/wfh_old/restore"
+    ).mock(
+        return_value=httpx.Response(
+            201, json={"id": "wfh_restored", "automationId": "wf_1", "version": None}
+        )
+    )
+    respx.post(
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/versions/wfh_new/promote"
+    ).mock(
+        return_value=httpx.Response(
+            200, json={"id": "wfh_new", "automationId": "wf_1", "version": "1.2.0"}
+        )
+    )
     respx.get(
         "http://localhost:3000/v1/automations/workflows.extract-invoice/triggers"
     ).mock(return_value=httpx.Response(200, json={"triggers": []}))
@@ -211,6 +237,14 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.automations.list()
     client.automations.get("workflows.extract-invoice")
     client.automations.versions("workflows.extract-invoice")
+    client.automations.create_version(
+        "workflows.extract-invoice",
+        yaml="name: extract-invoice\n",
+        version="1.2.0",
+        activate=False,
+    )
+    client.automations.restore_version("workflows.extract-invoice", "wfh_old")
+    client.automations.promote_version("workflows.extract-invoice", "wfh_new")
     client.automations.triggers("workflows.extract-invoice")
     client.automations.experiments.export("workflows.extract-invoice", "exp_1")
     client.automations.experiments.export_all("workflows.extract-invoice")
@@ -233,7 +267,15 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.files.get("file_123")
     assert client.files.delete("file_123") is None
 
-    assert len(respx.calls) == 19
+    create_version_request = next(
+        call.request
+        for call in respx.calls
+        if call.request.method == "POST"
+        and call.request.url.path == "/v1/automations/workflows.extract-invoice/versions"
+    )
+    assert json.loads(create_version_request.content)["activate"] is False
+
+    assert len(respx.calls) == 22
 
 
 @respx.mock
@@ -251,6 +293,20 @@ def test_run_control_routes(client: EigenpalClient) -> None:
 
     assert cancel_route.called
     assert rerun_route.called
+
+
+@respx.mock
+def test_examples_list_forwards_include_metadata(client: EigenpalClient) -> None:
+    route = respx.get(
+        "http://localhost:3000/v1/automations/workflows.extract-invoice/examples"
+    ).mock(return_value=httpx.Response(200, json={"data": [], "total": 0}))
+
+    client.automations.examples.list(
+        "workflows.extract-invoice", include="metadata"
+    )
+
+    assert route.called
+    assert route.calls.last.request.url.params["include"] == "metadata"
 
 
 @respx.mock
@@ -280,6 +336,42 @@ def test_401_404_429_and_400_raise_typed_errors(client: EigenpalClient) -> None:
         client.automations.list()
     with pytest.raises(EigenpalValidationError):
         client.automations.list()
+
+
+@respx.mock
+def test_409_name_conflict_exposes_conflicting_workflow_id(client: EigenpalClient) -> None:
+    respx.post("http://localhost:3000/v1/automations/workflows.extract-invoice/versions").mock(
+        return_value=httpx.Response(
+            409,
+            json={
+                "issues": [
+                    {
+                        "field": "name",
+                        "message": "already in use",
+                        "code": "workflow_name_conflict",
+                        "severity": "error",
+                    }
+                ],
+                "requestId": "req_1",
+                "conflictingWorkflowId": "wf_existing",
+            },
+        )
+    )
+    with pytest.raises(EigenpalError) as raised:
+        client.automations.create_version(
+            "workflows.extract-invoice", yaml="name: x\n", version="1.2.0"
+        )
+    assert raised.value.status == 409
+    assert raised.value.envelope is not None
+    assert raised.value.envelope["conflictingWorkflowId"] == "wf_existing"
+    parsed = ApiErrorEnvelope.from_dict(raised.value.envelope)
+    assert parsed.conflicting_workflow_id == "wf_existing"
+
+
+def test_public_version_request_types_are_exported() -> None:
+    assert CreateAutomationVersionRequestType0 is not None
+    assert CreateAutomationVersionRequest is not None
+    assert RestoreAutomationVersionRequest is not None
 
 
 @respx.mock

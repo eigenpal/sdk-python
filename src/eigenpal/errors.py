@@ -1,7 +1,7 @@
 """Typed exceptions raised by the Eigenpal SDK.
 
 Every non-2xx HTTP response is mapped to one of these subclasses based on
-the status code. The original API error envelope (`{ issues, requestId, hint? }`)
+the status code. The original API error envelope (`{ issues, requestId, hint?, docsUrl?, conflictingWorkflowId? }`)
 is preserved on the exception's `envelope` attribute when present.
 """
 

@@ -18,6 +18,7 @@ from .automation_trigger_state import AutomationTriggerState
 from .automation_triggers_response import AutomationTriggersResponse
 from .automation_type import AutomationType
 from .automation_version import AutomationVersion
+from .automations_examples_list_include import AutomationsExamplesListInclude
 from .automations_experiments_export_all_format import AutomationsExperimentsExportAllFormat
 from .automations_experiments_export_format import AutomationsExperimentsExportFormat
 from .automations_experiments_export_include_trace import AutomationsExperimentsExportIncludeTrace
@@ -29,6 +30,8 @@ from .automations_sync_response_200_automation import AutomationsSyncResponse200
 from .automations_sync_response_200_automation_status import AutomationsSyncResponse200AutomationStatus
 from .automations_sync_response_200_automation_type import AutomationsSyncResponse200AutomationType
 from .automations_sync_response_200_release import AutomationsSyncResponse200Release
+from .create_automation_version_request_type_0 import CreateAutomationVersionRequestType0
+from .create_automation_version_request_type_1 import CreateAutomationVersionRequestType1
 from .create_file_multipart_request import CreateFileMultipartRequest
 from .create_file_multipart_request_purpose import CreateFileMultipartRequestPurpose
 from .create_file_upload_session_request import CreateFileUploadSessionRequest
@@ -86,6 +89,7 @@ from .presigned_file_upload_session_headers import PresignedFileUploadSessionHea
 from .promote_run_request import PromoteRunRequest
 from .promote_run_response import PromoteRunResponse
 from .promote_run_response_automation_type import PromoteRunResponseAutomationType
+from .restore_automation_version_request import RestoreAutomationVersionRequest
 from .run import Run
 from .run_accepted import RunAccepted
 from .run_accepted_type import RunAcceptedType
@@ -184,6 +188,7 @@ __all__ = (
     "AutomationDetail",
     "AutomationDetailInputSchemaType0",
     "AutomationDetailOutputSchemaType0",
+    "AutomationsExamplesListInclude",
     "AutomationsExperimentsExportAllFormat",
     "AutomationsExperimentsExportFormat",
     "AutomationsExperimentsExportIncludeTrace",
@@ -200,6 +205,8 @@ __all__ = (
     "AutomationTriggerState",
     "AutomationType",
     "AutomationVersion",
+    "CreateAutomationVersionRequestType0",
+    "CreateAutomationVersionRequestType1",
     "CreateFileMultipartRequest",
     "CreateFileMultipartRequestPurpose",
     "CreateFileUploadSessionRequest",
@@ -257,6 +264,7 @@ __all__ = (
     "PromoteRunRequest",
     "PromoteRunResponse",
     "PromoteRunResponseAutomationType",
+    "RestoreAutomationVersionRequest",
     "Run",
     "RunAccepted",
     "RunAcceptedType",

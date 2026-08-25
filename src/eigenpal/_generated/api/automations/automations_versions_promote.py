@@ -9,13 +9,14 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.list_automation_versions_response import ListAutomationVersionsResponse
+from ...models.automation_version import AutomationVersion
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    version_id: str,
 
 ) -> dict[str, Any]:
 
@@ -25,8 +26,8 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "get",
-        "url": "/v1/automations/{id}/versions".format(id=quote(str(id), safe=""),),
+        "method": "post",
+        "url": "/v1/automations/{id}/versions/{version_id}/promote".format(id=quote(str(id), safe=""),version_id=quote(str(version_id), safe=""),),
     }
 
 
@@ -34,9 +35,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListAutomationVersionsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | AutomationVersion | None:
     if response.status_code == 200:
-        response_200 = ListAutomationVersionsResponse.from_dict(response.json())
+        response_200 = AutomationVersion.from_dict(response.json())
 
 
 
@@ -70,6 +71,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 409:
+        response_409 = ApiErrorEnvelope.from_dict(response.json())
+
+
+
+        return response_409
+
     if response.status_code == 413:
         response_413 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -97,7 +105,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListAutomationVersionsResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | AutomationVersion]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -108,30 +116,34 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
+    version_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | ListAutomationVersionsResponse]:
-    """ List automation versions
+) -> Response[ApiErrorEnvelope | AutomationVersion]:
+    """ Promote a workflow version
 
-     List versions for a workflow or agent automation. YAML workflow lists include tagged releases plus
-    the current untagged snapshot when HEAD is untagged (for example after restore), so the current
-    version is always present. Agent lists remain Git release tags.
+     Make an existing tagged YAML workflow candidate current without creating another history row. Only
+    tagged version rows can be promoted; untagged snapshots (including restore HEAD) and missing ids
+    return 404. Agent automations return 400. Requires a Bearer API key or a dashboard session.
 
     Args:
         id (str): Workflow id, agent id, or typed alias like workflows.slug / agents.slug
+        version_id (str): Tagged version id from GET /automations/{id}/versions. Untagged
+            snapshots (for example after restore) and unknown ids return 404.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListAutomationVersionsResponse]
+        Response[ApiErrorEnvelope | AutomationVersion]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+version_id=version_id,
 
     )
 
@@ -143,60 +155,68 @@ def sync_detailed(
 
 def sync(
     id: str,
+    version_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | ListAutomationVersionsResponse | None:
-    """ List automation versions
+) -> ApiErrorEnvelope | AutomationVersion | None:
+    """ Promote a workflow version
 
-     List versions for a workflow or agent automation. YAML workflow lists include tagged releases plus
-    the current untagged snapshot when HEAD is untagged (for example after restore), so the current
-    version is always present. Agent lists remain Git release tags.
+     Make an existing tagged YAML workflow candidate current without creating another history row. Only
+    tagged version rows can be promoted; untagged snapshots (including restore HEAD) and missing ids
+    return 404. Agent automations return 400. Requires a Bearer API key or a dashboard session.
 
     Args:
         id (str): Workflow id, agent id, or typed alias like workflows.slug / agents.slug
+        version_id (str): Tagged version id from GET /automations/{id}/versions. Untagged
+            snapshots (for example after restore) and unknown ids return 404.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListAutomationVersionsResponse
+        ApiErrorEnvelope | AutomationVersion
      """
 
 
     return sync_detailed(
         id=id,
+version_id=version_id,
 client=client,
 
     ).parsed
 
 async def asyncio_detailed(
     id: str,
+    version_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | ListAutomationVersionsResponse]:
-    """ List automation versions
+) -> Response[ApiErrorEnvelope | AutomationVersion]:
+    """ Promote a workflow version
 
-     List versions for a workflow or agent automation. YAML workflow lists include tagged releases plus
-    the current untagged snapshot when HEAD is untagged (for example after restore), so the current
-    version is always present. Agent lists remain Git release tags.
+     Make an existing tagged YAML workflow candidate current without creating another history row. Only
+    tagged version rows can be promoted; untagged snapshots (including restore HEAD) and missing ids
+    return 404. Agent automations return 400. Requires a Bearer API key or a dashboard session.
 
     Args:
         id (str): Workflow id, agent id, or typed alias like workflows.slug / agents.slug
+        version_id (str): Tagged version id from GET /automations/{id}/versions. Untagged
+            snapshots (for example after restore) and unknown ids return 404.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | ListAutomationVersionsResponse]
+        Response[ApiErrorEnvelope | AutomationVersion]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+version_id=version_id,
 
     )
 
@@ -208,30 +228,34 @@ async def asyncio_detailed(
 
 async def asyncio(
     id: str,
+    version_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | ListAutomationVersionsResponse | None:
-    """ List automation versions
+) -> ApiErrorEnvelope | AutomationVersion | None:
+    """ Promote a workflow version
 
-     List versions for a workflow or agent automation. YAML workflow lists include tagged releases plus
-    the current untagged snapshot when HEAD is untagged (for example after restore), so the current
-    version is always present. Agent lists remain Git release tags.
+     Make an existing tagged YAML workflow candidate current without creating another history row. Only
+    tagged version rows can be promoted; untagged snapshots (including restore HEAD) and missing ids
+    return 404. Agent automations return 400. Requires a Bearer API key or a dashboard session.
 
     Args:
         id (str): Workflow id, agent id, or typed alias like workflows.slug / agents.slug
+        version_id (str): Tagged version id from GET /automations/{id}/versions. Untagged
+            snapshots (for example after restore) and unknown ids return 404.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | ListAutomationVersionsResponse
+        ApiErrorEnvelope | AutomationVersion
      """
 
 
     return (await asyncio_detailed(
         id=id,
+version_id=version_id,
 client=client,
 
     )).parsed

@@ -36,8 +36,10 @@ class DatasetExample:
             name (str): Human-readable dataset example name.
             automation_id (str): Automation that owns this example.
             automation_type (AutomationType):
-            input_ (DatasetExampleInputType0 | None): Input arguments used when this example is run.
-            expected (Any | None): Expected JSON output for evaluator comparisons.
+            input_ (DatasetExampleInputType0 | None): Input arguments used when this example is run. Null when listing with
+                `include=metadata`.
+            expected (Any | None): Expected JSON output for evaluator comparisons. Null when listing with
+                `include=metadata`.
             expected_files (list[DatasetExampleExpectedFilesItem]): Expected files attached to this example.
             metadata (DatasetExampleMetadataType0 | None): Caller-managed metadata for sorting or filtering examples.
             annotation (None | str): Human note about the example.

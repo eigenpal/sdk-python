@@ -30,12 +30,15 @@ class ApiErrorEnvelope:
             request_id (str): Request id echoed via the x-request-id header
             hint (str | Unset): Suggested fix for known error patterns
             docs_url (str | Unset): Link to relevant docs
+            conflicting_workflow_id (str | Unset): Present on 409 workflow_name_conflict responses. Id of the workflow that
+                already owns the requested name.
      """
 
     issues: list[ApiErrorIssue]
     request_id: str
     hint: str | Unset = UNSET
     docs_url: str | Unset = UNSET
+    conflicting_workflow_id: str | Unset = UNSET
 
 
 
@@ -56,6 +59,8 @@ class ApiErrorEnvelope:
 
         docs_url = self.docs_url
 
+        conflicting_workflow_id = self.conflicting_workflow_id
+
 
         field_dict: dict[str, Any] = {}
 
@@ -67,6 +72,8 @@ class ApiErrorEnvelope:
             field_dict["hint"] = hint
         if docs_url is not UNSET:
             field_dict["docsUrl"] = docs_url
+        if conflicting_workflow_id is not UNSET:
+            field_dict["conflictingWorkflowId"] = conflicting_workflow_id
 
         return field_dict
 
@@ -92,11 +99,14 @@ class ApiErrorEnvelope:
 
         docs_url = d.pop("docsUrl", UNSET)
 
+        conflicting_workflow_id = d.pop("conflictingWorkflowId", UNSET)
+
         api_error_envelope = cls(
             issues=issues,
             request_id=request_id,
             hint=hint,
             docs_url=docs_url,
+            conflicting_workflow_id=conflicting_workflow_id,
         )
 
         return api_error_envelope
