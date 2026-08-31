@@ -34,7 +34,11 @@ def _resolve_multipart_max_bytes(
     if explicit != "env":
         if explicit is None:
             return None
-        if isinstance(explicit, int) and not isinstance(explicit, bool) and explicit >= 0:
+        if (
+            isinstance(explicit, int)
+            and not isinstance(explicit, bool)
+            and explicit >= 0
+        ):
             return explicit
         raise EigenpalError(
             "multipart_max_bytes must be a non-negative integer or None.",
@@ -253,9 +257,11 @@ class EigenpalClient:
         )
 
         self.auth = AuthResource(self)
+        self.models = ModelsResource(self)
         self.automations = AutomationsResource(self)
         self.runs = RunsResource(self)
         self.files = FilesResource(self)
+        self.templates = TemplatesResource(self)
 
     def close(self) -> None:
         self._http.close()
@@ -332,9 +338,7 @@ class EigenpalClient:
             body["metadata"] = metadata
         return self._request("POST", "/v1/runs", params=params or None, json=body)
 
-    def _prepare_run_file_inputs(
-        self, input_dict: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _prepare_run_file_inputs(self, input_dict: dict[str, Any]) -> dict[str, Any]:
         """Pre-upload files when aggregate multipart bytes exceed the configured limit."""
         if not has_file_input(input_dict):
             return input_dict
@@ -415,6 +419,15 @@ class AuthResource:
 
     def check(self) -> Any:
         return self._root._request("GET", "/v1/auth/check")
+
+
+class ModelsResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(self, *, capability: Optional[str] = None) -> Any:
+        params = {"capability": capability} if capability is not None else None
+        return self._root._request("GET", "/v1/models", params=params)
 
 
 class AutomationsResource:
@@ -997,3 +1010,91 @@ class FilesResource:
 
     def delete(self, file_id: str) -> Any:
         return self._root._request("DELETE", f"/v1/files/{quote(file_id, safe='')}")
+
+
+class TemplatesResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(self, *, limit: Optional[int] = None, offset: Optional[int] = None) -> Any:
+        params = {
+            name: value
+            for name, value in {"limit": limit, "offset": offset}.items()
+            if value is not None
+        }
+        return self._root._request("GET", "/v1/templates", params=params or None)
+
+    def get(self, template_id: str) -> Any:
+        return self._root._request(
+            "GET", f"/v1/templates/{quote(template_id, safe='')}"
+        )
+
+    def create(
+        self,
+        file: Path | dict[str, Any] | BinaryIO,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Any:
+        uploaded = self._root.files.upload(file)
+        try:
+            return self.create_from_file_id(
+                uploaded["id"], name=name, description=description
+            )
+        finally:
+            try:
+                self._root.files.delete(uploaded["id"])
+            except Exception:
+                pass
+
+    def create_from_file_id(
+        self,
+        file_id: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Any:
+        """Create a template from an existing reusable ``file_…`` resource."""
+        body = {
+            key: value
+            for key, value in {
+                "fileId": file_id,
+                "name": name,
+                "description": description,
+            }.items()
+            if value is not None
+        }
+        return self._root._request("POST", "/v1/templates", json=body)
+
+    def replace(self, template_id: str, file: Path | dict[str, Any] | BinaryIO) -> Any:
+        uploaded = self._root.files.upload(file)
+        try:
+            return self.replace_from_file_id(template_id, uploaded["id"])
+        finally:
+            try:
+                self._root.files.delete(uploaded["id"])
+            except Exception:
+                pass
+
+    def replace_from_file_id(self, template_id: str, file_id: str) -> Any:
+        """Append a revision from an existing reusable ``file_…`` resource."""
+        return self._root._request(
+            "PUT",
+            f"/v1/templates/{quote(template_id, safe='')}",
+            json={"fileId": file_id},
+        )
+
+    def download(self, template_id: str, *, revision_id: Optional[str] = None) -> bytes:
+        response = self._root._http.get(
+            f"/v1/templates/{quote(template_id, safe='')}/content",
+            params={"revisionId": revision_id} if revision_id else None,
+            follow_redirects=True,
+        )
+        if response.status_code >= 400:
+            _check_response(response)
+        return response.content
+
+    def delete(self, template_id: str) -> Any:
+        return self._root._request(
+            "DELETE", f"/v1/templates/{quote(template_id, safe='')}"
+        )

@@ -36,6 +36,12 @@ from .create_file_multipart_request import CreateFileMultipartRequest
 from .create_file_multipart_request_purpose import CreateFileMultipartRequestPurpose
 from .create_file_upload_session_request import CreateFileUploadSessionRequest
 from .create_file_upload_session_request_purpose import CreateFileUploadSessionRequestPurpose
+from .created_template import CreatedTemplate
+from .created_template_format import CreatedTemplateFormat
+from .created_template_grammar import CreatedTemplateGrammar
+from .created_template_tokens_item import CreatedTemplateTokensItem
+from .created_template_tokens_item_kind import CreatedTemplateTokensItemKind
+from .created_template_tokens_item_type import CreatedTemplateTokensItemType
 from .dataset_example import DatasetExample
 from .dataset_example_expected_file_list import DatasetExampleExpectedFileList
 from .dataset_example_expected_file_rename_request import DatasetExampleExpectedFileRenameRequest
@@ -63,6 +69,7 @@ from .dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverrid
 from .dataset_import_response_type_0 import DatasetImportResponseType0
 from .dataset_import_response_type_1 import DatasetImportResponseType1
 from .delete_file_response import DeleteFileResponse
+from .delete_template_response import DeleteTemplateResponse
 from .eval_result import EvalResult
 from .evaluator_config_response import EvaluatorConfigResponse
 from .evaluator_config_response_config import EvaluatorConfigResponseConfig
@@ -83,12 +90,23 @@ from .experiment_status import ExperimentStatus
 from .file import File
 from .list_automation_versions_response import ListAutomationVersionsResponse
 from .list_automations_response import ListAutomationsResponse
+from .list_models_response import ListModelsResponse
+from .list_templates_response import ListTemplatesResponse
+from .models_list_capability import ModelsListCapability
 from .multipart_file_upload_fallback import MultipartFileUploadFallback
 from .presigned_file_upload_session import PresignedFileUploadSession
 from .presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders
 from .promote_run_request import PromoteRunRequest
 from .promote_run_response import PromoteRunResponse
 from .promote_run_response_automation_type import PromoteRunResponseAutomationType
+from .public_model import PublicModel
+from .public_model_capabilities_item import PublicModelCapabilitiesItem
+from .public_model_cost import PublicModelCost
+from .public_model_default_for_item import PublicModelDefaultForItem
+from .public_model_health import PublicModelHealth
+from .public_model_kind import PublicModelKind
+from .public_model_limits import PublicModelLimits
+from .public_model_location import PublicModelLocation
 from .restore_automation_version_request import RestoreAutomationVersionRequest
 from .run import Run
 from .run_accepted import RunAccepted
@@ -171,6 +189,18 @@ from .run_usage_tokens import RunUsageTokens
 from .runs_artifacts_list_bundle import RunsArtifactsListBundle
 from .runs_artifacts_list_zip import RunsArtifactsListZip
 from .runs_list_response import RunsListResponse
+from .template import Template
+from .template_file_reference_request import TemplateFileReferenceRequest
+from .template_format import TemplateFormat
+from .template_grammar import TemplateGrammar
+from .template_replace_request import TemplateReplaceRequest
+from .template_revision import TemplateRevision
+from .template_staging_request import TemplateStagingRequest
+from .template_staging_request_action import TemplateStagingRequestAction
+from .template_staging_response import TemplateStagingResponse
+from .template_tokens_item import TemplateTokensItem
+from .template_tokens_item_kind import TemplateTokensItemKind
+from .template_tokens_item_type import TemplateTokensItemType
 from .workflow_run_execution import WorkflowRunExecution
 from .workflow_run_execution_expected import WorkflowRunExecutionExpected
 
@@ -207,6 +237,12 @@ __all__ = (
     "AutomationVersion",
     "CreateAutomationVersionRequestType0",
     "CreateAutomationVersionRequestType1",
+    "CreatedTemplate",
+    "CreatedTemplateFormat",
+    "CreatedTemplateGrammar",
+    "CreatedTemplateTokensItem",
+    "CreatedTemplateTokensItemKind",
+    "CreatedTemplateTokensItemType",
     "CreateFileMultipartRequest",
     "CreateFileMultipartRequestPurpose",
     "CreateFileUploadSessionRequest",
@@ -238,6 +274,7 @@ __all__ = (
     "DatasetImportResponseType0",
     "DatasetImportResponseType1",
     "DeleteFileResponse",
+    "DeleteTemplateResponse",
     "EvalResult",
     "EvaluatorConfigResponse",
     "EvaluatorConfigResponseConfig",
@@ -258,12 +295,23 @@ __all__ = (
     "File",
     "ListAutomationsResponse",
     "ListAutomationVersionsResponse",
+    "ListModelsResponse",
+    "ListTemplatesResponse",
+    "ModelsListCapability",
     "MultipartFileUploadFallback",
     "PresignedFileUploadSession",
     "PresignedFileUploadSessionHeaders",
     "PromoteRunRequest",
     "PromoteRunResponse",
     "PromoteRunResponseAutomationType",
+    "PublicModel",
+    "PublicModelCapabilitiesItem",
+    "PublicModelCost",
+    "PublicModelDefaultForItem",
+    "PublicModelHealth",
+    "PublicModelKind",
+    "PublicModelLimits",
+    "PublicModelLocation",
     "RestoreAutomationVersionRequest",
     "Run",
     "RunAccepted",
@@ -346,6 +394,18 @@ __all__ = (
     "RunUsage",
     "RunUsageResponse",
     "RunUsageTokens",
+    "Template",
+    "TemplateFileReferenceRequest",
+    "TemplateFormat",
+    "TemplateGrammar",
+    "TemplateReplaceRequest",
+    "TemplateRevision",
+    "TemplateStagingRequest",
+    "TemplateStagingRequestAction",
+    "TemplateStagingResponse",
+    "TemplateTokensItem",
+    "TemplateTokensItemKind",
+    "TemplateTokensItemType",
     "WorkflowRunExecution",
     "WorkflowRunExecutionExpected",
 )

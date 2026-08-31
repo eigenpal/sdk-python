@@ -76,6 +76,7 @@ for path in out_dir.rglob("*.py"):
 for relative in [
     "api/evaluation/automations_dataset_export.py",
     "api/reviews/runs_reviews_expected_file_get.py",
+    "api/templates/templates_content_get.py",
 ]:
     path = out_dir / relative
     text = path.read_text()
