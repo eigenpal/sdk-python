@@ -27,6 +27,8 @@ class ExperimentDetailRunsItem:
             status (str): Current run status.
             example_id (None | str): Dataset example id for the run.
             example_name (None | str): Dataset example name for the run.
+            eval_score (float | None): Persisted weighted evaluator score.
+            eval_passed (bool | None): Persisted aggregate evaluator verdict.
             created_at (str):
             completed_at (None | str):
      """
@@ -35,6 +37,8 @@ class ExperimentDetailRunsItem:
     status: str
     example_id: None | str
     example_name: None | str
+    eval_score: float | None
+    eval_passed: bool | None
     created_at: str
     completed_at: None | str
 
@@ -53,6 +57,12 @@ class ExperimentDetailRunsItem:
         example_name: None | str
         example_name = self.example_name
 
+        eval_score: float | None
+        eval_score = self.eval_score
+
+        eval_passed: bool | None
+        eval_passed = self.eval_passed
+
         created_at: str
         created_at = self.created_at
 
@@ -67,6 +77,8 @@ class ExperimentDetailRunsItem:
             "status": status,
             "exampleId": example_id,
             "exampleName": example_name,
+            "evalScore": eval_score,
+            "evalPassed": eval_passed,
             "createdAt": created_at,
             "completedAt": completed_at,
         })
@@ -98,6 +110,22 @@ class ExperimentDetailRunsItem:
         example_name = _parse_example_name(d.pop("exampleName"))
 
 
+        def _parse_eval_score(data: object) -> float | None:
+            if data is None:
+                return data
+            return cast(float | None, data)
+
+        eval_score = _parse_eval_score(d.pop("evalScore"))
+
+
+        def _parse_eval_passed(data: object) -> bool | None:
+            if data is None:
+                return data
+            return cast(bool | None, data)
+
+        eval_passed = _parse_eval_passed(d.pop("evalPassed"))
+
+
         def _parse_created_at(data: object) -> str:
             return cast(str, data)
 
@@ -117,6 +145,8 @@ class ExperimentDetailRunsItem:
             status=status,
             example_id=example_id,
             example_name=example_name,
+            eval_score=eval_score,
+            eval_passed=eval_passed,
             created_at=created_at,
             completed_at=completed_at,
         )
