@@ -50,6 +50,8 @@ class PublicModel:
             tags (list[str]):
             limits (PublicModelLimits | Unset):
             cost (PublicModelCost | Unset):
+            capability_rank (int | Unset): Optional picker rank. Higher is more capable. Omitted on catalog rows that do not
+                set it. Does not change role defaults.
      """
 
     id: str
@@ -66,6 +68,7 @@ class PublicModel:
     tags: list[str]
     limits: PublicModelLimits | Unset = UNSET
     cost: PublicModelCost | Unset = UNSET
+    capability_rank: int | Unset = UNSET
 
 
 
@@ -120,6 +123,8 @@ class PublicModel:
         if not isinstance(self.cost, Unset):
             cost = self.cost.to_dict()
 
+        capability_rank = self.capability_rank
+
 
         field_dict: dict[str, Any] = {}
 
@@ -141,6 +146,8 @@ class PublicModel:
             field_dict["limits"] = limits
         if cost is not UNSET:
             field_dict["cost"] = cost
+        if capability_rank is not UNSET:
+            field_dict["capabilityRank"] = capability_rank
 
         return field_dict
 
@@ -222,6 +229,8 @@ class PublicModel:
 
 
 
+        capability_rank = d.pop("capabilityRank", UNSET)
+
         public_model = cls(
             id=id,
             kind=kind,
@@ -237,6 +246,7 @@ class PublicModel:
             tags=tags,
             limits=limits,
             cost=cost,
+            capability_rank=capability_rank,
         )
 
         return public_model

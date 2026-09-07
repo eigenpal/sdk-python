@@ -262,6 +262,7 @@ class EigenpalClient:
         self.runs = RunsResource(self)
         self.files = FilesResource(self)
         self.templates = TemplatesResource(self)
+        self.email_servers = EmailServersResource(self)
 
     def close(self) -> None:
         self._http.close()
@@ -1097,4 +1098,44 @@ class TemplatesResource:
     def delete(self, template_id: str) -> Any:
         return self._root._request(
             "DELETE", f"/v1/templates/{quote(template_id, safe='')}"
+        )
+
+
+class EmailServersResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(self, *, limit: Optional[int] = None, offset: Optional[int] = None) -> Any:
+        params = {
+            name: value
+            for name, value in {"limit": limit, "offset": offset}.items()
+            if value is not None
+        }
+        return self._root._request("GET", "/v1/email-servers", params=params or None)
+
+    def get(self, email_server_id: str) -> Any:
+        return self._root._request(
+            "GET", f"/v1/email-servers/{quote(email_server_id, safe='')}"
+        )
+
+    def create(self, body: dict[str, Any]) -> Any:
+        return self._root._request("POST", "/v1/email-servers", json=body)
+
+    def update(self, email_server_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "PATCH",
+            f"/v1/email-servers/{quote(email_server_id, safe='')}",
+            json=body,
+        )
+
+    def delete(self, email_server_id: str) -> Any:
+        return self._root._request(
+            "DELETE", f"/v1/email-servers/{quote(email_server_id, safe='')}"
+        )
+
+    def test(self, email_server_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "POST",
+            f"/v1/email-servers/{quote(email_server_id, safe='')}/test",
+            json=body,
         )

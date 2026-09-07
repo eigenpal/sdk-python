@@ -32,6 +32,9 @@ from .automations_sync_response_200_automation_type import AutomationsSyncRespon
 from .automations_sync_response_200_release import AutomationsSyncResponse200Release
 from .create_automation_version_request_type_0 import CreateAutomationVersionRequestType0
 from .create_automation_version_request_type_1 import CreateAutomationVersionRequestType1
+from .create_email_server_request_type_0 import CreateEmailServerRequestType0
+from .create_email_server_request_type_1 import CreateEmailServerRequestType1
+from .create_email_server_request_type_1_security import CreateEmailServerRequestType1Security
 from .create_file_multipart_request import CreateFileMultipartRequest
 from .create_file_multipart_request_purpose import CreateFileMultipartRequestPurpose
 from .create_file_upload_session_request import CreateFileUploadSessionRequest
@@ -68,6 +71,7 @@ from .dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadata
 from .dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
 from .dataset_import_response_type_0 import DatasetImportResponseType0
 from .dataset_import_response_type_1 import DatasetImportResponseType1
+from .delete_email_server_response import DeleteEmailServerResponse
 from .delete_file_response import DeleteFileResponse
 from .delete_template_response import DeleteTemplateResponse
 from .eval_result import EvalResult
@@ -90,6 +94,7 @@ from .experiment_status import ExperimentStatus
 from .file import File
 from .list_automation_versions_response import ListAutomationVersionsResponse
 from .list_automations_response import ListAutomationsResponse
+from .list_email_servers_response import ListEmailServersResponse
 from .list_models_response import ListModelsResponse
 from .list_templates_response import ListTemplatesResponse
 from .models_list_capability import ModelsListCapability
@@ -107,6 +112,9 @@ from .public_model_health import PublicModelHealth
 from .public_model_kind import PublicModelKind
 from .public_model_limits import PublicModelLimits
 from .public_model_location import PublicModelLocation
+from .public_resend_email_server import PublicResendEmailServer
+from .public_smtp_email_server import PublicSmtpEmailServer
+from .public_smtp_email_server_security import PublicSmtpEmailServerSecurity
 from .restore_automation_version_request import RestoreAutomationVersionRequest
 from .run import Run
 from .run_accepted import RunAccepted
@@ -201,6 +209,14 @@ from .template_staging_response import TemplateStagingResponse
 from .template_tokens_item import TemplateTokensItem
 from .template_tokens_item_kind import TemplateTokensItemKind
 from .template_tokens_item_type import TemplateTokensItemType
+from .test_email_server_request import TestEmailServerRequest
+from .test_email_server_response_type_0 import TestEmailServerResponseType0
+from .test_email_server_response_type_0_transport import TestEmailServerResponseType0Transport
+from .test_email_server_response_type_1 import TestEmailServerResponseType1
+from .update_email_server_request_type_0 import UpdateEmailServerRequestType0
+from .update_email_server_request_type_1 import UpdateEmailServerRequestType1
+from .update_email_server_request_type_1_security import UpdateEmailServerRequestType1Security
+from .update_email_server_request_type_2 import UpdateEmailServerRequestType2
 from .workflow_run_execution import WorkflowRunExecution
 from .workflow_run_execution_expected import WorkflowRunExecutionExpected
 
@@ -243,6 +259,9 @@ __all__ = (
     "CreatedTemplateTokensItem",
     "CreatedTemplateTokensItemKind",
     "CreatedTemplateTokensItemType",
+    "CreateEmailServerRequestType0",
+    "CreateEmailServerRequestType1",
+    "CreateEmailServerRequestType1Security",
     "CreateFileMultipartRequest",
     "CreateFileMultipartRequestPurpose",
     "CreateFileUploadSessionRequest",
@@ -273,6 +292,7 @@ __all__ = (
     "DatasetExampleUpdateOverridesType0",
     "DatasetImportResponseType0",
     "DatasetImportResponseType1",
+    "DeleteEmailServerResponse",
     "DeleteFileResponse",
     "DeleteTemplateResponse",
     "EvalResult",
@@ -295,6 +315,7 @@ __all__ = (
     "File",
     "ListAutomationsResponse",
     "ListAutomationVersionsResponse",
+    "ListEmailServersResponse",
     "ListModelsResponse",
     "ListTemplatesResponse",
     "ModelsListCapability",
@@ -312,6 +333,9 @@ __all__ = (
     "PublicModelKind",
     "PublicModelLimits",
     "PublicModelLocation",
+    "PublicResendEmailServer",
+    "PublicSmtpEmailServer",
+    "PublicSmtpEmailServerSecurity",
     "RestoreAutomationVersionRequest",
     "Run",
     "RunAccepted",
@@ -406,6 +430,14 @@ __all__ = (
     "TemplateTokensItem",
     "TemplateTokensItemKind",
     "TemplateTokensItemType",
+    "TestEmailServerRequest",
+    "TestEmailServerResponseType0",
+    "TestEmailServerResponseType0Transport",
+    "TestEmailServerResponseType1",
+    "UpdateEmailServerRequestType0",
+    "UpdateEmailServerRequestType1",
+    "UpdateEmailServerRequestType1Security",
+    "UpdateEmailServerRequestType2",
     "WorkflowRunExecution",
     "WorkflowRunExecutionExpected",
 )
