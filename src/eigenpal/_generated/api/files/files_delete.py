@@ -114,7 +114,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | DeleteFileResponse]:
     """ Delete file
 
-     Delete a reusable uploaded file. Historical run and dataset snapshots are separate artifacts.
+     Delete a reusable uploaded file. Past runs that referenced it stay readable until those runs are
+    deleted.
 
     Args:
         id (str): File id
@@ -147,7 +148,8 @@ def sync(
 ) -> ApiErrorEnvelope | DeleteFileResponse | None:
     """ Delete file
 
-     Delete a reusable uploaded file. Historical run and dataset snapshots are separate artifacts.
+     Delete a reusable uploaded file. Past runs that referenced it stay readable until those runs are
+    deleted.
 
     Args:
         id (str): File id
@@ -175,7 +177,8 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | DeleteFileResponse]:
     """ Delete file
 
-     Delete a reusable uploaded file. Historical run and dataset snapshots are separate artifacts.
+     Delete a reusable uploaded file. Past runs that referenced it stay readable until those runs are
+    deleted.
 
     Args:
         id (str): File id
@@ -208,7 +211,8 @@ async def asyncio(
 ) -> ApiErrorEnvelope | DeleteFileResponse | None:
     """ Delete file
 
-     Delete a reusable uploaded file. Historical run and dataset snapshots are separate artifacts.
+     Delete a reusable uploaded file. Past runs that referenced it stay readable until those runs are
+    deleted.
 
     Args:
         id (str): File id

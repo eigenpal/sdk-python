@@ -12,8 +12,22 @@ from urllib.parse import quote
 
 import httpx
 
-from eigenpal._files import has_file_input, is_file_input, to_upload_tuple
+from eigenpal._files import (
+    has_file_input,
+    inspect_upload_source,
+    is_file_input,
+    read_part,
+    to_upload_tuple,
+)
 from eigenpal._telemetry import build_telemetry_headers
+from eigenpal._upload import (
+    PartUploadHttpError,
+    annotate_multipart_complete_failure,
+    annotate_presigned_put_complete_failure,
+    should_abort_multipart_upload_session,
+    storage_upload_timeout,
+    upload_presigned_multipart_parts,
+)
 from eigenpal.errors import EigenpalError, EigenpalTimeoutError, error_from_response
 
 DEFAULT_BASE_URL = "https://api.eigenpal.com"
@@ -345,32 +359,33 @@ class EigenpalClient:
         if not has_file_input(input_dict):
             return input_dict
 
-        resolved: list[tuple[str, str, bytes, str]] = []
+        resolved: list[tuple[str, Any, Any]] = []
         for key, value in input_dict.items():
             if not is_file_input(value):
                 continue
-            filename, content, mime_type = to_upload_tuple(value)
-            resolved.append((key, filename, content, mime_type))
+            source = inspect_upload_source(value)
+            resolved.append((key, value, source))
 
         pre_upload_keys = _keys_requiring_pre_upload(
-            [(key, len(content)) for key, _filename, content, _mime in resolved],
+            [(key, source.size) for key, _value, source in resolved],
             self.multipart_max_bytes,
         )
 
         next_input = dict(input_dict)
-        for key, filename, content, mime_type in resolved:
+        for key, original, source in resolved:
             if key in pre_upload_keys:
-                uploaded = self.files.upload(
-                    {"content": content, "filename": filename, "mime_type": mime_type},
-                    purpose="run-input",
-                )
+                uploaded = self.files.upload(original, purpose="run-input")
                 next_input[key] = {"$fileId": uploaded["id"]}
-            else:
+            elif source.path is not None:
+                next_input[key] = Path(source.path)
+            elif source.content is not None:
                 next_input[key] = {
-                    "content": content,
-                    "filename": filename,
-                    "mime_type": mime_type,
+                    "content": source.content,
+                    "filename": source.filename,
+                    "mime_type": source.mime_type,
                 }
+            else:
+                next_input[key] = original
         return next_input
 
     def rerun(
@@ -918,7 +933,9 @@ class HumanReviewsResource:
         return self._root._request("GET", "/v1/human-reviews", params=query or None)
 
     def get(self, task_id: str) -> Any:
-        return self._root._request("GET", f"/v1/human-reviews/{quote(task_id, safe='')}")
+        return self._root._request(
+            "GET", f"/v1/human-reviews/{quote(task_id, safe='')}"
+        )
 
     def approve(self, task_id: str, body: dict[str, Any]) -> Any:
         return self._root._request(
@@ -961,12 +978,17 @@ class FilesResource:
         idempotency_key: Optional[str] = None,
         purpose: Optional[Literal["run-input"]] = None,
     ) -> Any:
-        filename, content, mime_type = to_upload_tuple(file)
+        source = inspect_upload_source(file)
+        if not source.replayable:
+            raise EigenpalError(
+                "Cannot multipart-resume a non-seekable stream; pass a path or seekable file object.",
+                status=0,
+            )
         key = idempotency_key or str(uuid.uuid4())
         negotiation = self.create_upload(
-            filename=filename,
-            content_type=mime_type,
-            size=len(content),
+            filename=source.filename,
+            content_type=source.mime_type,
+            size=source.size,
             idempotency_key=key,
             purpose=purpose,
         )
@@ -974,6 +996,13 @@ class FilesResource:
             data: dict[str, Any] = {}
             if purpose is not None:
                 data["purpose"] = purpose
+            filename, content, mime_type = (
+                source.filename,
+                read_part(source, 0, source.size)
+                if source.content is None
+                else source.content,
+                source.mime_type,
+            )
             return self._root._request(
                 "POST",
                 negotiation["url"],
@@ -981,18 +1010,50 @@ class FilesResource:
                 data=data or None,
             )
 
+        if negotiation["transport"] == "presigned-multipart":
+            parts_ready = False
+            try:
+                self._upload_presigned_multipart_parts(source, negotiation)
+                parts_ready = True
+                return self._complete_presigned_multipart(negotiation)
+            except BaseException as error:
+                if should_abort_multipart_upload_session(parts_ready=parts_ready):
+                    try:
+                        self.abort_upload(negotiation["uploadId"])
+                    except Exception:
+                        pass
+                    raise
+                if isinstance(error, Exception):
+                    annotate_multipart_complete_failure(negotiation["uploadId"], error)
+                raise
+
         headers = {
             name: value
             for name, value in negotiation.get("headers", {}).items()
-            if name.lower() != "content-length"
+            if source.path is not None or name.lower() != "content-length"
         }
         try:
-            response = httpx.put(
-                negotiation["url"],
-                content=content,
-                headers=headers,
-                timeout=self._root.timeout_seconds,
-            )
+            content: Any
+            if source.path is not None:
+                with open(source.path, "rb") as handle:
+                    response = httpx.put(
+                        negotiation["url"],
+                        content=handle,
+                        headers=headers,
+                        timeout=storage_upload_timeout(self._root.timeout_seconds),
+                    )
+            else:
+                content = (
+                    source.content
+                    if source.content is not None
+                    else read_part(source, 0, source.size)
+                )
+                response = httpx.put(
+                    negotiation["url"],
+                    content=content,
+                    headers=headers,
+                    timeout=storage_upload_timeout(self._root.timeout_seconds),
+                )
             response.raise_for_status()
         except (httpx.HTTPError, httpx.TransportError):
             try:
@@ -1000,7 +1061,50 @@ class FilesResource:
             except Exception:
                 pass
             raise
-        return self.complete_upload(negotiation["uploadId"])
+        try:
+            return self.complete_upload(negotiation["uploadId"])
+        except Exception as error:
+            annotate_presigned_put_complete_failure(negotiation["uploadId"], error)
+            raise
+
+    def _upload_presigned_multipart_parts(
+        self, source: Any, negotiation: dict[str, Any]
+    ) -> None:
+        parts_url = negotiation["partsUrl"]
+
+        def list_parts() -> list[dict[str, Any]]:
+            listed = self._root._request("GET", parts_url)
+            return list(listed.get("parts") or [])
+
+        def presign_part(part_number: int) -> dict[str, Any]:
+            return self._root._request(
+                "POST", parts_url, json={"partNumber": part_number}
+            )
+
+        def put_part(
+            url: str, headers: dict[str, str], start: int, length: int
+        ) -> None:
+            body = read_part(source, start, length)
+            response = httpx.put(
+                url,
+                content=body,
+                headers=headers,
+                timeout=storage_upload_timeout(self._root.timeout_seconds),
+            )
+            if response.status_code >= 400:
+                raise PartUploadHttpError(response.status_code)
+
+        upload_presigned_multipart_parts(
+            part_count=int(negotiation["partCount"]),
+            part_size_bytes=int(negotiation["partSizeBytes"]),
+            total_size=source.size,
+            list_parts=list_parts,
+            presign_part=presign_part,
+            put_part=put_part,
+        )
+
+    def _complete_presigned_multipart(self, negotiation: dict[str, Any]) -> Any:
+        return self._root._request("POST", negotiation["completeUrl"], json={})
 
     def create_upload(
         self,
@@ -1036,6 +1140,25 @@ class FilesResource:
         return self._root._request(
             "DELETE",
             f"/v1/files/uploads/{quote(upload_id, safe='')}",
+        )
+
+    def get_upload(self, upload_id: str) -> Any:
+        return self._root._request(
+            "GET",
+            f"/v1/files/uploads/{quote(upload_id, safe='')}",
+        )
+
+    def list_upload_parts(self, upload_id: str) -> Any:
+        return self._root._request(
+            "GET",
+            f"/v1/files/uploads/{quote(upload_id, safe='')}/parts",
+        )
+
+    def presign_upload_part(self, upload_id: str, part_number: int) -> Any:
+        return self._root._request(
+            "POST",
+            f"/v1/files/uploads/{quote(upload_id, safe='')}/parts",
+            json={"partNumber": part_number},
         )
 
     def get(self, file_id: str) -> Any:

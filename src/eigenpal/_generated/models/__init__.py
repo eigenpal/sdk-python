@@ -92,6 +92,9 @@ from .experiment_detail_status import ExperimentDetailStatus
 from .experiment_ref import ExperimentRef
 from .experiment_status import ExperimentStatus
 from .file import File
+from .file_upload_session import FileUploadSession
+from .file_upload_session_parts_item import FileUploadSessionPartsItem
+from .file_upload_session_transport import FileUploadSessionTransport
 from .human_review_approve_response import HumanReviewApproveResponse
 from .human_review_field_response import HumanReviewFieldResponse
 from .human_review_list_response import HumanReviewListResponse
@@ -128,12 +131,18 @@ from .human_reviews_reject_body import HumanReviewsRejectBody
 from .list_automation_versions_response import ListAutomationVersionsResponse
 from .list_automations_response import ListAutomationsResponse
 from .list_email_servers_response import ListEmailServersResponse
+from .list_file_upload_parts_response import ListFileUploadPartsResponse
+from .list_file_upload_parts_response_parts_item import ListFileUploadPartsResponsePartsItem
 from .list_models_response import ListModelsResponse
 from .list_templates_response import ListTemplatesResponse
 from .models_list_capability import ModelsListCapability
 from .multipart_file_upload_fallback import MultipartFileUploadFallback
+from .presign_file_upload_part_request import PresignFileUploadPartRequest
+from .presign_file_upload_part_response import PresignFileUploadPartResponse
+from .presign_file_upload_part_response_headers import PresignFileUploadPartResponseHeaders
 from .presigned_file_upload_session import PresignedFileUploadSession
 from .presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders
+from .presigned_multipart_file_upload_session import PresignedMultipartFileUploadSession
 from .promote_run_request import PromoteRunRequest
 from .promote_run_response import PromoteRunResponse
 from .promote_run_response_automation_type import PromoteRunResponseAutomationType
@@ -348,6 +357,9 @@ __all__ = (
     "ExperimentRef",
     "ExperimentStatus",
     "File",
+    "FileUploadSession",
+    "FileUploadSessionPartsItem",
+    "FileUploadSessionTransport",
     "HumanReviewApproveResponse",
     "HumanReviewFieldResponse",
     "HumanReviewListResponse",
@@ -384,12 +396,18 @@ __all__ = (
     "ListAutomationsResponse",
     "ListAutomationVersionsResponse",
     "ListEmailServersResponse",
+    "ListFileUploadPartsResponse",
+    "ListFileUploadPartsResponsePartsItem",
     "ListModelsResponse",
     "ListTemplatesResponse",
     "ModelsListCapability",
     "MultipartFileUploadFallback",
     "PresignedFileUploadSession",
     "PresignedFileUploadSessionHeaders",
+    "PresignedMultipartFileUploadSession",
+    "PresignFileUploadPartRequest",
+    "PresignFileUploadPartResponse",
+    "PresignFileUploadPartResponseHeaders",
     "PromoteRunRequest",
     "PromoteRunResponse",
     "PromoteRunResponseAutomationType",

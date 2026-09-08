@@ -8,16 +8,20 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.abort_file_upload_response import AbortFileUploadResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.presign_file_upload_part_request import PresignFileUploadPartRequest
+from ...models.presign_file_upload_part_response import PresignFileUploadPartResponse
 from typing import cast
 
 
 
 def _get_kwargs(
     upload_id: str,
+    *,
+    body: PresignFileUploadPartRequest,
 
 ) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
 
 
 
@@ -25,18 +29,23 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "delete",
-        "url": "/v1/files/uploads/{upload_id}".format(upload_id=quote(str(upload_id), safe=""),),
+        "method": "post",
+        "url": "/v1/files/uploads/{upload_id}/parts".format(upload_id=quote(str(upload_id), safe=""),),
     }
 
+    _kwargs["json"] = body.to_dict()
 
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
     return _kwargs
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | PresignFileUploadPartResponse | None:
     if response.status_code == 200:
-        response_200 = AbortFileUploadResponse.from_dict(response.json())
+        response_200 = PresignFileUploadPartResponse.from_dict(response.json())
 
 
 
@@ -97,7 +106,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | PresignFileUploadPartResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -110,27 +119,30 @@ def sync_detailed(
     upload_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PresignFileUploadPartRequest,
 
-) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
-    """ Abort file upload
+) -> Response[ApiErrorEnvelope | PresignFileUploadPartResponse]:
+    """ Presign one multipart upload part
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Mint a short-lived signed UploadPart URL for one validated part. Part URLs are not issued at session
+    create.
 
     Args:
         upload_id (str):
+        body (PresignFileUploadPartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AbortFileUploadResponse | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | PresignFileUploadPartResponse]
      """
 
 
     kwargs = _get_kwargs(
         upload_id=upload_id,
+body=body,
 
     )
 
@@ -144,28 +156,31 @@ def sync(
     upload_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PresignFileUploadPartRequest,
 
-) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
-    """ Abort file upload
+) -> ApiErrorEnvelope | PresignFileUploadPartResponse | None:
+    """ Presign one multipart upload part
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Mint a short-lived signed UploadPart URL for one validated part. Part URLs are not issued at session
+    create.
 
     Args:
         upload_id (str):
+        body (PresignFileUploadPartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AbortFileUploadResponse | ApiErrorEnvelope
+        ApiErrorEnvelope | PresignFileUploadPartResponse
      """
 
 
     return sync_detailed(
         upload_id=upload_id,
 client=client,
+body=body,
 
     ).parsed
 
@@ -173,27 +188,30 @@ async def asyncio_detailed(
     upload_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PresignFileUploadPartRequest,
 
-) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
-    """ Abort file upload
+) -> Response[ApiErrorEnvelope | PresignFileUploadPartResponse]:
+    """ Presign one multipart upload part
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Mint a short-lived signed UploadPart URL for one validated part. Part URLs are not issued at session
+    create.
 
     Args:
         upload_id (str):
+        body (PresignFileUploadPartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AbortFileUploadResponse | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | PresignFileUploadPartResponse]
      """
 
 
     kwargs = _get_kwargs(
         upload_id=upload_id,
+body=body,
 
     )
 
@@ -207,27 +225,30 @@ async def asyncio(
     upload_id: str,
     *,
     client: AuthenticatedClient | Client,
+    body: PresignFileUploadPartRequest,
 
-) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
-    """ Abort file upload
+) -> ApiErrorEnvelope | PresignFileUploadPartResponse | None:
+    """ Presign one multipart upload part
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Mint a short-lived signed UploadPart URL for one validated part. Part URLs are not issued at session
+    create.
 
     Args:
         upload_id (str):
+        body (PresignFileUploadPartRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AbortFileUploadResponse | ApiErrorEnvelope
+        ApiErrorEnvelope | PresignFileUploadPartResponse
      """
 
 
     return (await asyncio_detailed(
         upload_id=upload_id,
 client=client,
+body=body,
 
     )).parsed

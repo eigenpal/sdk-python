@@ -8,8 +8,8 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.abort_file_upload_response import AbortFileUploadResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.list_file_upload_parts_response import ListFileUploadPartsResponse
 from typing import cast
 
 
@@ -25,8 +25,8 @@ def _get_kwargs(
 
 
     _kwargs: dict[str, Any] = {
-        "method": "delete",
-        "url": "/v1/files/uploads/{upload_id}".format(upload_id=quote(str(upload_id), safe=""),),
+        "method": "get",
+        "url": "/v1/files/uploads/{upload_id}/parts".format(upload_id=quote(str(upload_id), safe=""),),
     }
 
 
@@ -34,9 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | ListFileUploadPartsResponse | None:
     if response.status_code == 200:
-        response_200 = AbortFileUploadResponse.from_dict(response.json())
+        response_200 = ListFileUploadPartsResponse.from_dict(response.json())
 
 
 
@@ -97,7 +97,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | ListFileUploadPartsResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -111,11 +111,10 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
-    """ Abort file upload
+) -> Response[ApiErrorEnvelope | ListFileUploadPartsResponse]:
+    """ List uploaded multipart parts
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     List authoritative uploaded parts from storage for resume. Do not trust client-only ETags.
 
     Args:
         upload_id (str):
@@ -125,7 +124,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AbortFileUploadResponse | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | ListFileUploadPartsResponse]
      """
 
 
@@ -145,11 +144,10 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 
-) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
-    """ Abort file upload
+) -> ApiErrorEnvelope | ListFileUploadPartsResponse | None:
+    """ List uploaded multipart parts
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     List authoritative uploaded parts from storage for resume. Do not trust client-only ETags.
 
     Args:
         upload_id (str):
@@ -159,7 +157,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AbortFileUploadResponse | ApiErrorEnvelope
+        ApiErrorEnvelope | ListFileUploadPartsResponse
      """
 
 
@@ -174,11 +172,10 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
-    """ Abort file upload
+) -> Response[ApiErrorEnvelope | ListFileUploadPartsResponse]:
+    """ List uploaded multipart parts
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     List authoritative uploaded parts from storage for resume. Do not trust client-only ETags.
 
     Args:
         upload_id (str):
@@ -188,7 +185,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[AbortFileUploadResponse | ApiErrorEnvelope]
+        Response[ApiErrorEnvelope | ListFileUploadPartsResponse]
      """
 
 
@@ -208,11 +205,10 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 
-) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
-    """ Abort file upload
+) -> ApiErrorEnvelope | ListFileUploadPartsResponse | None:
+    """ List uploaded multipart parts
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     List authoritative uploaded parts from storage for resume. Do not trust client-only ETags.
 
     Args:
         upload_id (str):
@@ -222,7 +218,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        AbortFileUploadResponse | ApiErrorEnvelope
+        ApiErrorEnvelope | ListFileUploadPartsResponse
      """
 
 
