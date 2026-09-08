@@ -95,6 +95,13 @@ client
 │   ├── trace
 │   │   └── get
 │   └── usage
+├── human_reviews
+│   ├── list
+│   ├── get
+│   ├── approve
+│   ├── confirm_field
+│   ├── download_file
+│   └── reject
 ├── files
 │   ├── get
 │   ├── download
@@ -1594,6 +1601,144 @@ Verify a storage-direct pending object and promote it into a reusable file. Safe
 
 ```python
 // File
+```
+
+## Human reviews
+
+### `client.human_reviews.list`
+
+**`GET /v1/human-reviews`**
+
+List pending human review tasks
+
+Cursor-paginated queue of pending human-review tasks for the tenant, oldest first.
+
+**Query parameters**
+
+| Name             | Type  | Description |
+| ---------------- | ----- | ----------- |
+| `automation_id`  | `str` | (optional)  |
+| `waiting_before` | `str` | (optional)  |
+| `cursor`         | `str` | (optional)  |
+| `limit`          | `int` | (optional)  |
+
+**Response**
+
+```python
+// HumanReviewListResponse
+```
+
+### `client.human_reviews.get`
+
+**`GET /v1/human-reviews/:taskId`**
+
+Get human review task
+
+Fetch one authorized human-review task with draft data, derived non-file input, files, and decisions.
+
+**Path parameters**
+
+| Name      | Type  | Description          |
+| --------- | ----- | -------------------- |
+| `task_id` | `str` | Human review task id |
+
+**Response**
+
+```python
+// HumanReviewTaskResponse
+```
+
+### `client.human_reviews.approve`
+
+**`POST /v1/human-reviews/:taskId/approve`**
+
+Approve human review task
+
+Approve a complete review task and resume the paused run. Requires every required field to be confirmed.
+
+**Path parameters**
+
+| Name      | Type  | Description          |
+| --------- | ----- | -------------------- |
+| `task_id` | `str` | Human review task id |
+
+**Request body**
+
+```python
+// dict[str, Any]
+```
+
+**Response**
+
+```python
+// HumanReviewApproveResponse
+```
+
+### `client.human_reviews.confirm_field`
+
+**`PUT /v1/human-reviews/:taskId/fields`**
+
+Confirm or edit a review field
+
+Confirm or edit a scalar field using optimistic concurrency and a durable idempotency key.
+
+**Path parameters**
+
+| Name      | Type  | Description          |
+| --------- | ----- | -------------------- |
+| `task_id` | `str` | Human review task id |
+
+**Request body**
+
+```python
+// dict[str, Any]
+```
+
+**Response**
+
+```python
+// HumanReviewFieldResponse
+```
+
+### `client.human_reviews.download_file`
+
+**`GET /v1/human-reviews/:taskId/files/:fileId/content`**
+
+Download human review task file
+
+Download one file attached to a human-review task after strict tenant, task, and run ownership checks. Large cloud deployments may redirect to a short-lived signed storage URL.
+
+**Path parameters**
+
+| Name      | Type  | Description                       |
+| --------- | ----- | --------------------------------- |
+| `task_id` | `str` | Human review task id              |
+| `file_id` | `str` | File id listed on the review task |
+
+### `client.human_reviews.reject`
+
+**`POST /v1/human-reviews/:taskId/reject`**
+
+Reject human review task
+
+Reject a review task and fail the paused run with the supplied reason.
+
+**Path parameters**
+
+| Name      | Type  | Description          |
+| --------- | ----- | -------------------- |
+| `task_id` | `str` | Human review task id |
+
+**Request body**
+
+```python
+// dict[str, Any]
+```
+
+**Response**
+
+```python
+// HumanReviewRejectResponse
 ```
 
 ## Models

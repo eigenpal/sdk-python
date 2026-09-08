@@ -16,6 +16,7 @@ if TYPE_CHECKING:
   from ..models.agent_run_execution_expected import AgentRunExecutionExpected
   from ..models.agent_run_execution_files import AgentRunExecutionFiles
   from ..models.run_execution_retry import RunExecutionRetry
+  from ..models.run_human_review_summary import RunHumanReviewSummary
   from ..models.run_review import RunReview
 
 
@@ -36,6 +37,8 @@ class AgentRunExecution:
             retry (RunExecutionRetry):
             files (AgentRunExecutionFiles):
             review (None | RunReview | Unset):
+            human_review (None | RunHumanReviewSummary | Unset): Pending in-flight human review when the run is waiting on a
+                reviewer.
             expected (AgentRunExecutionExpected | Unset): Ground-truth expected output and files.
             comparison (Any | Unset): Expected-vs-actual comparison for eval runs (terminal runs only).
      """
@@ -46,6 +49,7 @@ class AgentRunExecution:
     retry: RunExecutionRetry
     files: AgentRunExecutionFiles
     review: None | RunReview | Unset = UNSET
+    human_review: None | RunHumanReviewSummary | Unset = UNSET
     expected: AgentRunExecutionExpected | Unset = UNSET
     comparison: Any | Unset = UNSET
 
@@ -57,6 +61,7 @@ class AgentRunExecution:
         from ..models.agent_run_execution_expected import AgentRunExecutionExpected
         from ..models.agent_run_execution_files import AgentRunExecutionFiles
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_human_review_summary import RunHumanReviewSummary
         from ..models.run_review import RunReview
         status = self.status.value
 
@@ -78,6 +83,14 @@ class AgentRunExecution:
         else:
             review = self.review
 
+        human_review: dict[str, Any] | None | Unset
+        if isinstance(self.human_review, Unset):
+            human_review = UNSET
+        elif isinstance(self.human_review, RunHumanReviewSummary):
+            human_review = self.human_review.to_dict()
+        else:
+            human_review = self.human_review
+
         expected: dict[str, Any] | Unset = UNSET
         if not isinstance(self.expected, Unset):
             expected = self.expected.to_dict()
@@ -96,6 +109,8 @@ class AgentRunExecution:
         })
         if review is not UNSET:
             field_dict["review"] = review
+        if human_review is not UNSET:
+            field_dict["humanReview"] = human_review
         if expected is not UNSET:
             field_dict["expected"] = expected
         if comparison is not UNSET:
@@ -110,6 +125,7 @@ class AgentRunExecution:
         from ..models.agent_run_execution_expected import AgentRunExecutionExpected
         from ..models.agent_run_execution_files import AgentRunExecutionFiles
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_human_review_summary import RunHumanReviewSummary
         from ..models.run_review import RunReview
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
@@ -163,6 +179,26 @@ class AgentRunExecution:
         review = _parse_review(d.pop("review", UNSET))
 
 
+        def _parse_human_review(data: object) -> None | RunHumanReviewSummary | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                human_review_type_0 = RunHumanReviewSummary.from_dict(data)
+
+
+
+                return human_review_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunHumanReviewSummary | Unset, data)
+
+        human_review = _parse_human_review(d.pop("humanReview", UNSET))
+
+
         _expected = d.pop("expected", UNSET)
         expected: AgentRunExecutionExpected | Unset
         if isinstance(_expected,  Unset):
@@ -182,6 +218,7 @@ class AgentRunExecution:
             retry=retry,
             files=files,
             review=review,
+            human_review=human_review,
             expected=expected,
             comparison=comparison,
         )

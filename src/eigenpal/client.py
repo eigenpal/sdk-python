@@ -261,6 +261,7 @@ class EigenpalClient:
         self.automations = AutomationsResource(self)
         self.runs = RunsResource(self)
         self.files = FilesResource(self)
+        self.human_reviews = HumanReviewsResource(self)
         self.templates = TemplatesResource(self)
         self.email_servers = EmailServersResource(self)
 
@@ -907,6 +908,46 @@ class RunsTraceResource:
 
     def get(self, run_id: str) -> Any:
         return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/trace")
+
+
+class HumanReviewsResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(self, **query: Any) -> Any:
+        return self._root._request("GET", "/v1/human-reviews", params=query or None)
+
+    def get(self, task_id: str) -> Any:
+        return self._root._request("GET", f"/v1/human-reviews/{quote(task_id, safe='')}")
+
+    def approve(self, task_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "POST",
+            f"/v1/human-reviews/{quote(task_id, safe='')}/approve",
+            json=body,
+        )
+
+    def confirm_field(self, task_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "PUT",
+            f"/v1/human-reviews/{quote(task_id, safe='')}/fields",
+            json=body,
+        )
+
+    def reject(self, task_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "POST",
+            f"/v1/human-reviews/{quote(task_id, safe='')}/reject",
+            json=body,
+        )
+
+    def download_file(self, task_id: str, file_id: str) -> bytes:
+        response = self._root._http.get(
+            f"/v1/human-reviews/{quote(task_id, safe='')}/files/{quote(file_id, safe='')}/content"
+        )
+        if response.status_code >= 400:
+            _check_response(response)
+        return response.content
 
 
 class FilesResource:

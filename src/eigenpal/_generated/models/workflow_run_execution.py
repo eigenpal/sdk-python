@@ -14,6 +14,7 @@ from typing import cast
 
 if TYPE_CHECKING:
   from ..models.run_execution_retry import RunExecutionRetry
+  from ..models.run_human_review_summary import RunHumanReviewSummary
   from ..models.run_review import RunReview
   from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
 
@@ -35,6 +36,8 @@ class WorkflowRunExecution:
             retry (RunExecutionRetry):
             steps (list[Any]): Per-step executions of the workflow run (`expand=execution`).
             review (None | RunReview | Unset):
+            human_review (None | RunHumanReviewSummary | Unset): Pending in-flight human review when the run is waiting on a
+                reviewer.
             child_executions (list[Any] | Unset): Child invoke-workflow runs and their steps (`expand=execution`, workflow
                 runs only). Omitted when there are no children.
             definition_snapshot (Any | None | Unset): Workflow definition snapshot captured when the run was created
@@ -48,6 +51,7 @@ class WorkflowRunExecution:
     retry: RunExecutionRetry
     steps: list[Any]
     review: None | RunReview | Unset = UNSET
+    human_review: None | RunHumanReviewSummary | Unset = UNSET
     child_executions: list[Any] | Unset = UNSET
     definition_snapshot: Any | None | Unset = UNSET
     expected: WorkflowRunExecutionExpected | Unset = UNSET
@@ -58,6 +62,7 @@ class WorkflowRunExecution:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_human_review_summary import RunHumanReviewSummary
         from ..models.run_review import RunReview
         from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
         status = self.status.value
@@ -81,6 +86,14 @@ class WorkflowRunExecution:
             review = self.review.to_dict()
         else:
             review = self.review
+
+        human_review: dict[str, Any] | None | Unset
+        if isinstance(self.human_review, Unset):
+            human_review = UNSET
+        elif isinstance(self.human_review, RunHumanReviewSummary):
+            human_review = self.human_review.to_dict()
+        else:
+            human_review = self.human_review
 
         child_executions: list[Any] | Unset = UNSET
         if not isinstance(self.child_executions, Unset):
@@ -110,6 +123,8 @@ class WorkflowRunExecution:
         })
         if review is not UNSET:
             field_dict["review"] = review
+        if human_review is not UNSET:
+            field_dict["humanReview"] = human_review
         if child_executions is not UNSET:
             field_dict["childExecutions"] = child_executions
         if definition_snapshot is not UNSET:
@@ -124,6 +139,7 @@ class WorkflowRunExecution:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_human_review_summary import RunHumanReviewSummary
         from ..models.run_review import RunReview
         from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
         d = dict(src_dict)
@@ -176,6 +192,26 @@ class WorkflowRunExecution:
         review = _parse_review(d.pop("review", UNSET))
 
 
+        def _parse_human_review(data: object) -> None | RunHumanReviewSummary | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                human_review_type_0 = RunHumanReviewSummary.from_dict(data)
+
+
+
+                return human_review_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunHumanReviewSummary | Unset, data)
+
+        human_review = _parse_human_review(d.pop("humanReview", UNSET))
+
+
         child_executions = cast(list[Any], d.pop("childExecutions", UNSET))
 
 
@@ -206,6 +242,7 @@ class WorkflowRunExecution:
             retry=retry,
             steps=steps,
             review=review,
+            human_review=human_review,
             child_executions=child_executions,
             definition_snapshot=definition_snapshot,
             expected=expected,

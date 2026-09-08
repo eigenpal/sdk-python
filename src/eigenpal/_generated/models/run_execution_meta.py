@@ -14,6 +14,7 @@ from typing import cast
 
 if TYPE_CHECKING:
   from ..models.run_execution_retry import RunExecutionRetry
+  from ..models.run_human_review_summary import RunHumanReviewSummary
   from ..models.run_review_summary import RunReviewSummary
 
 
@@ -33,6 +34,8 @@ class RunExecutionMeta:
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
             review (None | RunReviewSummary | Unset): Lightweight review state for run list rows.
+            human_review (None | RunHumanReviewSummary | Unset): Pending in-flight human review when the run is waiting on a
+                reviewer.
      """
 
     status: ExecutionStatus
@@ -40,6 +43,7 @@ class RunExecutionMeta:
     batch_id: None | str
     retry: RunExecutionRetry
     review: None | RunReviewSummary | Unset = UNSET
+    human_review: None | RunHumanReviewSummary | Unset = UNSET
 
 
 
@@ -47,6 +51,7 @@ class RunExecutionMeta:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_human_review_summary import RunHumanReviewSummary
         from ..models.run_review_summary import RunReviewSummary
         status = self.status.value
 
@@ -66,6 +71,14 @@ class RunExecutionMeta:
         else:
             review = self.review
 
+        human_review: dict[str, Any] | None | Unset
+        if isinstance(self.human_review, Unset):
+            human_review = UNSET
+        elif isinstance(self.human_review, RunHumanReviewSummary):
+            human_review = self.human_review.to_dict()
+        else:
+            human_review = self.human_review
+
 
         field_dict: dict[str, Any] = {}
 
@@ -77,6 +90,8 @@ class RunExecutionMeta:
         })
         if review is not UNSET:
             field_dict["review"] = review
+        if human_review is not UNSET:
+            field_dict["humanReview"] = human_review
 
         return field_dict
 
@@ -85,6 +100,7 @@ class RunExecutionMeta:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.run_execution_retry import RunExecutionRetry
+        from ..models.run_human_review_summary import RunHumanReviewSummary
         from ..models.run_review_summary import RunReviewSummary
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
@@ -133,12 +149,33 @@ class RunExecutionMeta:
         review = _parse_review(d.pop("review", UNSET))
 
 
+        def _parse_human_review(data: object) -> None | RunHumanReviewSummary | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                human_review_type_0 = RunHumanReviewSummary.from_dict(data)
+
+
+
+                return human_review_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunHumanReviewSummary | Unset, data)
+
+        human_review = _parse_human_review(d.pop("humanReview", UNSET))
+
+
         run_execution_meta = cls(
             status=status,
             schema_valid=schema_valid,
             batch_id=batch_id,
             retry=retry,
             review=review,
+            human_review=human_review,
         )
 
         return run_execution_meta
