@@ -43,9 +43,16 @@ from eigenpal._generated.models.create_email_server_request_type_0 import (
 from eigenpal._generated.models.create_email_server_request_type_1 import (
     CreateEmailServerRequestType1,
 )
+from eigenpal._generated.models.create_folder_request import CreateFolderRequest
+from eigenpal._generated.models.delete_automation_response import (
+    DeleteAutomationResponse,
+)
 from eigenpal._generated.models.delete_email_server_response import (
     DeleteEmailServerResponse,
 )
+from eigenpal._generated.models.delete_folder_response import DeleteFolderResponse
+from eigenpal._generated.models.folder import Folder
+from eigenpal._generated.models.folder_type import FolderType
 from eigenpal._generated.models.list_email_servers_response import (
     ListEmailServersResponse,
 )
@@ -61,6 +68,7 @@ from eigenpal._generated.models.test_email_server_response_type_0 import (
 from eigenpal._generated.models.test_email_server_response_type_1 import (
     TestEmailServerResponseType1,
 )
+from eigenpal._generated.models.update_automation_request import UpdateAutomationRequest
 from eigenpal._generated.models.update_email_server_request_type_0 import (
     UpdateEmailServerRequestType0,
 )
@@ -70,6 +78,7 @@ from eigenpal._generated.models.update_email_server_request_type_1 import (
 from eigenpal._generated.models.update_email_server_request_type_2 import (
     UpdateEmailServerRequestType2,
 )
+from eigenpal._generated.models.update_folder_request import UpdateFolderRequest
 
 CreateAutomationVersionRequest = (
     CreateAutomationVersionRequestType0 | CreateAutomationVersionRequestType1
@@ -100,8 +109,13 @@ __all__ = [
     "CreateEmailServerRequest",
     "CreateEmailServerRequestType0",
     "CreateEmailServerRequestType1",
+    "CreateFolderRequest",
+    "DeleteAutomationResponse",
     "DeleteEmailServerResponse",
+    "DeleteFolderResponse",
     "EmailServer",
+    "Folder",
+    "FolderType",
     "ListEmailServersResponse",
     "PublicResendEmailServer",
     "PublicSmtpEmailServer",
@@ -110,8 +124,10 @@ __all__ = [
     "TestEmailServerResponse",
     "TestEmailServerResponseType0",
     "TestEmailServerResponseType1",
+    "UpdateAutomationRequest",
     "UpdateEmailServerRequest",
     "UpdateEmailServerRequestType0",
     "UpdateEmailServerRequestType1",
     "UpdateEmailServerRequestType2",
+    "UpdateFolderRequest",
 ]

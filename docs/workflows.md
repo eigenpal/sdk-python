@@ -5,10 +5,12 @@
 ## List
 
 ```python
-listing = client.automations.list(limit=20, search="invoice")
+listing = client.automations.list(limit=20, search="invoice", folder_id="fldr_…")
 for automation in listing.data:
-    print(automation.id, automation.type, automation.name)
+    print(automation.id, automation.type, automation.folderPath)
 ```
+
+`folder_id="null"` lists unfiled YAML workflows at the tenant root. Combining `folder_id` with `type="agent"` is rejected. Agent automations always return `folderId` / `folderPath` as `null`.
 
 ## Get
 
@@ -18,6 +20,35 @@ automation = client.automations.get("workflows.extract-invoice")
 ```
 
 Use typed ids or aliases (`workflows.<slug>` / `agents.<slug>`) when a slug could exist in both systems.
+
+## Move
+
+Move YAML workflows between organizing folders. `folder_path` creates missing workflow folders; empty or `/` (and `folder_id=None`) files the workflow at root. Agent automations have no database folder model and are rejected.
+
+```python
+client.automations.move("workflows.extract-invoice", folder_path="billing/invoices")
+client.automations.move("workflows.extract-invoice", folder_id=None)
+```
+
+## Delete
+
+Delete uses the same cleanup as the dashboard. Workflows archive the automations registry parent and keep execution history. Agents delete the agent implementation and history, archive the registry parent, and best-effort-delete leftover agent storage. There is no uniform purge of every related artifact.
+
+```python
+client.automations.delete("workflows.extract-invoice")
+client.automations.delete("agents.invoice-agent")
+```
+
+## Folders
+
+`client.folders` manages workflow and template trees. Deleting a folder cascade-deletes child folders and unfiles contained workflows or templates; it does not delete those resources. Nested agent directories in Git are source organization only and are not folders.
+
+```python
+tree = client.folders.list(type="workflow", tree="true")
+folder = client.folders.create(name="invoices", type="workflow")
+client.folders.update(folder.id, parent_id=None)
+client.folders.delete(folder.id)
+```
 
 ## Versions
 

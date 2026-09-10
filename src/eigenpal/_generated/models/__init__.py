@@ -39,6 +39,7 @@ from .create_file_multipart_request import CreateFileMultipartRequest
 from .create_file_multipart_request_purpose import CreateFileMultipartRequestPurpose
 from .create_file_upload_session_request import CreateFileUploadSessionRequest
 from .create_file_upload_session_request_purpose import CreateFileUploadSessionRequestPurpose
+from .create_folder_request import CreateFolderRequest
 from .created_template import CreatedTemplate
 from .created_template_format import CreatedTemplateFormat
 from .created_template_grammar import CreatedTemplateGrammar
@@ -71,8 +72,10 @@ from .dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadata
 from .dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
 from .dataset_import_response_type_0 import DatasetImportResponseType0
 from .dataset_import_response_type_1 import DatasetImportResponseType1
+from .delete_automation_response import DeleteAutomationResponse
 from .delete_email_server_response import DeleteEmailServerResponse
 from .delete_file_response import DeleteFileResponse
+from .delete_folder_response import DeleteFolderResponse
 from .delete_template_response import DeleteTemplateResponse
 from .eval_result import EvalResult
 from .evaluator_config_response import EvaluatorConfigResponse
@@ -95,6 +98,10 @@ from .file import File
 from .file_upload_session import FileUploadSession
 from .file_upload_session_parts_item import FileUploadSessionPartsItem
 from .file_upload_session_transport import FileUploadSessionTransport
+from .folder import Folder
+from .folder_preview_items_item import FolderPreviewItemsItem
+from .folder_preview_items_item_kind import FolderPreviewItemsItemKind
+from .folder_type import FolderType
 from .human_review_approve_response import HumanReviewApproveResponse
 from .human_review_field_response import HumanReviewFieldResponse
 from .human_review_list_response import HumanReviewListResponse
@@ -257,10 +264,12 @@ from .test_email_server_request import TestEmailServerRequest
 from .test_email_server_response_type_0 import TestEmailServerResponseType0
 from .test_email_server_response_type_0_transport import TestEmailServerResponseType0Transport
 from .test_email_server_response_type_1 import TestEmailServerResponseType1
+from .update_automation_request import UpdateAutomationRequest
 from .update_email_server_request_type_0 import UpdateEmailServerRequestType0
 from .update_email_server_request_type_1 import UpdateEmailServerRequestType1
 from .update_email_server_request_type_1_security import UpdateEmailServerRequestType1Security
 from .update_email_server_request_type_2 import UpdateEmailServerRequestType2
+from .update_folder_request import UpdateFolderRequest
 from .workflow_run_execution import WorkflowRunExecution
 from .workflow_run_execution_expected import WorkflowRunExecutionExpected
 
@@ -310,6 +319,7 @@ __all__ = (
     "CreateFileMultipartRequestPurpose",
     "CreateFileUploadSessionRequest",
     "CreateFileUploadSessionRequestPurpose",
+    "CreateFolderRequest",
     "DatasetExample",
     "DatasetExampleExpectedFileList",
     "DatasetExampleExpectedFileRenameRequest",
@@ -336,8 +346,10 @@ __all__ = (
     "DatasetExampleUpdateOverridesType0",
     "DatasetImportResponseType0",
     "DatasetImportResponseType1",
+    "DeleteAutomationResponse",
     "DeleteEmailServerResponse",
     "DeleteFileResponse",
+    "DeleteFolderResponse",
     "DeleteTemplateResponse",
     "EvalResult",
     "EvaluatorConfigResponse",
@@ -360,6 +372,10 @@ __all__ = (
     "FileUploadSession",
     "FileUploadSessionPartsItem",
     "FileUploadSessionTransport",
+    "Folder",
+    "FolderPreviewItemsItem",
+    "FolderPreviewItemsItemKind",
+    "FolderType",
     "HumanReviewApproveResponse",
     "HumanReviewFieldResponse",
     "HumanReviewListResponse",
@@ -522,10 +538,12 @@ __all__ = (
     "TestEmailServerResponseType0",
     "TestEmailServerResponseType0Transport",
     "TestEmailServerResponseType1",
+    "UpdateAutomationRequest",
     "UpdateEmailServerRequestType0",
     "UpdateEmailServerRequestType1",
     "UpdateEmailServerRequestType1Security",
     "UpdateEmailServerRequestType2",
+    "UpdateFolderRequest",
     "WorkflowRunExecution",
     "WorkflowRunExecutionExpected",
 )

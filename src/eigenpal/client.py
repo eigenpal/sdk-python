@@ -40,6 +40,7 @@ DEFAULT_MULTIPART_MAX_BYTES = int(4.5 * 1024 * 1024)
 DIRECT_UPLOAD_BYTE_THRESHOLD = DEFAULT_MULTIPART_MAX_BYTES
 MULTIPART_ENVELOPE_HEADROOM_BYTES = 256 * 1024
 TERMINAL_STATUSES = frozenset({"completed", "failed", "cancelled", "rejected"})
+_UNSET = object()
 
 
 def _resolve_multipart_max_bytes(
@@ -273,6 +274,7 @@ class EigenpalClient:
         self.auth = AuthResource(self)
         self.models = ModelsResource(self)
         self.automations = AutomationsResource(self)
+        self.folders = FoldersResource(self)
         self.runs = RunsResource(self)
         self.files = FilesResource(self)
         self.human_reviews = HumanReviewsResource(self)
@@ -461,19 +463,65 @@ class AutomationsResource:
         *,
         search: Optional[str] = None,
         type: Optional[Literal["workflow", "agent"]] = None,
+        folder_id: Union[str, None] = _UNSET,  # type: ignore[assignment]
         limit: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> Any:
-        params = {"search": search, "type": type, "limit": limit, "offset": offset}
+        params: dict[str, Any] = {}
+        if search is not None:
+            params["search"] = search
+        if type is not None:
+            params["type"] = type
+        if folder_id is not _UNSET:
+            params["folderId"] = "null" if folder_id is None else folder_id
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
         return self._root._request(
             "GET",
             "/v1/automations",
-            params={k: v for k, v in params.items() if v is not None} or None,
+            params=params or None,
         )
 
     def get(self, automation_id: str) -> Any:
         return self._root._request(
             "GET", f"/v1/automations/{quote(automation_id, safe='')}"
+        )
+
+    def move(
+        self,
+        automation_id: str,
+        *,
+        folder_id: Union[str, None] = _UNSET,  # type: ignore[assignment]
+        folder_path: Optional[str] = None,
+    ) -> Any:
+        """Move a YAML workflow between organizing folders.
+
+        Agent automations have no folder model and are rejected by the API.
+        Pass ``folder_id=None`` or ``folder_path="/"`` to file at the tenant root.
+        """
+        body: dict[str, Any] = {}
+        if folder_id is not _UNSET:
+            body["folderId"] = folder_id
+        if folder_path is not None:
+            body["folderPath"] = folder_path
+        return self._root._request(
+            "PATCH",
+            f"/v1/automations/{quote(automation_id, safe='')}",
+            json=body,
+        )
+
+    def delete(self, automation_id: str) -> Any:
+        """Delete a workflow or agent automation using dashboard cleanup.
+
+        Workflows archive the automations registry parent and keep execution
+        history. Agents delete the implementation, versions, and builder
+        sessions, archive the registry parent, and best-effort-delete agent
+        storage; unified prior runs remain in run history.
+        """
+        return self._root._request(
+            "DELETE", f"/v1/automations/{quote(automation_id, safe='')}"
         )
 
     def versions(self, automation_id: str) -> Any:
@@ -754,6 +802,67 @@ class AutomationExperimentsResource:
                         yield line
 
         return lines()
+
+
+class FoldersResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(
+        self,
+        *,
+        type: Literal["workflow", "template"],
+        parent_id: Optional[str] = None,
+        tree: Optional[str] = None,
+    ) -> Any:
+        params: dict[str, Any] = {"type": type}
+        if parent_id is not None:
+            params["parentId"] = parent_id
+        if tree is not None:
+            params["tree"] = tree
+        return self._root._request("GET", "/v1/folders", params=params)
+
+    def get(self, folder_id: str) -> Any:
+        return self._root._request("GET", f"/v1/folders/{quote(folder_id, safe='')}")
+
+    def create(
+        self,
+        *,
+        name: str,
+        type: Literal["workflow", "template"],
+        parent_id: Optional[str] = None,
+    ) -> Any:
+        body: dict[str, Any] = {"name": name, "type": type}
+        if parent_id is not None:
+            body["parentId"] = parent_id
+        return self._root._request("POST", "/v1/folders", json=body)
+
+    def update(
+        self,
+        folder_id: str,
+        *,
+        name: Optional[str] = None,
+        parent_id: Union[str, None] = _UNSET,  # type: ignore[assignment]
+    ) -> Any:
+        body: dict[str, Any] = {}
+        if name is not None:
+            body["name"] = name
+        if parent_id is not _UNSET:
+            body["parentId"] = parent_id
+        return self._root._request(
+            "PATCH",
+            f"/v1/folders/{quote(folder_id, safe='')}",
+            json=body,
+        )
+
+    def delete(self, folder_id: str) -> Any:
+        """Delete a folder and cascade-delete child folders.
+
+        Workflows and templates in the tree are unfiled, not deleted.
+        """
+        return self._root._request(
+            "DELETE", f"/v1/folders/{quote(folder_id, safe='')}"
+        )
 
 
 class RunsResource:

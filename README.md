@@ -38,10 +38,25 @@ print(result.finished, result.output)
 Workflows and agents are exposed as automations.
 
 ```python
-listing = client.automations.list(search="invoice")
+listing = client.automations.list(search="invoice", folder_id="fldr_…")
 automation = client.automations.get("workflows.extract-invoice")
-versions = client.automations.versions("workflows.extract-invoice")
-triggers = client.automations.triggers("workflows.extract-invoice")
+client.automations.move("workflows.extract-invoice", folder_path="billing/invoices")
+client.automations.delete("workflows.extract-invoice")
+```
+
+`list(folder_id="null")` returns unfiled YAML workflows at the tenant root. Agent automations have no folder model.
+
+Workflow delete archives the automations parent and keeps execution history. Agent delete removes the agent implementation and history, matching the dashboard, with best-effort leftover storage cleanup.
+
+## Folders
+
+Workflow and template trees are a first-class resource. Nested agent directories in Git are source organization only.
+
+```python
+tree = client.folders.list(type="workflow", tree="true")
+folder = client.folders.create(name="invoices", type="workflow")
+client.folders.update(folder.id, name="billing")
+client.folders.delete(folder.id)  # unfiles workflows; does not delete them
 ```
 
 ## Runs
@@ -105,7 +120,7 @@ Every non-2xx response raises a typed subclass of `EigenpalError`:
 
 | Topic                                     | What is in it                                                      |
 | ----------------------------------------- | ------------------------------------------------------------------ |
-| [Automations](./docs/workflows.md)        | List, inspect, versions, triggers.                                 |
+| [Automations](./docs/workflows.md)        | List, inspect, move, delete, versions, triggers, folders.          |
 | [Runs](./docs/executions.md)              | Start, poll, cancel, rerun, usage, steps, events, traces, reviews. |
 | [File inputs](./docs/files.md)            | Multipart upload from Path, file handle, or bytes.                 |
 | [Errors](./docs/errors.md)                | Typed exceptions, retries, request ids.                            |

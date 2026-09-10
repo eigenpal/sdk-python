@@ -32,6 +32,10 @@ class AutomationSummary:
             type_ (AutomationType):
             slug (str):
             name (None | str):
+            folder_id (None | str): Workflow folder id. Null for unfiled workflows, agent automations, and orphan registry
+                rows.
+            folder_path (None | str): Slash-separated workflow folder path from the tenant root, such as `billing/invoices`.
+                Null at root and for agent automations.
             created_at (str):
             description (None | str | Unset):
             status (str | Unset):
@@ -46,6 +50,8 @@ class AutomationSummary:
     type_: AutomationType
     slug: str
     name: None | str
+    folder_id: None | str
+    folder_path: None | str
     created_at: str
     description: None | str | Unset = UNSET
     status: str | Unset = UNSET
@@ -68,6 +74,12 @@ class AutomationSummary:
 
         name: None | str
         name = self.name
+
+        folder_id: None | str
+        folder_id = self.folder_id
+
+        folder_path: None | str
+        folder_path = self.folder_path
 
         created_at: str
         created_at = self.created_at
@@ -106,6 +118,8 @@ class AutomationSummary:
             "type": type_,
             "slug": slug,
             "name": name,
+            "folderId": folder_id,
+            "folderPath": folder_path,
             "createdAt": created_at,
         })
         if description is not UNSET:
@@ -144,6 +158,22 @@ class AutomationSummary:
             return cast(None | str, data)
 
         name = _parse_name(d.pop("name"))
+
+
+        def _parse_folder_id(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        folder_id = _parse_folder_id(d.pop("folderId"))
+
+
+        def _parse_folder_path(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        folder_path = _parse_folder_path(d.pop("folderPath"))
 
 
         def _parse_created_at(data: object) -> str:
@@ -199,6 +229,8 @@ class AutomationSummary:
             type_=type_,
             slug=slug,
             name=name,
+            folder_id=folder_id,
+            folder_path=folder_path,
             created_at=created_at,
             description=description,
             status=status,

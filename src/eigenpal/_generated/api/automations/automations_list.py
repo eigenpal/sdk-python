@@ -20,6 +20,7 @@ def _get_kwargs(
     *,
     search: str | Unset = UNSET,
     type_: AutomationsListType | Unset = UNSET,
+    folder_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -37,6 +38,8 @@ def _get_kwargs(
         json_type_ = type_.value
 
     params["type"] = json_type_
+
+    params["folderId"] = folder_id
 
     params["limit"] = limit
 
@@ -134,6 +137,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     type_: AutomationsListType | Unset = UNSET,
+    folder_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -141,11 +145,15 @@ def sync_detailed(
     """ List automations
 
      Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
-    workflows or agents, and `search` to find automations by slug, name, or description.
+    workflows or agents, `search` to find automations by slug, name, or description, and `folderId` to
+    list YAML workflows in a folder (`null` for root).
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
+        folder_id (str | Unset): Filter YAML workflows by folder. A folder id matches that folder;
+            `null` matches unfiled workflows at root. Agent automations have no folders, so this
+            filter excludes them. Cannot be combined with `type=agent`.
         limit (int | Unset): Maximum number of automations to return.
         offset (int | Unset): Zero-based offset for paging through automations.
 
@@ -161,6 +169,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         search=search,
 type_=type_,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
@@ -177,6 +186,7 @@ def sync(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     type_: AutomationsListType | Unset = UNSET,
+    folder_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -184,11 +194,15 @@ def sync(
     """ List automations
 
      Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
-    workflows or agents, and `search` to find automations by slug, name, or description.
+    workflows or agents, `search` to find automations by slug, name, or description, and `folderId` to
+    list YAML workflows in a folder (`null` for root).
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
+        folder_id (str | Unset): Filter YAML workflows by folder. A folder id matches that folder;
+            `null` matches unfiled workflows at root. Agent automations have no folders, so this
+            filter excludes them. Cannot be combined with `type=agent`.
         limit (int | Unset): Maximum number of automations to return.
         offset (int | Unset): Zero-based offset for paging through automations.
 
@@ -205,6 +219,7 @@ def sync(
         client=client,
 search=search,
 type_=type_,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
@@ -215,6 +230,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     type_: AutomationsListType | Unset = UNSET,
+    folder_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -222,11 +238,15 @@ async def asyncio_detailed(
     """ List automations
 
      Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
-    workflows or agents, and `search` to find automations by slug, name, or description.
+    workflows or agents, `search` to find automations by slug, name, or description, and `folderId` to
+    list YAML workflows in a folder (`null` for root).
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
+        folder_id (str | Unset): Filter YAML workflows by folder. A folder id matches that folder;
+            `null` matches unfiled workflows at root. Agent automations have no folders, so this
+            filter excludes them. Cannot be combined with `type=agent`.
         limit (int | Unset): Maximum number of automations to return.
         offset (int | Unset): Zero-based offset for paging through automations.
 
@@ -242,6 +262,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         search=search,
 type_=type_,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
@@ -258,6 +279,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     search: str | Unset = UNSET,
     type_: AutomationsListType | Unset = UNSET,
+    folder_id: str | Unset = UNSET,
     limit: int | Unset = UNSET,
     offset: int | Unset = UNSET,
 
@@ -265,11 +287,15 @@ async def asyncio(
     """ List automations
 
      Returns workflows and agents through one runnable automation collection. Use `type` to narrow to
-    workflows or agents, and `search` to find automations by slug, name, or description.
+    workflows or agents, `search` to find automations by slug, name, or description, and `folderId` to
+    list YAML workflows in a folder (`null` for root).
 
     Args:
         search (str | Unset): Substring match against slug, name, or description
         type_ (AutomationsListType | Unset): Filter by implementation type
+        folder_id (str | Unset): Filter YAML workflows by folder. A folder id matches that folder;
+            `null` matches unfiled workflows at root. Agent automations have no folders, so this
+            filter excludes them. Cannot be combined with `type=agent`.
         limit (int | Unset): Maximum number of automations to return.
         offset (int | Unset): Zero-based offset for paging through automations.
 
@@ -286,6 +312,7 @@ async def asyncio(
         client=client,
 search=search,
 type_=type_,
+folder_id=folder_id,
 limit=limit,
 offset=offset,
 
