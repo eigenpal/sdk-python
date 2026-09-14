@@ -34,7 +34,8 @@ class WorkflowRunExecution:
             schema_valid (bool | None): Whether the completed output matched the workflow or agent output schema.
             batch_id (None | str): Experiment batch id when the run is part of a batch.
             retry (RunExecutionRetry):
-            steps (list[Any]): Per-step executions of the workflow run (`expand=execution`).
+            steps (list[Any]): Slim per-step rows (`id`, name, type, status, timing, order, capped error excerpt). Full
+                `input`/`output` live on `GET /api/v1/runs/{id}/steps/{stepExecutionId}`.
             review (None | RunReview | Unset):
             human_review (None | RunHumanReviewSummary | Unset): Pending in-flight human review when the run is waiting on a
                 reviewer.

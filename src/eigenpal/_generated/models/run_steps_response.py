@@ -24,9 +24,11 @@ class RunStepsResponse:
     """
         Attributes:
             steps (list[Any]):
+            total (int):
      """
 
     steps: list[Any]
+    total: int
 
 
 
@@ -37,11 +39,14 @@ class RunStepsResponse:
 
 
 
+        total = self.total
+
 
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
             "steps": steps,
+            "total": total,
         })
 
         return field_dict
@@ -54,8 +59,11 @@ class RunStepsResponse:
         steps = cast(list[Any], d.pop("steps"))
 
 
+        total = d.pop("total")
+
         run_steps_response = cls(
             steps=steps,
+            total=total,
         )
 
         return run_steps_response

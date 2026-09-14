@@ -87,6 +87,7 @@ client
 │   │   └── download
 │   ├── cancel
 │   ├── events
+│   ├── get_step
 │   ├── promote
 │   ├── reviews
 │   │   ├── get
@@ -2254,7 +2255,7 @@ Start a new run using the source run input. By default the retry uses the latest
 
 List run steps
 
-List workflow steps or an agent-compatible execution step summary for a run.
+List slim workflow step rows for a run (no input/output payloads) plus the total count. Fetch a single step for full payloads.
 
 **Path parameters**
 
@@ -2266,6 +2267,27 @@ List workflow steps or an agent-compatible execution step summary for a run.
 
 ```python
 // RunStepsResponse
+```
+
+### `client.runs.get_step`
+
+**`GET /v1/runs/:id/steps/:stepExecutionId`**
+
+Get a run step
+
+Return the full single step execution (including input/output) for on-demand inspection. The step must belong to this run or a child invoke-workflow run.
+
+**Path parameters**
+
+| Name                | Type  | Description       |
+| ------------------- | ----- | ----------------- |
+| `id`                | `str` | Run id            |
+| `step_execution_id` | `str` | Step execution id |
+
+**Response**
+
+```python
+// RunStepDetailResponse
 ```
 
 ### `client.runs.trace.get`

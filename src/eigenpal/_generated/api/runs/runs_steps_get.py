@@ -9,13 +9,13 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.run_steps_response import RunStepsResponse
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    step_execution_id: str,
 
 ) -> dict[str, Any]:
 
@@ -26,7 +26,7 @@ def _get_kwargs(
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/v1/runs/{id}/steps".format(id=quote(str(id), safe=""),),
+        "url": "/v1/runs/{id}/steps/{step_execution_id}".format(id=quote(str(id), safe=""),step_execution_id=quote(str(step_execution_id), safe=""),),
     }
 
 
@@ -34,12 +34,9 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | RunStepsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Any | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = RunStepsResponse.from_dict(response.json())
-
-
-
+        response_200 = response.json()
         return response_200
 
     if response.status_code == 400:
@@ -97,7 +94,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | RunStepsResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[Any | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -108,29 +105,32 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 def sync_detailed(
     id: str,
+    step_execution_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunStepsResponse]:
-    """ List run steps
+) -> Response[Any | ApiErrorEnvelope]:
+    """ Get a run step
 
-     List slim workflow step rows for a run (no input/output payloads) plus the total count. Fetch a
-    single step for full payloads.
+     Return the full single step execution (including input/output) for on-demand inspection. The step
+    must belong to this run or a child invoke-workflow run.
 
     Args:
         id (str): Run id
+        step_execution_id (str): Step execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunStepsResponse]
+        Response[Any | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+step_execution_id=step_execution_id,
 
     )
 
@@ -142,58 +142,64 @@ def sync_detailed(
 
 def sync(
     id: str,
+    step_execution_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunStepsResponse | None:
-    """ List run steps
+) -> Any | ApiErrorEnvelope | None:
+    """ Get a run step
 
-     List slim workflow step rows for a run (no input/output payloads) plus the total count. Fetch a
-    single step for full payloads.
+     Return the full single step execution (including input/output) for on-demand inspection. The step
+    must belong to this run or a child invoke-workflow run.
 
     Args:
         id (str): Run id
+        step_execution_id (str): Step execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunStepsResponse
+        Any | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
         id=id,
+step_execution_id=step_execution_id,
 client=client,
 
     ).parsed
 
 async def asyncio_detailed(
     id: str,
+    step_execution_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> Response[ApiErrorEnvelope | RunStepsResponse]:
-    """ List run steps
+) -> Response[Any | ApiErrorEnvelope]:
+    """ Get a run step
 
-     List slim workflow step rows for a run (no input/output payloads) plus the total count. Fetch a
-    single step for full payloads.
+     Return the full single step execution (including input/output) for on-demand inspection. The step
+    must belong to this run or a child invoke-workflow run.
 
     Args:
         id (str): Run id
+        step_execution_id (str): Step execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | RunStepsResponse]
+        Response[Any | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+step_execution_id=step_execution_id,
 
     )
 
@@ -205,29 +211,32 @@ async def asyncio_detailed(
 
 async def asyncio(
     id: str,
+    step_execution_id: str,
     *,
     client: AuthenticatedClient | Client,
 
-) -> ApiErrorEnvelope | RunStepsResponse | None:
-    """ List run steps
+) -> Any | ApiErrorEnvelope | None:
+    """ Get a run step
 
-     List slim workflow step rows for a run (no input/output payloads) plus the total count. Fetch a
-    single step for full payloads.
+     Return the full single step execution (including input/output) for on-demand inspection. The step
+    must belong to this run or a child invoke-workflow run.
 
     Args:
         id (str): Run id
+        step_execution_id (str): Step execution id
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | RunStepsResponse
+        Any | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
         id=id,
+step_execution_id=step_execution_id,
 client=client,
 
     )).parsed

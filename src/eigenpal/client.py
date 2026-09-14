@@ -909,6 +909,12 @@ class RunsResource:
     def steps(self, run_id: str) -> Any:
         return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/steps")
 
+    def get_step(self, run_id: str, step_execution_id: str) -> Any:
+        return self._root._request(
+            "GET",
+            f"/v1/runs/{quote(run_id, safe='')}/steps/{quote(step_execution_id, safe='')}",
+        )
+
     def events(self, run_id: str) -> Any:
         return self._root._request("GET", f"/v1/runs/{quote(run_id, safe='')}/events")
 

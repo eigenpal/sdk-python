@@ -198,6 +198,9 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     respx.get("http://localhost:3000/v1/runs/run_123/steps").mock(
         return_value=httpx.Response(200, json={"steps": []})
     )
+    respx.get("http://localhost:3000/v1/runs/run_123/steps/ste_123").mock(
+        return_value=httpx.Response(200, json={"id": "ste_123"})
+    )
     respx.get("http://localhost:3000/v1/runs/run_123/events").mock(
         return_value=httpx.Response(200, json={"events": []})
     )
@@ -257,6 +260,7 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     client.runs.get("run_123", expand=["usage", "execution"])
     client.runs.usage("run_123")
     client.runs.steps("run_123")
+    client.runs.get_step("run_123", "ste_123")
     client.runs.events("run_123")
     client.runs.artifacts.list("run_123")
     client.runs.reviews.get("run_123")
@@ -275,7 +279,7 @@ def test_public_resources_use_public_routes(client: EigenpalClient) -> None:
     )
     assert json.loads(create_version_request.content)["activate"] is False
 
-    assert len(respx.calls) == 22
+    assert len(respx.calls) == 23
 
 
 @respx.mock
