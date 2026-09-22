@@ -32,6 +32,8 @@ from .automations_sync_response_200_automation_type import AutomationsSyncRespon
 from .automations_sync_response_200_release import AutomationsSyncResponse200Release
 from .create_automation_version_request_type_0 import CreateAutomationVersionRequestType0
 from .create_automation_version_request_type_1 import CreateAutomationVersionRequestType1
+from .create_dataset_review_request import CreateDatasetReviewRequest
+from .create_dataset_review_request_status import CreateDatasetReviewRequestStatus
 from .create_email_server_request_type_0 import CreateEmailServerRequestType0
 from .create_email_server_request_type_1 import CreateEmailServerRequestType1
 from .create_email_server_request_type_1_security import CreateEmailServerRequestType1Security
@@ -72,6 +74,31 @@ from .dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadata
 from .dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
 from .dataset_import_response_type_0 import DatasetImportResponseType0
 from .dataset_import_response_type_1 import DatasetImportResponseType1
+from .dataset_review_create_item_note import DatasetReviewCreateItemNote
+from .dataset_review_detail import DatasetReviewDetail
+from .dataset_review_detail_status import DatasetReviewDetailStatus
+from .dataset_review_event import DatasetReviewEvent
+from .dataset_review_event_action import DatasetReviewEventAction
+from .dataset_review_event_list import DatasetReviewEventList
+from .dataset_review_field_decision import DatasetReviewFieldDecision
+from .dataset_review_field_decision_decision import DatasetReviewFieldDecisionDecision
+from .dataset_review_focus_field import DatasetReviewFocusField
+from .dataset_review_focus_field_output import DatasetReviewFocusFieldOutput
+from .dataset_review_item import DatasetReviewItem
+from .dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions
+from .dataset_review_item_field_note import DatasetReviewItemFieldNote
+from .dataset_review_item_list import DatasetReviewItemList
+from .dataset_review_item_response import DatasetReviewItemResponse
+from .dataset_review_item_snapshot_input_json_type_0 import DatasetReviewItemSnapshotInputJsonType0
+from .dataset_review_item_snapshot_manifest import DatasetReviewItemSnapshotManifest
+from .dataset_review_item_snapshot_manifest_expected_files_item import DatasetReviewItemSnapshotManifestExpectedFilesItem
+from .dataset_review_item_snapshot_manifest_input_file_hashes_item import DatasetReviewItemSnapshotManifestInputFileHashesItem
+from .dataset_review_item_snapshot_manifest_metadata_type_0 import DatasetReviewItemSnapshotManifestMetadataType0
+from .dataset_review_item_status import DatasetReviewItemStatus
+from .dataset_review_progress import DatasetReviewProgress
+from .dataset_review_request import DatasetReviewRequest
+from .dataset_review_request_list import DatasetReviewRequestList
+from .dataset_review_request_status import DatasetReviewRequestStatus
 from .delete_automation_response import DeleteAutomationResponse
 from .delete_email_server_response import DeleteEmailServerResponse
 from .delete_file_response import DeleteFileResponse
@@ -265,6 +292,11 @@ from .test_email_server_response_type_0 import TestEmailServerResponseType0
 from .test_email_server_response_type_0_transport import TestEmailServerResponseType0Transport
 from .test_email_server_response_type_1 import TestEmailServerResponseType1
 from .update_automation_request import UpdateAutomationRequest
+from .update_dataset_review_item import UpdateDatasetReviewItem
+from .update_dataset_review_item_action import UpdateDatasetReviewItemAction
+from .update_dataset_review_item_decision_type_0 import UpdateDatasetReviewItemDecisionType0
+from .update_dataset_review_request import UpdateDatasetReviewRequest
+from .update_dataset_review_request_status import UpdateDatasetReviewRequestStatus
 from .update_email_server_request_type_0 import UpdateEmailServerRequestType0
 from .update_email_server_request_type_1 import UpdateEmailServerRequestType1
 from .update_email_server_request_type_1_security import UpdateEmailServerRequestType1Security
@@ -306,6 +338,8 @@ __all__ = (
     "AutomationVersion",
     "CreateAutomationVersionRequestType0",
     "CreateAutomationVersionRequestType1",
+    "CreateDatasetReviewRequest",
+    "CreateDatasetReviewRequestStatus",
     "CreatedTemplate",
     "CreatedTemplateFormat",
     "CreatedTemplateGrammar",
@@ -346,6 +380,31 @@ __all__ = (
     "DatasetExampleUpdateOverridesType0",
     "DatasetImportResponseType0",
     "DatasetImportResponseType1",
+    "DatasetReviewCreateItemNote",
+    "DatasetReviewDetail",
+    "DatasetReviewDetailStatus",
+    "DatasetReviewEvent",
+    "DatasetReviewEventAction",
+    "DatasetReviewEventList",
+    "DatasetReviewFieldDecision",
+    "DatasetReviewFieldDecisionDecision",
+    "DatasetReviewFocusField",
+    "DatasetReviewFocusFieldOutput",
+    "DatasetReviewItem",
+    "DatasetReviewItemFieldDecisions",
+    "DatasetReviewItemFieldNote",
+    "DatasetReviewItemList",
+    "DatasetReviewItemResponse",
+    "DatasetReviewItemSnapshotInputJsonType0",
+    "DatasetReviewItemSnapshotManifest",
+    "DatasetReviewItemSnapshotManifestExpectedFilesItem",
+    "DatasetReviewItemSnapshotManifestInputFileHashesItem",
+    "DatasetReviewItemSnapshotManifestMetadataType0",
+    "DatasetReviewItemStatus",
+    "DatasetReviewProgress",
+    "DatasetReviewRequest",
+    "DatasetReviewRequestList",
+    "DatasetReviewRequestStatus",
     "DeleteAutomationResponse",
     "DeleteEmailServerResponse",
     "DeleteFileResponse",
@@ -539,6 +598,11 @@ __all__ = (
     "TestEmailServerResponseType0Transport",
     "TestEmailServerResponseType1",
     "UpdateAutomationRequest",
+    "UpdateDatasetReviewItem",
+    "UpdateDatasetReviewItemAction",
+    "UpdateDatasetReviewItemDecisionType0",
+    "UpdateDatasetReviewRequest",
+    "UpdateDatasetReviewRequestStatus",
     "UpdateEmailServerRequestType0",
     "UpdateEmailServerRequestType1",
     "UpdateEmailServerRequestType1Security",

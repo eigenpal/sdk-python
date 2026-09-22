@@ -453,6 +453,7 @@ class AutomationsResource:
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
         self.dataset = AutomationDatasetResource(root)
+        self.dataset_review_requests = AutomationDatasetReviewRequestsResource(root)
         self.examples = AutomationExamplesResource(root)
         self.evaluators = AutomationEvaluatorsResource(root)
         self.experiments = AutomationExperimentsResource(root)
@@ -612,6 +613,111 @@ class AutomationReviewsResource:
             "GET",
             f"/v1/automations/{quote(automation_id, safe='')}/reviews/health",
             params=query or None,
+        )
+
+
+def _dataset_review_requests_base(automation_id: str) -> str:
+    return f"/v1/automations/{quote(automation_id, safe='')}/dataset-review-requests"
+
+
+def _join_csv(values: str | Sequence[str] | None) -> str | None:
+    if values is None:
+        return None
+    if isinstance(values, str):
+        return values
+    return ",".join(values)
+
+
+class AutomationDatasetReviewRequestsResource:
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(
+        self,
+        automation_id: str,
+        *,
+        status: str | Sequence[str] | None = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> Any:
+        params = {
+            "status": _join_csv(status),
+            "limit": limit,
+            "offset": offset,
+        }
+        return self._root._request(
+            "GET",
+            _dataset_review_requests_base(automation_id),
+            params={k: v for k, v in params.items() if v is not None} or None,
+        )
+
+    def create(self, automation_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "POST",
+            _dataset_review_requests_base(automation_id),
+            json=body,
+        )
+
+    def get(self, automation_id: str, review_id: str) -> Any:
+        return self._root._request(
+            "GET",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}",
+        )
+
+    def update(self, automation_id: str, review_id: str, body: dict[str, Any]) -> Any:
+        return self._root._request(
+            "PATCH",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}",
+            json=body,
+        )
+
+    def list_items(
+        self,
+        automation_id: str,
+        review_id: str,
+        *,
+        status: str | Sequence[str] | None = None,
+    ) -> Any:
+        params = {"status": _join_csv(status)}
+        return self._root._request(
+            "GET",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items",
+            params={k: v for k, v in params.items() if v is not None} or None,
+        )
+
+    def update_item(
+        self,
+        automation_id: str,
+        review_id: str,
+        item_id: str,
+        body: dict[str, Any],
+    ) -> Any:
+        return self._root._request(
+            "PATCH",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items/{quote(item_id, safe='')}",
+            json=body,
+        )
+
+    def get_item_file(
+        self,
+        automation_id: str,
+        review_id: str,
+        item_id: str,
+        path: str,
+    ) -> bytes:
+        relative = path.lstrip("/")
+        response = self._root._http.get(
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items/{quote(item_id, safe='')}/files/{_quote_path(relative)}",
+            follow_redirects=True,
+        )
+        if response.status_code >= 400:
+            _check_response(response)
+        return response.content
+
+    def events(self, automation_id: str, review_id: str) -> Any:
+        return self._root._request(
+            "GET",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/events",
         )
 
 
