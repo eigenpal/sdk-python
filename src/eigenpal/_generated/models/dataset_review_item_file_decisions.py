@@ -23,7 +23,7 @@ T = TypeVar("T", bound="DatasetReviewItemFileDecisions")
 
 @_attrs_define
 class DatasetReviewItemFileDecisions:
-    """ Durable per-expected-file approve/reject, keyed by expected-file path.
+    """ Durable per-expected-file approve/remove, keyed by expected-file path.
 
      """
 

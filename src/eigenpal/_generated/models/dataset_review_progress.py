@@ -26,17 +26,17 @@ class DatasetReviewProgress:
             pending (int):
             approved (int):
             edited (int):
-            rejected (int):
+            removed (int):
             remaining (int): Count of examples still pending a decision.
-            complete (bool): True when every example has been approved, edited, or rejected. Close the request when review
-                is finished; dataset write-back is always manual.
+            complete (bool): True when every example has been approved, edited, or removed. Close the request when review is
+                finished; dataset write-back is always manual.
      """
 
     total: int
     pending: int
     approved: int
     edited: int
-    rejected: int
+    removed: int
     remaining: int
     complete: bool
 
@@ -53,7 +53,7 @@ class DatasetReviewProgress:
 
         edited = self.edited
 
-        rejected = self.rejected
+        removed = self.removed
 
         remaining = self.remaining
 
@@ -67,7 +67,7 @@ class DatasetReviewProgress:
             "pending": pending,
             "approved": approved,
             "edited": edited,
-            "rejected": rejected,
+            "removed": removed,
             "remaining": remaining,
             "complete": complete,
         })
@@ -87,7 +87,7 @@ class DatasetReviewProgress:
 
         edited = d.pop("edited")
 
-        rejected = d.pop("rejected")
+        removed = d.pop("removed")
 
         remaining = d.pop("remaining")
 
@@ -98,7 +98,7 @@ class DatasetReviewProgress:
             pending=pending,
             approved=approved,
             edited=edited,
-            rejected=rejected,
+            removed=removed,
             remaining=remaining,
             complete=complete,
         )

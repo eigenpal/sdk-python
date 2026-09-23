@@ -26,7 +26,7 @@ T = TypeVar("T", bound="UpdateDatasetReviewItem")
 class UpdateDatasetReviewItem:
     """
         Attributes:
-            action (UpdateDatasetReviewItemAction): file-decision records a per-expected-file approve/reject (or a note).
+            action (UpdateDatasetReviewItemAction): file-decision records a per-expected-file approve/remove (or a note).
                 edit-file uploads corrected bytes and is multipart-only — JSON callers get a 400 pointing at the multipart form.
             expected_updated_at (str): ISO timestamp of the item `updatedAt` the client last observed. Required for
                 optimistic concurrency.

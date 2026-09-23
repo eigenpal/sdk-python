@@ -149,7 +149,7 @@ def test_update_item_field_decision_and_clear() -> None:
         {
             "action": "field-decision",
             "fieldPath": "vendor.iban",
-            "decision": "rejected",
+            "decision": "removed",
             "expectedUpdatedAt": "2026-01-01T00:00:00.000Z",
         },
     )
@@ -166,7 +166,7 @@ def test_update_item_field_decision_and_clear() -> None:
     )
 
     assert route.call_count == 2
-    assert json.loads(route.calls[0].request.content.decode())["decision"] == "rejected"
+    assert json.loads(route.calls[0].request.content.decode())["decision"] == "removed"
     assert json.loads(route.calls[1].request.content.decode())["decision"] is None
 
 

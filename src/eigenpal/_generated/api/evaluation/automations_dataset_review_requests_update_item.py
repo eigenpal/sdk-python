@@ -142,7 +142,7 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | DatasetReviewItemResponse]:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+     Approve, edit, remove, reopen, comment, or record a field-decision or file-decision on one review
     item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
     client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
     `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
@@ -190,7 +190,7 @@ def sync(
 ) -> ApiErrorEnvelope | DatasetReviewItemResponse | None:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+     Approve, edit, remove, reopen, comment, or record a field-decision or file-decision on one review
     item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
     client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
     `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
@@ -233,7 +233,7 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | DatasetReviewItemResponse]:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+     Approve, edit, remove, reopen, comment, or record a field-decision or file-decision on one review
     item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
     client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
     `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
@@ -281,7 +281,7 @@ async def asyncio(
 ) -> ApiErrorEnvelope | DatasetReviewItemResponse | None:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+     Approve, edit, remove, reopen, comment, or record a field-decision or file-decision on one review
     item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
     client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
     `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes

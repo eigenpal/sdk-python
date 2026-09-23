@@ -8,7 +8,7 @@ class DatasetReviewEventAction(str, Enum):
     FIELD_DECISION = "field-decision"
     FILE_DECISION = "file-decision"
     FILE_EDITED = "file-edited"
-    REJECTED = "rejected"
+    REMOVED = "removed"
     REOPENED = "reopened"
 
     def __str__(self) -> str:

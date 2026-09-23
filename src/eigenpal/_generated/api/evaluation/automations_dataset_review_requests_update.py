@@ -133,8 +133,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | DatasetReviewDetail]:
     """ Update dataset review request
 
-     Update review metadata or lifecycle status while the request is draft, open, or paused. Set status
-    to `closed` when review is finished; dataset reconciliation stays manual.
+     Update review metadata or lifecycle status. Set status to `closed` when review is finished; a closed
+    review accepts only a bare reopen back to `open`. Dataset reconciliation stays manual.
 
     Args:
         id (str): Automation id or typed alias.
@@ -173,8 +173,8 @@ def sync(
 ) -> ApiErrorEnvelope | DatasetReviewDetail | None:
     """ Update dataset review request
 
-     Update review metadata or lifecycle status while the request is draft, open, or paused. Set status
-    to `closed` when review is finished; dataset reconciliation stays manual.
+     Update review metadata or lifecycle status. Set status to `closed` when review is finished; a closed
+    review accepts only a bare reopen back to `open`. Dataset reconciliation stays manual.
 
     Args:
         id (str): Automation id or typed alias.
@@ -208,8 +208,8 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | DatasetReviewDetail]:
     """ Update dataset review request
 
-     Update review metadata or lifecycle status while the request is draft, open, or paused. Set status
-    to `closed` when review is finished; dataset reconciliation stays manual.
+     Update review metadata or lifecycle status. Set status to `closed` when review is finished; a closed
+    review accepts only a bare reopen back to `open`. Dataset reconciliation stays manual.
 
     Args:
         id (str): Automation id or typed alias.
@@ -248,8 +248,8 @@ async def asyncio(
 ) -> ApiErrorEnvelope | DatasetReviewDetail | None:
     """ Update dataset review request
 
-     Update review metadata or lifecycle status while the request is draft, open, or paused. Set status
-    to `closed` when review is finished; dataset reconciliation stays manual.
+     Update review metadata or lifecycle status. Set status to `closed` when review is finished; a closed
+    review accepts only a bare reopen back to `open`. Dataset reconciliation stays manual.
 
     Args:
         id (str): Automation id or typed alias.

@@ -7,7 +7,7 @@ class UpdateDatasetReviewItemAction(str, Enum):
     EDIT_FILE = "edit-file"
     FIELD_DECISION = "field-decision"
     FILE_DECISION = "file-decision"
-    REJECT = "reject"
+    REMOVE = "remove"
     REOPEN = "reopen"
 
     def __str__(self) -> str:

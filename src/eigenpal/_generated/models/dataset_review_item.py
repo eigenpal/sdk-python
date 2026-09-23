@@ -41,7 +41,7 @@ class DatasetReviewItem:
             field_decisions (DatasetReviewItemFieldDecisions):
             current_expected_files (list[DatasetReviewExpectedFile] | None): Overlay of the snapshot manifest expected
                 files. Null means pristine — the reviewer has not corrected or uploaded any file yet.
-            file_decisions (DatasetReviewItemFileDecisions): Durable per-expected-file approve/reject, keyed by expected-
+            file_decisions (DatasetReviewItemFileDecisions): Durable per-expected-file approve/remove, keyed by expected-
                 file path.
             input_drifted (bool): True when live dataset input-file bytes no longer match the hashes captured at request
                 creation.

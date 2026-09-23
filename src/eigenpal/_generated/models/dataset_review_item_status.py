@@ -4,7 +4,7 @@ class DatasetReviewItemStatus(str, Enum):
     APPROVED = "approved"
     EDITED = "edited"
     PENDING = "pending"
-    REJECTED = "rejected"
+    REMOVED = "removed"
 
     def __str__(self) -> str:
         return str(self.value)

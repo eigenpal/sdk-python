@@ -2,7 +2,7 @@ from enum import Enum
 
 class DatasetReviewFileDecisionDecision(str, Enum):
     APPROVED = "approved"
-    REJECTED = "rejected"
+    REMOVED = "removed"
 
     def __str__(self) -> str:
         return str(self.value)
