@@ -5,11 +5,12 @@ from urllib.parse import quote
 import httpx
 
 from ...client import AuthenticatedClient, Client
-from ...types import Response, UNSET
+from ...types import Response, UNSET, Unset
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.dataset_review_item_response import DatasetReviewItemResponse
+from ...models.edit_dataset_review_item_file import EditDatasetReviewItemFile
 from ...models.update_dataset_review_item import UpdateDatasetReviewItem
 from typing import cast
 
@@ -20,7 +21,7 @@ def _get_kwargs(
     review_id: str,
     item_id: str,
     *,
-    body: UpdateDatasetReviewItem,
+    body:    UpdateDatasetReviewItem  |     EditDatasetReviewItemFile  | Unset = UNSET,
 
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -35,10 +36,16 @@ def _get_kwargs(
         "url": "/v1/automations/{id}/dataset-review-requests/{review_id}/items/{item_id}".format(id=quote(str(id), safe=""),review_id=quote(str(review_id), safe=""),item_id=quote(str(item_id), safe=""),),
     }
 
-    _kwargs["json"] = body.to_dict()
+    if isinstance(body, UpdateDatasetReviewItem):
+        _kwargs["json"] = body.to_dict()
 
 
-    headers["Content-Type"] = "application/json"
+        headers["Content-Type"] = "application/json"
+    if isinstance(body, EditDatasetReviewItemFile):
+        _kwargs["files"] = body.to_multipart()
+
+
+        headers["Content-Type"] = "multipart/form-data"
 
     _kwargs["headers"] = headers
     return _kwargs
@@ -130,20 +137,24 @@ def sync_detailed(
     item_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: UpdateDatasetReviewItem,
+    body:    UpdateDatasetReviewItem  |     EditDatasetReviewItemFile  | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | DatasetReviewItemResponse]:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision on one review item while the
-    parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the client last
-    observed. Pass `fieldPath` with `action: comment` or `action: field-decision`.
+     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+    item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
+    client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
+    `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
+    with `filePath` (correct an existing expected file) or `newPath` (upload a brand-new expected file)
+    plus `expectedUpdatedAt`.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
         body (UpdateDatasetReviewItem):
+        body (EditDatasetReviewItemFile):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -174,20 +185,24 @@ def sync(
     item_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: UpdateDatasetReviewItem,
+    body:    UpdateDatasetReviewItem  |     EditDatasetReviewItemFile  | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | DatasetReviewItemResponse | None:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision on one review item while the
-    parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the client last
-    observed. Pass `fieldPath` with `action: comment` or `action: field-decision`.
+     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+    item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
+    client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
+    `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
+    with `filePath` (correct an existing expected file) or `newPath` (upload a brand-new expected file)
+    plus `expectedUpdatedAt`.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
         body (UpdateDatasetReviewItem):
+        body (EditDatasetReviewItemFile):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -213,20 +228,24 @@ async def asyncio_detailed(
     item_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: UpdateDatasetReviewItem,
+    body:    UpdateDatasetReviewItem  |     EditDatasetReviewItemFile  | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | DatasetReviewItemResponse]:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision on one review item while the
-    parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the client last
-    observed. Pass `fieldPath` with `action: comment` or `action: field-decision`.
+     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+    item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
+    client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
+    `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
+    with `filePath` (correct an existing expected file) or `newPath` (upload a brand-new expected file)
+    plus `expectedUpdatedAt`.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
         body (UpdateDatasetReviewItem):
+        body (EditDatasetReviewItemFile):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -257,20 +276,24 @@ async def asyncio(
     item_id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: UpdateDatasetReviewItem,
+    body:    UpdateDatasetReviewItem  |     EditDatasetReviewItemFile  | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | DatasetReviewItemResponse | None:
     """ Update dataset review item
 
-     Approve, edit, reject, reopen, comment, or record a field-decision on one review item while the
-    parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the client last
-    observed. Pass `fieldPath` with `action: comment` or `action: field-decision`.
+     Approve, edit, reject, reopen, comment, or record a field-decision or file-decision on one review
+    item while the parent request is draft, open, or paused. Pass `expectedUpdatedAt` from the item the
+    client last observed. Pass `fieldPath` with `action: comment` or `action: field-decision`,
+    `filePath` with `action: file-decision`. `action: edit-file` is multipart-only: send `file` bytes
+    with `filePath` (correct an existing expected file) or `newPath` (upload a brand-new expected file)
+    plus `expectedUpdatedAt`.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
         body (UpdateDatasetReviewItem):
+        body (EditDatasetReviewItemFile):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

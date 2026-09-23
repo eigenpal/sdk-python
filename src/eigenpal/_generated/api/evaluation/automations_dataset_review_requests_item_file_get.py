@@ -9,7 +9,9 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.automations_dataset_review_requests_item_file_get_kind import AutomationsDatasetReviewRequestsItemFileGetKind
 from ...types import File, FileTypes
+from ...types import UNSET, Unset
 from io import BytesIO
 from typing import cast
 
@@ -20,17 +22,30 @@ def _get_kwargs(
     review_id: str,
     item_id: str,
     path: str,
+    *,
+    kind: AutomationsDatasetReviewRequestsItemFileGetKind | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
 
 
 
+    params: dict[str, Any] = {}
+
+    json_kind: str | Unset = UNSET
+    if not isinstance(kind, Unset):
+        json_kind = kind.value
+
+    params["kind"] = json_kind
+
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
 
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/v1/automations/{id}/dataset-review-requests/{review_id}/items/{item_id}/files/{path}".format(id=quote(str(id), safe=""),review_id=quote(str(review_id), safe=""),item_id=quote(str(item_id), safe=""),path=quote(str(path), safe=""),),
+        "params": params,
     }
 
 
@@ -126,20 +141,25 @@ def sync_detailed(
     path: str,
     *,
     client: AuthenticatedClient | Client,
+    kind: AutomationsDatasetReviewRequestsItemFileGetKind | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | File]:
-    """ Download dataset review item input file
+    """ Download dataset review item file
 
-     Download one input file belonging to a review item. Authorized by `dataset_review:read` and scoped
-    to files referenced in the item snapshot, so reviewers without workflow read can still preview
-    documents.
+     Download one input file (default) or expected-output file (`?kind=expected`) belonging to a review
+    item. Authorized by `dataset_review:read` and scoped to files referenced in the item snapshot, so
+    reviewers without workflow read can still preview documents. Expected files resolve to reviewer-
+    corrected bytes when the item has a file overlay.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
-        path (str): Slash-delimited path under the example input folder referenced by the item
-            snapshot.
+        path (str): Slash-delimited path under the example input folder (default) or expected
+            folder (?kind=expected) referenced by the item snapshot.
+        kind (AutomationsDatasetReviewRequestsItemFileGetKind | Unset): Which file tree to serve.
+            `expected` resolves to reviewer-corrected bytes when the item has a file overlay, else the
+            snapshot bytes.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -155,6 +175,7 @@ def sync_detailed(
 review_id=review_id,
 item_id=item_id,
 path=path,
+kind=kind,
 
     )
 
@@ -171,20 +192,25 @@ def sync(
     path: str,
     *,
     client: AuthenticatedClient | Client,
+    kind: AutomationsDatasetReviewRequestsItemFileGetKind | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | File | None:
-    """ Download dataset review item input file
+    """ Download dataset review item file
 
-     Download one input file belonging to a review item. Authorized by `dataset_review:read` and scoped
-    to files referenced in the item snapshot, so reviewers without workflow read can still preview
-    documents.
+     Download one input file (default) or expected-output file (`?kind=expected`) belonging to a review
+    item. Authorized by `dataset_review:read` and scoped to files referenced in the item snapshot, so
+    reviewers without workflow read can still preview documents. Expected files resolve to reviewer-
+    corrected bytes when the item has a file overlay.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
-        path (str): Slash-delimited path under the example input folder referenced by the item
-            snapshot.
+        path (str): Slash-delimited path under the example input folder (default) or expected
+            folder (?kind=expected) referenced by the item snapshot.
+        kind (AutomationsDatasetReviewRequestsItemFileGetKind | Unset): Which file tree to serve.
+            `expected` resolves to reviewer-corrected bytes when the item has a file overlay, else the
+            snapshot bytes.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -201,6 +227,7 @@ review_id=review_id,
 item_id=item_id,
 path=path,
 client=client,
+kind=kind,
 
     ).parsed
 
@@ -211,20 +238,25 @@ async def asyncio_detailed(
     path: str,
     *,
     client: AuthenticatedClient | Client,
+    kind: AutomationsDatasetReviewRequestsItemFileGetKind | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | File]:
-    """ Download dataset review item input file
+    """ Download dataset review item file
 
-     Download one input file belonging to a review item. Authorized by `dataset_review:read` and scoped
-    to files referenced in the item snapshot, so reviewers without workflow read can still preview
-    documents.
+     Download one input file (default) or expected-output file (`?kind=expected`) belonging to a review
+    item. Authorized by `dataset_review:read` and scoped to files referenced in the item snapshot, so
+    reviewers without workflow read can still preview documents. Expected files resolve to reviewer-
+    corrected bytes when the item has a file overlay.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
-        path (str): Slash-delimited path under the example input folder referenced by the item
-            snapshot.
+        path (str): Slash-delimited path under the example input folder (default) or expected
+            folder (?kind=expected) referenced by the item snapshot.
+        kind (AutomationsDatasetReviewRequestsItemFileGetKind | Unset): Which file tree to serve.
+            `expected` resolves to reviewer-corrected bytes when the item has a file overlay, else the
+            snapshot bytes.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -240,6 +272,7 @@ async def asyncio_detailed(
 review_id=review_id,
 item_id=item_id,
 path=path,
+kind=kind,
 
     )
 
@@ -256,20 +289,25 @@ async def asyncio(
     path: str,
     *,
     client: AuthenticatedClient | Client,
+    kind: AutomationsDatasetReviewRequestsItemFileGetKind | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | File | None:
-    """ Download dataset review item input file
+    """ Download dataset review item file
 
-     Download one input file belonging to a review item. Authorized by `dataset_review:read` and scoped
-    to files referenced in the item snapshot, so reviewers without workflow read can still preview
-    documents.
+     Download one input file (default) or expected-output file (`?kind=expected`) belonging to a review
+    item. Authorized by `dataset_review:read` and scoped to files referenced in the item snapshot, so
+    reviewers without workflow read can still preview documents. Expected files resolve to reviewer-
+    corrected bytes when the item has a file overlay.
 
     Args:
         id (str): Automation id or typed alias.
         review_id (str): Dataset review request id.
         item_id (str): Dataset review item id.
-        path (str): Slash-delimited path under the example input folder referenced by the item
-            snapshot.
+        path (str): Slash-delimited path under the example input folder (default) or expected
+            folder (?kind=expected) referenced by the item snapshot.
+        kind (AutomationsDatasetReviewRequestsItemFileGetKind | Unset): Which file tree to serve.
+            `expected` resolves to reviewer-corrected bytes when the item has a file overlay, else the
+            snapshot bytes.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -286,5 +324,6 @@ review_id=review_id,
 item_id=item_id,
 path=path,
 client=client,
+kind=kind,
 
     )).parsed

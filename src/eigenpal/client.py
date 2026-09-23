@@ -704,15 +704,73 @@ class AutomationDatasetReviewRequestsResource:
         review_id: str,
         item_id: str,
         path: str,
+        *,
+        kind: Literal["input", "expected"] = "input",
     ) -> bytes:
         relative = path.lstrip("/")
+        params = {"kind": kind} if kind == "expected" else None
         response = self._root._http.get(
             f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items/{quote(item_id, safe='')}/files/{_quote_path(relative)}",
+            params=params,
             follow_redirects=True,
         )
         if response.status_code >= 400:
             _check_response(response)
         return response.content
+
+    def record_item_file_decision(
+        self,
+        automation_id: str,
+        review_id: str,
+        item_id: str,
+        body: dict[str, Any],
+    ) -> Any:
+        """Record a per-expected-file approve/reject (or a note) on a review item.
+
+        ``body`` carries ``filePath``, ``expectedUpdatedAt``, and optionally
+        ``decision`` (``None`` clears a recorded decision) plus ``comment``.
+        A comment without a decision is a note and requires an existing
+        decision server-side.
+        """
+        return self._root._request(
+            "PATCH",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items/{quote(item_id, safe='')}",
+            json={"action": "file-decision", **body},
+        )
+
+    def edit_item_file(
+        self,
+        automation_id: str,
+        review_id: str,
+        item_id: str,
+        file: Path | dict[str, Any] | BinaryIO,
+        *,
+        file_path: Optional[str] = None,
+        new_path: Optional[str] = None,
+        comment: Optional[str] = None,
+        expected_updated_at: str,
+    ) -> Any:
+        """Upload corrected bytes for an existing expected file (``file_path``)
+        or a brand-new reviewer upload (``new_path``). Exactly one of the two
+        paths is required. Multipart-only; replaces the item's expected-file
+        overlay entry and records a ``file-edited`` event.
+        """
+        data: dict[str, Any] = {
+            "action": "edit-file",
+            "expectedUpdatedAt": expected_updated_at,
+        }
+        if file_path is not None:
+            data["filePath"] = file_path
+        if new_path is not None:
+            data["newPath"] = new_path
+        if comment is not None:
+            data["comment"] = comment
+        return self._root._request(
+            "PATCH",
+            f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items/{quote(item_id, safe='')}",
+            files={"file": to_upload_tuple(file)},
+            data=data,
+        )
 
     def events(self, automation_id: str, review_id: str) -> Any:
         return self._root._request(
@@ -966,9 +1024,7 @@ class FoldersResource:
 
         Workflows and templates in the tree are unfiled, not deleted.
         """
-        return self._root._request(
-            "DELETE", f"/v1/folders/{quote(folder_id, safe='')}"
-        )
+        return self._root._request("DELETE", f"/v1/folders/{quote(folder_id, safe='')}")
 
 
 class RunsResource:

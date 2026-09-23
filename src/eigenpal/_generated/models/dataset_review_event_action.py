@@ -6,6 +6,8 @@ class DatasetReviewEventAction(str, Enum):
     CREATED = "created"
     EDITED = "edited"
     FIELD_DECISION = "field-decision"
+    FILE_DECISION = "file-decision"
+    FILE_EDITED = "file-edited"
     REJECTED = "rejected"
     REOPENED = "reopened"
 

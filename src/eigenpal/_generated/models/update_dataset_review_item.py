@@ -26,12 +26,14 @@ T = TypeVar("T", bound="UpdateDatasetReviewItem")
 class UpdateDatasetReviewItem:
     """
         Attributes:
-            action (UpdateDatasetReviewItemAction):
+            action (UpdateDatasetReviewItemAction): file-decision records a per-expected-file approve/reject (or a note).
+                edit-file uploads corrected bytes and is multipart-only — JSON callers get a 400 pointing at the multipart form.
             expected_updated_at (str): ISO timestamp of the item `updatedAt` the client last observed. Required for
                 optimistic concurrency.
             expected (Any | Unset):
             comment (None | str | Unset):
             field_path (None | str | Unset):
+            file_path (None | str | Unset): Expected-file path for action file-decision.
             decision (None | Unset | UpdateDatasetReviewItemDecisionType0):
      """
 
@@ -40,6 +42,7 @@ class UpdateDatasetReviewItem:
     expected: Any | Unset = UNSET
     comment: None | str | Unset = UNSET
     field_path: None | str | Unset = UNSET
+    file_path: None | str | Unset = UNSET
     decision: None | Unset | UpdateDatasetReviewItemDecisionType0 = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -66,6 +69,12 @@ class UpdateDatasetReviewItem:
         else:
             field_path = self.field_path
 
+        file_path: None | str | Unset
+        if isinstance(self.file_path, Unset):
+            file_path = UNSET
+        else:
+            file_path = self.file_path
+
         decision: None | str | Unset
         if isinstance(self.decision, Unset):
             decision = UNSET
@@ -87,6 +96,8 @@ class UpdateDatasetReviewItem:
             field_dict["comment"] = comment
         if field_path is not UNSET:
             field_dict["fieldPath"] = field_path
+        if file_path is not UNSET:
+            field_dict["filePath"] = file_path
         if decision is not UNSET:
             field_dict["decision"] = decision
 
@@ -126,6 +137,16 @@ class UpdateDatasetReviewItem:
         field_path = _parse_field_path(d.pop("fieldPath", UNSET))
 
 
+        def _parse_file_path(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        file_path = _parse_file_path(d.pop("filePath", UNSET))
+
+
         def _parse_decision(data: object) -> None | Unset | UpdateDatasetReviewItemDecisionType0:
             if data is None:
                 return data
@@ -152,6 +173,7 @@ class UpdateDatasetReviewItem:
             expected=expected,
             comment=comment,
             field_path=field_path,
+            file_path=file_path,
             decision=decision,
         )
 

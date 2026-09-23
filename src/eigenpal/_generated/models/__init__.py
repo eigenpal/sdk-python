@@ -18,6 +18,7 @@ from .automation_trigger_state import AutomationTriggerState
 from .automation_triggers_response import AutomationTriggersResponse
 from .automation_type import AutomationType
 from .automation_version import AutomationVersion
+from .automations_dataset_review_requests_item_file_get_kind import AutomationsDatasetReviewRequestsItemFileGetKind
 from .automations_examples_list_include import AutomationsExamplesListInclude
 from .automations_experiments_export_all_format import AutomationsExperimentsExportAllFormat
 from .automations_experiments_export_format import AutomationsExperimentsExportFormat
@@ -80,13 +81,18 @@ from .dataset_review_detail_status import DatasetReviewDetailStatus
 from .dataset_review_event import DatasetReviewEvent
 from .dataset_review_event_action import DatasetReviewEventAction
 from .dataset_review_event_list import DatasetReviewEventList
+from .dataset_review_expected_file import DatasetReviewExpectedFile
+from .dataset_review_expected_file_origin import DatasetReviewExpectedFileOrigin
 from .dataset_review_field_decision import DatasetReviewFieldDecision
 from .dataset_review_field_decision_decision import DatasetReviewFieldDecisionDecision
+from .dataset_review_file_decision import DatasetReviewFileDecision
+from .dataset_review_file_decision_decision import DatasetReviewFileDecisionDecision
 from .dataset_review_focus_field import DatasetReviewFocusField
 from .dataset_review_focus_field_output import DatasetReviewFocusFieldOutput
 from .dataset_review_item import DatasetReviewItem
 from .dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions
 from .dataset_review_item_field_note import DatasetReviewItemFieldNote
+from .dataset_review_item_file_decisions import DatasetReviewItemFileDecisions
 from .dataset_review_item_list import DatasetReviewItemList
 from .dataset_review_item_response import DatasetReviewItemResponse
 from .dataset_review_item_snapshot_input_json_type_0 import DatasetReviewItemSnapshotInputJsonType0
@@ -104,6 +110,7 @@ from .delete_email_server_response import DeleteEmailServerResponse
 from .delete_file_response import DeleteFileResponse
 from .delete_folder_response import DeleteFolderResponse
 from .delete_template_response import DeleteTemplateResponse
+from .edit_dataset_review_item_file import EditDatasetReviewItemFile
 from .eval_result import EvalResult
 from .evaluator_config_response import EvaluatorConfigResponse
 from .evaluator_config_response_config import EvaluatorConfigResponseConfig
@@ -319,6 +326,7 @@ __all__ = (
     "AutomationDetail",
     "AutomationDetailInputSchemaType0",
     "AutomationDetailOutputSchemaType0",
+    "AutomationsDatasetReviewRequestsItemFileGetKind",
     "AutomationsExamplesListInclude",
     "AutomationsExperimentsExportAllFormat",
     "AutomationsExperimentsExportFormat",
@@ -386,13 +394,18 @@ __all__ = (
     "DatasetReviewEvent",
     "DatasetReviewEventAction",
     "DatasetReviewEventList",
+    "DatasetReviewExpectedFile",
+    "DatasetReviewExpectedFileOrigin",
     "DatasetReviewFieldDecision",
     "DatasetReviewFieldDecisionDecision",
+    "DatasetReviewFileDecision",
+    "DatasetReviewFileDecisionDecision",
     "DatasetReviewFocusField",
     "DatasetReviewFocusFieldOutput",
     "DatasetReviewItem",
     "DatasetReviewItemFieldDecisions",
     "DatasetReviewItemFieldNote",
+    "DatasetReviewItemFileDecisions",
     "DatasetReviewItemList",
     "DatasetReviewItemResponse",
     "DatasetReviewItemSnapshotInputJsonType0",
@@ -410,6 +423,7 @@ __all__ = (
     "DeleteFileResponse",
     "DeleteFolderResponse",
     "DeleteTemplateResponse",
+    "EditDatasetReviewItemFile",
     "EvalResult",
     "EvaluatorConfigResponse",
     "EvaluatorConfigResponseConfig",
