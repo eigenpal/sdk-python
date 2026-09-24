@@ -1,6 +1,7 @@
 from enum import Enum
 
 class DatasetReviewRequestStatus(str, Enum):
+    CANCELLED = "cancelled"
     CLOSED = "closed"
     DRAFT = "draft"
     OPEN = "open"
