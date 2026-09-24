@@ -290,3 +290,21 @@ def test_edit_item_file_sends_multipart_edit_file() -> None:
     assert 'name="comment"' in body and "fixed total" in body
     assert 'name="expectedUpdatedAt"' in body
     assert 'filename="report.pdf"' in body and "fixed" in body
+
+
+@respx.mock
+def test_inbox_list_hits_tenant_endpoint_with_filters() -> None:
+    client = EigenpalClient(api_key="eg_test", base_url=BASE, max_retries=0)
+    route = respx.get(
+        f"{BASE}/v1/dataset-review-requests",
+        params={"status": "open,paused", "limit": 20, "offset": 5},
+    ).mock(return_value=httpx.Response(200, json={"data": [], "total": 0}))
+
+    client.dataset_review_requests.list(
+        status=["open", "paused"],
+        limit=20,
+        offset=5,
+    )
+
+    assert route.called
+    assert route.calls.last.request.method == "GET"

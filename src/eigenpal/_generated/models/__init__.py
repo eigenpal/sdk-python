@@ -89,6 +89,9 @@ from .dataset_review_file_decision import DatasetReviewFileDecision
 from .dataset_review_file_decision_decision import DatasetReviewFileDecisionDecision
 from .dataset_review_focus_field import DatasetReviewFocusField
 from .dataset_review_focus_field_output import DatasetReviewFocusFieldOutput
+from .dataset_review_inbox_item import DatasetReviewInboxItem
+from .dataset_review_inbox_item_status import DatasetReviewInboxItemStatus
+from .dataset_review_inbox_list import DatasetReviewInboxList
 from .dataset_review_item import DatasetReviewItem
 from .dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions
 from .dataset_review_item_field_note import DatasetReviewItemFieldNote
@@ -402,6 +405,9 @@ __all__ = (
     "DatasetReviewFileDecisionDecision",
     "DatasetReviewFocusField",
     "DatasetReviewFocusFieldOutput",
+    "DatasetReviewInboxItem",
+    "DatasetReviewInboxItemStatus",
+    "DatasetReviewInboxList",
     "DatasetReviewItem",
     "DatasetReviewItemFieldDecisions",
     "DatasetReviewItemFieldNote",

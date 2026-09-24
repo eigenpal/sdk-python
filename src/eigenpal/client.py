@@ -274,6 +274,7 @@ class EigenpalClient:
         self.auth = AuthResource(self)
         self.models = ModelsResource(self)
         self.automations = AutomationsResource(self)
+        self.dataset_review_requests = DatasetReviewRequestsResource(self)
         self.folders = FoldersResource(self)
         self.runs = RunsResource(self)
         self.files = FilesResource(self)
@@ -626,6 +627,31 @@ def _join_csv(values: str | Sequence[str] | None) -> str | None:
     if isinstance(values, str):
         return values
     return ",".join(values)
+
+
+class DatasetReviewRequestsResource:
+    """Tenant-wide dataset review inbox. Reviewer-facing: no workflow access required."""
+
+    def __init__(self, root: EigenpalClient) -> None:
+        self._root = root
+
+    def list(
+        self,
+        *,
+        status: str | Sequence[str] | None = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> Any:
+        params = {
+            "status": _join_csv(status),
+            "limit": limit,
+            "offset": offset,
+        }
+        return self._root._request(
+            "GET",
+            "/v1/dataset-review-requests",
+            params={k: v for k, v in params.items() if v is not None} or None,
+        )
 
 
 class AutomationDatasetReviewRequestsResource:

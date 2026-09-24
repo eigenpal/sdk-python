@@ -149,6 +149,8 @@ client
 │   └── test
 ├── auth
 │   └── check
+├── dataset_review_requests
+│   └── list
 ├── experiments
 │   └── resolve
 └── models
@@ -1313,6 +1315,28 @@ Starts a batch eval experiment for workflow or agent automations and streams per
 
 ```python
 // str
+```
+
+### `client.dataset_review_requests.list`
+
+**`GET /v1/dataset-review-requests`**
+
+List dataset review requests across the tenant
+
+Tenant-wide inbox of dataset review requests with progress and automation display names. Gated by `dataset_review:read` (reviewers allowed; does not require `workflow:read`).
+
+**Query parameters**
+
+| Name     | Type  | Description                                                      |
+| -------- | ----- | ---------------------------------------------------------------- |
+| `status` | `str` | (optional)Optional comma-separated review statuses to filter by. |
+| `limit`  | `int` | (optional)                                                       |
+| `offset` | `int` | (optional)                                                       |
+
+**Response**
+
+```python
+// DatasetReviewInboxList
 ```
 
 ### `client.experiments.resolve`
