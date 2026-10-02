@@ -2279,6 +2279,7 @@ List workflow and agent runs with cursor pagination.
 
 | Name                    | Type  | Description                                                                                                                   |
 | ----------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `tag`                   | `str` | (optional)Exact, case-sensitive execution tag                                                                                 |
 | `type`                  | `str` | (optional)                                                                                                                    |
 | `source`                | `str` | (optional)                                                                                                                    |
 | `status`                | `str` | (optional)                                                                                                                    |

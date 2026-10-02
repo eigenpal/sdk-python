@@ -32,6 +32,7 @@ class RunStartBody:
 
         Attributes:
             target (str): Automation target without a version suffix, e.g. workflows.invoice or agents.support.
+            tags (list[str] | str | Unset):
             input_ (RunStartBodyInput | Unset): Scalar and structured automation arguments.
             files (RunStartBodyFiles | Unset): File inputs as ingress references (`{ "$fileId": "file_..." }` or `{
                 "$inline": { filename, mimeType, base64 } }`). Upload bytes via multipart `files.<fieldName>` parts instead.
@@ -40,6 +41,7 @@ class RunStartBody:
      """
 
     target: str
+    tags: list[str] | str | Unset = UNSET
     input_: RunStartBodyInput | Unset = UNSET
     files: RunStartBodyFiles | Unset = UNSET
     overrides: RunStartBodyOverrides | Unset = UNSET
@@ -56,6 +58,16 @@ class RunStartBody:
         from ..models.run_start_body_metadata import RunStartBodyMetadata
         from ..models.run_start_body_overrides import RunStartBodyOverrides
         target = self.target
+
+        tags: list[str] | str | Unset
+        if isinstance(self.tags, Unset):
+            tags = UNSET
+        elif isinstance(self.tags, list):
+            tags = self.tags
+
+
+        else:
+            tags = self.tags
 
         input_: dict[str, Any] | Unset = UNSET
         if not isinstance(self.input_, Unset):
@@ -79,6 +91,8 @@ class RunStartBody:
         field_dict.update({
             "target": target,
         })
+        if tags is not UNSET:
+            field_dict["tags"] = tags
         if input_ is not UNSET:
             field_dict["input"] = input_
         if files is not UNSET:
@@ -100,6 +114,22 @@ class RunStartBody:
         from ..models.run_start_body_overrides import RunStartBodyOverrides
         d = dict(src_dict)
         target = d.pop("target")
+
+        def _parse_tags(data: object) -> list[str] | str | Unset:
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, list):
+                    raise TypeError()
+                tags_type_1 = cast(list[str], data)
+
+                return tags_type_1
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(list[str] | str | Unset, data)
+
+        tags = _parse_tags(d.pop("tags", UNSET))
+
 
         _input_ = d.pop("input", UNSET)
         input_: RunStartBodyInput | Unset
@@ -143,6 +173,7 @@ class RunStartBody:
 
         run_start_body = cls(
             target=target,
+            tags=tags,
             input_=input_,
             files=files,
             overrides=overrides,

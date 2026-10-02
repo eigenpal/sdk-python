@@ -320,6 +320,7 @@ class EigenpalClient:
         wait_for_completion: Optional[int] = None,
         overrides: Optional[dict[str, Any]] = None,
         metadata: Optional[dict[str, Any]] = None,
+        tags: Optional[Union[str, list[str]]] = None,
     ) -> Any:
         path_target, version = _path_target(target)
         params: dict[str, Any] = {}
@@ -342,6 +343,8 @@ class EigenpalClient:
                 fields["input"] = (None, json.dumps(scalar_input), "application/json")
             if overrides:
                 fields["overrides"] = (None, json.dumps(overrides), "application/json")
+            if tags is not None:
+                fields["tags"] = (None, json.dumps(tags), "application/json")
             if metadata:
                 fields["metadata"] = (None, json.dumps(metadata), "application/json")
             return self._request(
@@ -349,6 +352,8 @@ class EigenpalClient:
             )
 
         body: dict[str, Any] = {"target": path_target}
+        if tags is not None:
+            body["tags"] = tags
         if prepared_input is not None:
             body["input"] = prepared_input
         if overrides:
@@ -416,8 +421,9 @@ class EigenpalClient:
         poll_interval_seconds: float = DEFAULT_POLL_INTERVAL_SECONDS,
         overrides: Optional[dict[str, Any]] = None,
         metadata: Optional[dict[str, Any]] = None,
+        tags: Optional[Union[str, list[str]]] = None,
     ) -> Any:
-        started = self.run(target, input=input, overrides=overrides, metadata=metadata)
+        started = self.run(target, input=input, overrides=overrides, metadata=metadata, tags=tags)
         run_id = started["id"]
         deadline = time.monotonic() + timeout_seconds
         while time.monotonic() < deadline:

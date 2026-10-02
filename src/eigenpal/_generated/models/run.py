@@ -49,6 +49,7 @@ class Run:
                 None, 'retry': {'number': 0, 'previousRunId': None, 'nextRun': None}}}
 
         Attributes:
+            tags (list[str]):
             id (str):
             type_ (RunType):
             finished (bool): True when the run has reached a terminal status.
@@ -73,6 +74,7 @@ class Run:
             debug (RunDebug | Unset):
      """
 
+    tags: list[str]
     id: str
     type_: RunType
     finished: bool
@@ -107,6 +109,10 @@ class Run:
         from ..models.run_trigger import RunTrigger
         from ..models.run_usage import RunUsage
         from ..models.workflow_run_execution import WorkflowRunExecution
+        tags = self.tags
+
+
+
         id = self.id
 
         type_ = self.type_.value
@@ -179,6 +185,7 @@ class Run:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
+            "tags": tags,
             "id": id,
             "type": type_,
             "finished": finished,
@@ -224,6 +231,9 @@ class Run:
         from ..models.run_usage import RunUsage
         from ..models.workflow_run_execution import WorkflowRunExecution
         d = dict(src_dict)
+        tags = cast(list[str], d.pop("tags"))
+
+
         id = d.pop("id")
 
         type_ = RunType(d.pop("type"))
@@ -377,6 +387,7 @@ class Run:
 
 
         run = cls(
+            tags=tags,
             id=id,
             type_=type_,
             finished=finished,

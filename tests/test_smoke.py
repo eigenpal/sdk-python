@@ -403,3 +403,14 @@ def test_run_and_wait_polls_until_terminal(client: EigenpalClient) -> None:
     )
 
     assert result.output.total == 42
+
+
+@respx.mock
+def test_run_sends_execution_tags_separately(client: EigenpalClient) -> None:
+    route = respx.post("http://localhost:3000/v1/runs").mock(
+        return_value=httpx.Response(202, json=run_accepted())
+    )
+    client.run("agents.test", input={"id": "123"}, tags=["123", "batch"])
+    assert json.loads(route.calls.last.request.content) == {
+        "target": "agents.test", "input": {"id": "123"}, "tags": ["123", "batch"]
+    }

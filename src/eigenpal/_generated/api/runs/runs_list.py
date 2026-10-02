@@ -17,6 +17,7 @@ from typing import cast
 
 def _get_kwargs(
     *,
+    tag: str | Unset = UNSET,
     type_: str | Unset = UNSET,
     source: str | Unset = UNSET,
     status: str | Unset = UNSET,
@@ -60,6 +61,8 @@ def _get_kwargs(
 
 
     params: dict[str, Any] = {}
+
+    params["tag"] = tag
 
     params["type"] = type_
 
@@ -230,6 +233,7 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
+    tag: str | Unset = UNSET,
     type_: str | Unset = UNSET,
     source: str | Unset = UNSET,
     status: str | Unset = UNSET,
@@ -273,6 +277,7 @@ def sync_detailed(
      List workflow and agent runs with cursor pagination.
 
     Args:
+        tag (str | Unset): Exact, case-sensitive execution tag
         type_ (str | Unset):
         source (str | Unset):
         status (str | Unset):
@@ -321,7 +326,8 @@ def sync_detailed(
 
 
     kwargs = _get_kwargs(
-        type_=type_,
+        tag=tag,
+type_=type_,
 source=source,
 status=status,
 trigger=trigger,
@@ -369,6 +375,7 @@ sample_rate=sample_rate,
 def sync(
     *,
     client: AuthenticatedClient | Client,
+    tag: str | Unset = UNSET,
     type_: str | Unset = UNSET,
     source: str | Unset = UNSET,
     status: str | Unset = UNSET,
@@ -412,6 +419,7 @@ def sync(
      List workflow and agent runs with cursor pagination.
 
     Args:
+        tag (str | Unset): Exact, case-sensitive execution tag
         type_ (str | Unset):
         source (str | Unset):
         status (str | Unset):
@@ -461,6 +469,7 @@ def sync(
 
     return sync_detailed(
         client=client,
+tag=tag,
 type_=type_,
 source=source,
 status=status,
@@ -503,6 +512,7 @@ sample_rate=sample_rate,
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
+    tag: str | Unset = UNSET,
     type_: str | Unset = UNSET,
     source: str | Unset = UNSET,
     status: str | Unset = UNSET,
@@ -546,6 +556,7 @@ async def asyncio_detailed(
      List workflow and agent runs with cursor pagination.
 
     Args:
+        tag (str | Unset): Exact, case-sensitive execution tag
         type_ (str | Unset):
         source (str | Unset):
         status (str | Unset):
@@ -594,7 +605,8 @@ async def asyncio_detailed(
 
 
     kwargs = _get_kwargs(
-        type_=type_,
+        tag=tag,
+type_=type_,
 source=source,
 status=status,
 trigger=trigger,
@@ -642,6 +654,7 @@ sample_rate=sample_rate,
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
+    tag: str | Unset = UNSET,
     type_: str | Unset = UNSET,
     source: str | Unset = UNSET,
     status: str | Unset = UNSET,
@@ -685,6 +698,7 @@ async def asyncio(
      List workflow and agent runs with cursor pagination.
 
     Args:
+        tag (str | Unset): Exact, case-sensitive execution tag
         type_ (str | Unset):
         source (str | Unset):
         status (str | Unset):
@@ -734,6 +748,7 @@ async def asyncio(
 
     return (await asyncio_detailed(
         client=client,
+tag=tag,
 type_=type_,
 source=source,
 status=status,

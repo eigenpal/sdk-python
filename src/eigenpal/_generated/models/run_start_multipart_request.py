@@ -26,12 +26,14 @@ class RunStartMultipartRequest:
     """
         Attributes:
             target (str): Automation target, e.g. `workflows.invoice`.
+            tags (str | Unset): JSON string or string array of exact execution tags
             input_ (str | Unset): JSON-encoded scalar input object.
             overrides (str | Unset): JSON-encoded step overrides.
             metadata (str | Unset): JSON-encoded run metadata.
      """
 
     target: str
+    tags: str | Unset = UNSET
     input_: str | Unset = UNSET
     overrides: str | Unset = UNSET
     metadata: str | Unset = UNSET
@@ -43,6 +45,8 @@ class RunStartMultipartRequest:
 
     def to_dict(self) -> dict[str, Any]:
         target = self.target
+
+        tags = self.tags
 
         input_ = self.input_
 
@@ -56,6 +60,8 @@ class RunStartMultipartRequest:
         field_dict.update({
             "target": target,
         })
+        if tags is not UNSET:
+            field_dict["tags"] = tags
         if input_ is not UNSET:
             field_dict["input"] = input_
         if overrides is not UNSET:
@@ -70,6 +76,11 @@ class RunStartMultipartRequest:
         files: types.RequestFiles = []
 
         files.append(("target", (None, str(self.target).encode(), "text/plain")))
+
+
+
+        if not isinstance(self.tags, Unset):
+            files.append(("tags", (None, str(self.tags).encode(), "text/plain")))
 
 
 
@@ -102,6 +113,8 @@ class RunStartMultipartRequest:
         d = dict(src_dict)
         target = d.pop("target")
 
+        tags = d.pop("tags", UNSET)
+
         input_ = d.pop("input", UNSET)
 
         overrides = d.pop("overrides", UNSET)
@@ -110,6 +123,7 @@ class RunStartMultipartRequest:
 
         run_start_multipart_request = cls(
             target=target,
+            tags=tags,
             input_=input_,
             overrides=overrides,
             metadata=metadata,

@@ -31,6 +31,7 @@ T = TypeVar("T", bound="RunListItem")
 class RunListItem:
     """
         Attributes:
+            tags (list[str]):
             id (str):
             type_ (RunListItemType):
             finished (bool): True when the run has reached a terminal status.
@@ -46,6 +47,7 @@ class RunListItem:
             error (None | str | Unset):
      """
 
+    tags: list[str]
     id: str
     type_: RunListItemType
     finished: bool
@@ -68,6 +70,10 @@ class RunListItem:
         from ..models.run_source import RunSource
         from ..models.run_timing import RunTiming
         from ..models.run_trigger import RunTrigger
+        tags = self.tags
+
+
+
         id = self.id
 
         type_ = self.type_.value
@@ -100,6 +106,7 @@ class RunListItem:
         field_dict: dict[str, Any] = {}
 
         field_dict.update({
+            "tags": tags,
             "id": id,
             "type": type_,
             "finished": finished,
@@ -128,6 +135,9 @@ class RunListItem:
         from ..models.run_timing import RunTiming
         from ..models.run_trigger import RunTrigger
         d = dict(src_dict)
+        tags = cast(list[str], d.pop("tags"))
+
+
         id = d.pop("id")
 
         type_ = RunListItemType(d.pop("type"))
@@ -182,6 +192,7 @@ class RunListItem:
 
 
         run_list_item = cls(
+            tags=tags,
             id=id,
             type_=type_,
             finished=finished,
