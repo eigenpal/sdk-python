@@ -13,7 +13,7 @@ EigenpalClient(
 
 `api_key` always wins. If omitted, the SDK reads `EIGENPAL_API_KEY` from the environment. If neither is set, the constructor raises `ValueError`.
 
-Issue keys from the dashboard under **Settings → API Keys**. Keep them in env vars or a secret manager; never check them into git.
+Issue keys from the dashboard under **Developers → API keys** with **Full access**; an **Observability (read-only)** key only reads Prometheus metrics. Keep keys in env vars or a secret manager; never check them into git.
 
 ## Self-hosted
 
