@@ -36,7 +36,7 @@ class RunReviewDetail:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_review import RunReview
+        from ..models.run_review import RunReview # noqa: PLC0415
         review: dict[str, Any] | None
         if isinstance(self.review, RunReview):
             review = self.review.to_dict()
@@ -56,7 +56,7 @@ class RunReviewDetail:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_review import RunReview
+        from ..models.run_review import RunReview # noqa: PLC0415
         d = dict(src_dict)
         def _parse_review(data: object) -> None | RunReview:
             if data is None:

@@ -53,7 +53,7 @@ class RunReviewRequest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_review_request_corrections_item import RunReviewRequestCorrectionsItem
+        from ..models.run_review_request_corrections_item import RunReviewRequestCorrectionsItem # noqa: PLC0415
         verdict: None | str | Unset
         if isinstance(self.verdict, Unset):
             verdict = UNSET
@@ -110,7 +110,7 @@ class RunReviewRequest:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_review_request_corrections_item import RunReviewRequestCorrectionsItem
+        from ..models.run_review_request_corrections_item import RunReviewRequestCorrectionsItem # noqa: PLC0415
         d = dict(src_dict)
         def _parse_verdict(data: object) -> None | RunReviewRequestVerdictType0 | Unset:
             if data is None:

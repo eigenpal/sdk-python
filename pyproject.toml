@@ -1,6 +1,6 @@
 [project]
 name = "eigenpal"
-version = "0.20.26"
+version = "0.20.27"
 description = "Official Python SDK for the EigenPal API"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -40,6 +40,7 @@ classifiers = [
 dependencies = [
     "httpx >= 0.24.0, < 0.30.0",
     "attrs >= 21.3.0",
+    "typing-extensions >= 4.4.0",
     "python-dateutil >= 2.8.0",
     # Transitive via httpx. Floored because anyio < 4.14.2 encodes host names
     # with IDNA 2003 in TLSStream, which allows TLS certificate spoofing
@@ -66,7 +67,8 @@ include = ["src/eigenpal", "README.md", "LICENSE"]
 
 [dependency-groups]
 dev = [
-    "openapi-python-client >= 0.21.0",
+    # Code generation needs Python 3.11+; the published SDK still supports 3.10.
+    "openapi-python-client==0.29.1; python_version >= '3.11'",
     "pytest >= 7.0.0",
     "respx >= 0.20.0",
 ]

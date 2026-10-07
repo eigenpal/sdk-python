@@ -45,7 +45,7 @@ class UpdateDatasetReviewRequest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_focus_field import DatasetReviewFocusField
+        from ..models.dataset_review_focus_field import DatasetReviewFocusField # noqa: PLC0415
         title = self.title
 
         instructions: None | str | Unset
@@ -96,7 +96,7 @@ class UpdateDatasetReviewRequest:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_focus_field import DatasetReviewFocusField
+        from ..models.dataset_review_focus_field import DatasetReviewFocusField # noqa: PLC0415
         d = dict(src_dict)
         title = d.pop("title", UNSET)
 

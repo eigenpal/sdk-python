@@ -58,11 +58,11 @@ class AgentRunExecution:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.agent_run_execution_expected import AgentRunExecutionExpected
-        from ..models.agent_run_execution_files import AgentRunExecutionFiles
-        from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_human_review_summary import RunHumanReviewSummary
-        from ..models.run_review import RunReview
+        from ..models.agent_run_execution_expected import AgentRunExecutionExpected # noqa: PLC0415
+        from ..models.agent_run_execution_files import AgentRunExecutionFiles # noqa: PLC0415
+        from ..models.run_execution_retry import RunExecutionRetry # noqa: PLC0415
+        from ..models.run_human_review_summary import RunHumanReviewSummary # noqa: PLC0415
+        from ..models.run_review import RunReview # noqa: PLC0415
         status = self.status.value
 
         schema_valid: bool | None
@@ -122,11 +122,11 @@ class AgentRunExecution:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.agent_run_execution_expected import AgentRunExecutionExpected
-        from ..models.agent_run_execution_files import AgentRunExecutionFiles
-        from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_human_review_summary import RunHumanReviewSummary
-        from ..models.run_review import RunReview
+        from ..models.agent_run_execution_expected import AgentRunExecutionExpected # noqa: PLC0415
+        from ..models.agent_run_execution_files import AgentRunExecutionFiles # noqa: PLC0415
+        from ..models.run_execution_retry import RunExecutionRetry # noqa: PLC0415
+        from ..models.run_human_review_summary import RunHumanReviewSummary # noqa: PLC0415
+        from ..models.run_review import RunReview # noqa: PLC0415
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
 

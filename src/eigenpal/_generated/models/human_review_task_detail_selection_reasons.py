@@ -21,8 +21,7 @@ T = TypeVar("T", bound="HumanReviewTaskDetailSelectionReasons")
 
 @_attrs_define
 class HumanReviewTaskDetailSelectionReasons:
-    """
-     """
+
 
     additional_properties: dict[str, HumanReviewTaskDetailSelectionReasonsAdditionalProperty] = _attrs_field(init=False, factory=dict)
 

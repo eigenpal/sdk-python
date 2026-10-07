@@ -10,7 +10,6 @@ from ..types import UNSET, Unset
 
 from ..models.file_upload_session_transport import FileUploadSessionTransport
 from ..types import UNSET, Unset
-from dateutil.parser import isoparse
 from typing import cast
 import datetime
 
@@ -53,7 +52,7 @@ class FileUploadSession:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.file_upload_session_parts_item import FileUploadSessionPartsItem
+        from ..models.file_upload_session_parts_item import FileUploadSessionPartsItem # noqa: PLC0415
         upload_id = self.upload_id
 
         file_id = self.file_id
@@ -108,7 +107,7 @@ class FileUploadSession:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.file_upload_session_parts_item import FileUploadSessionPartsItem
+        from ..models.file_upload_session_parts_item import FileUploadSessionPartsItem # noqa: PLC0415
         d = dict(src_dict)
         upload_id = d.pop("uploadId")
 
@@ -121,7 +120,7 @@ class FileUploadSession:
 
         status = d.pop("status")
 
-        expires_at = isoparse(d.pop("expiresAt"))
+        expires_at = datetime.datetime.fromisoformat(d.pop("expiresAt"))
 
 
 

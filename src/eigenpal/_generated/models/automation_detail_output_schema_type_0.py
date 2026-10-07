@@ -20,8 +20,7 @@ T = TypeVar("T", bound="AutomationDetailOutputSchemaType0")
 
 @_attrs_define
 class AutomationDetailOutputSchemaType0:
-    """
-     """
+
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

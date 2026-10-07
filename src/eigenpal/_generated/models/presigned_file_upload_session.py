@@ -8,7 +8,6 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from dateutil.parser import isoparse
 from typing import cast
 from typing import Literal, cast
 import datetime
@@ -50,7 +49,7 @@ class PresignedFileUploadSession:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders
+        from ..models.presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders # noqa: PLC0415
         transport = self.transport
 
         upload_id = self.upload_id
@@ -84,7 +83,7 @@ class PresignedFileUploadSession:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders
+        from ..models.presigned_file_upload_session_headers import PresignedFileUploadSessionHeaders # noqa: PLC0415
         d = dict(src_dict)
         transport = cast(Literal['presigned-put'] , d.pop("transport"))
         if transport != 'presigned-put':
@@ -101,7 +100,7 @@ class PresignedFileUploadSession:
 
 
 
-        expires_at = isoparse(d.pop("expiresAt"))
+        expires_at = datetime.datetime.fromisoformat(d.pop("expiresAt"))
 
 
 

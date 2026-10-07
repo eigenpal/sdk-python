@@ -34,7 +34,7 @@ class ExperimentDetailResultsByRun:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.eval_result import EvalResult
+        from ..models.eval_result import EvalResult # noqa: PLC0415
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
@@ -52,7 +52,7 @@ class ExperimentDetailResultsByRun:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.eval_result import EvalResult
+        from ..models.eval_result import EvalResult # noqa: PLC0415
         d = dict(src_dict)
         experiment_detail_results_by_run = cls(
         )

@@ -44,7 +44,7 @@ class RunEvent:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_event_metadata import RunEventMetadata
+        from ..models.run_event_metadata import RunEventMetadata # noqa: PLC0415
         type_ = self.type_
 
         timestamp = self.timestamp
@@ -85,7 +85,7 @@ class RunEvent:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_event_metadata import RunEventMetadata
+        from ..models.run_event_metadata import RunEventMetadata # noqa: PLC0415
         d = dict(src_dict)
         type_ = d.pop("type")
 

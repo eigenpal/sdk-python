@@ -46,7 +46,7 @@ class RunUsage:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_usage_tokens import RunUsageTokens
+        from ..models.run_usage_tokens import RunUsageTokens # noqa: PLC0415
         tokens = self.tokens.to_dict()
 
         credits_charged: float | None
@@ -86,7 +86,7 @@ class RunUsage:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_usage_tokens import RunUsageTokens
+        from ..models.run_usage_tokens import RunUsageTokens # noqa: PLC0415
         d = dict(src_dict)
         tokens = RunUsageTokens.from_dict(d.pop("tokens"))
 

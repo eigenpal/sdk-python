@@ -35,7 +35,7 @@ class AgentRunExecutionFiles:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_file import RunFile
+        from ..models.run_file import RunFile # noqa: PLC0415
         output = []
         for output_item_data in self.output:
             output_item = output_item_data.to_dict()
@@ -56,7 +56,7 @@ class AgentRunExecutionFiles:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_file import RunFile
+        from ..models.run_file import RunFile # noqa: PLC0415
         d = dict(src_dict)
         output = []
         _output = d.pop("output")

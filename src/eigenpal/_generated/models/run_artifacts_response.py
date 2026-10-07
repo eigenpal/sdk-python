@@ -35,7 +35,7 @@ class RunArtifactsResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_artifact import RunArtifact
+        from ..models.run_artifact import RunArtifact # noqa: PLC0415
         artifacts = []
         for artifacts_item_data in self.artifacts:
             artifacts_item = artifacts_item_data.to_dict()
@@ -56,7 +56,7 @@ class RunArtifactsResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_artifact import RunArtifact
+        from ..models.run_artifact import RunArtifact # noqa: PLC0415
         d = dict(src_dict)
         artifacts = []
         _artifacts = d.pop("artifacts")

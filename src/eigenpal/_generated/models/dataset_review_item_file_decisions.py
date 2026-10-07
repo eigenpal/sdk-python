@@ -34,7 +34,7 @@ class DatasetReviewItemFileDecisions:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_file_decision import DatasetReviewFileDecision
+        from ..models.dataset_review_file_decision import DatasetReviewFileDecision # noqa: PLC0415
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
@@ -47,7 +47,7 @@ class DatasetReviewItemFileDecisions:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_file_decision import DatasetReviewFileDecision
+        from ..models.dataset_review_file_decision import DatasetReviewFileDecision # noqa: PLC0415
         d = dict(src_dict)
         dataset_review_item_file_decisions = cls(
         )

@@ -57,7 +57,7 @@ class RunSource:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_source_git import RunSourceGit
+        from ..models.run_source_git import RunSourceGit # noqa: PLC0415
         id = self.id
 
         name: None | str
@@ -131,7 +131,7 @@ class RunSource:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_source_git import RunSourceGit
+        from ..models.run_source_git import RunSourceGit # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

@@ -65,11 +65,11 @@ class RunListItem:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_eval import RunEval
-        from ..models.run_execution_meta import RunExecutionMeta
-        from ..models.run_source import RunSource
-        from ..models.run_timing import RunTiming
-        from ..models.run_trigger import RunTrigger
+        from ..models.run_eval import RunEval # noqa: PLC0415
+        from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
+        from ..models.run_source import RunSource # noqa: PLC0415
+        from ..models.run_timing import RunTiming # noqa: PLC0415
+        from ..models.run_trigger import RunTrigger # noqa: PLC0415
         tags = self.tags
 
 
@@ -129,11 +129,11 @@ class RunListItem:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_eval import RunEval
-        from ..models.run_execution_meta import RunExecutionMeta
-        from ..models.run_source import RunSource
-        from ..models.run_timing import RunTiming
-        from ..models.run_trigger import RunTrigger
+        from ..models.run_eval import RunEval # noqa: PLC0415
+        from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
+        from ..models.run_source import RunSource # noqa: PLC0415
+        from ..models.run_timing import RunTiming # noqa: PLC0415
+        from ..models.run_trigger import RunTrigger # noqa: PLC0415
         d = dict(src_dict)
         tags = cast(list[str], d.pop("tags"))
 

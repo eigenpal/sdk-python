@@ -37,7 +37,7 @@ class ListTemplatesResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.template import Template
+        from ..models.template import Template # noqa: PLC0415
         items = []
         for items_item_data in self.items:
             items_item = items_item_data.to_dict()
@@ -61,7 +61,7 @@ class ListTemplatesResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.template import Template
+        from ..models.template import Template # noqa: PLC0415
         d = dict(src_dict)
         items = []
         _items = d.pop("items")

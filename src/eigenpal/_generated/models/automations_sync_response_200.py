@@ -40,8 +40,8 @@ class AutomationsSyncResponse200:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.automations_sync_response_200_automation import AutomationsSyncResponse200Automation
-        from ..models.automations_sync_response_200_release import AutomationsSyncResponse200Release
+        from ..models.automations_sync_response_200_automation import AutomationsSyncResponse200Automation # noqa: PLC0415
+        from ..models.automations_sync_response_200_release import AutomationsSyncResponse200Release # noqa: PLC0415
         automation = self.automation.to_dict()
 
         release = self.release.to_dict()
@@ -65,8 +65,8 @@ class AutomationsSyncResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.automations_sync_response_200_automation import AutomationsSyncResponse200Automation
-        from ..models.automations_sync_response_200_release import AutomationsSyncResponse200Release
+        from ..models.automations_sync_response_200_automation import AutomationsSyncResponse200Automation # noqa: PLC0415
+        from ..models.automations_sync_response_200_release import AutomationsSyncResponse200Release # noqa: PLC0415
         d = dict(src_dict)
         automation = AutomationsSyncResponse200Automation.from_dict(d.pop("automation"))
 

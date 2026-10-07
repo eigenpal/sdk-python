@@ -40,7 +40,7 @@ class RunExecutionRetry:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_execution_retry_next_run_type_0 import RunExecutionRetryNextRunType0
+        from ..models.run_execution_retry_next_run_type_0 import RunExecutionRetryNextRunType0 # noqa: PLC0415
         number = self.number
 
         previous_run_id: None | str
@@ -67,7 +67,7 @@ class RunExecutionRetry:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_execution_retry_next_run_type_0 import RunExecutionRetryNextRunType0
+        from ..models.run_execution_retry_next_run_type_0 import RunExecutionRetryNextRunType0 # noqa: PLC0415
         d = dict(src_dict)
         number = d.pop("number")
 

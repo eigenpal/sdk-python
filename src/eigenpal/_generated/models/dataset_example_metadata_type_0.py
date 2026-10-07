@@ -20,8 +20,7 @@ T = TypeVar("T", bound="DatasetExampleMetadataType0")
 
 @_attrs_define
 class DatasetExampleMetadataType0:
-    """
-     """
+
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

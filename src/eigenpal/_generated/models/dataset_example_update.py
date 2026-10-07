@@ -52,9 +52,9 @@ class DatasetExampleUpdate:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_example_update_input_type_0 import DatasetExampleUpdateInputType0
-        from ..models.dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadataType0
-        from ..models.dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
+        from ..models.dataset_example_update_input_type_0 import DatasetExampleUpdateInputType0 # noqa: PLC0415
+        from ..models.dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadataType0 # noqa: PLC0415
+        from ..models.dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0 # noqa: PLC0415
         name: None | str | Unset
         if isinstance(self.name, Unset):
             name = UNSET
@@ -129,9 +129,9 @@ class DatasetExampleUpdate:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_example_update_input_type_0 import DatasetExampleUpdateInputType0
-        from ..models.dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadataType0
-        from ..models.dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0
+        from ..models.dataset_example_update_input_type_0 import DatasetExampleUpdateInputType0 # noqa: PLC0415
+        from ..models.dataset_example_update_metadata_type_0 import DatasetExampleUpdateMetadataType0 # noqa: PLC0415
+        from ..models.dataset_example_update_overrides_type_0 import DatasetExampleUpdateOverridesType0 # noqa: PLC0415
         d = dict(src_dict)
         def _parse_name(data: object) -> None | str | Unset:
             if data is None:

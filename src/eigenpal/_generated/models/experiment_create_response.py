@@ -40,7 +40,7 @@ class ExperimentCreateResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.experiment_create_response_runs_item import ExperimentCreateResponseRunsItem
+        from ..models.experiment_create_response_runs_item import ExperimentCreateResponseRunsItem # noqa: PLC0415
         id = self.id
 
         runs = []
@@ -67,7 +67,7 @@ class ExperimentCreateResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.experiment_create_response_runs_item import ExperimentCreateResponseRunsItem
+        from ..models.experiment_create_response_runs_item import ExperimentCreateResponseRunsItem # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

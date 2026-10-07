@@ -41,7 +41,7 @@ class DatasetReviewCreateItemNote:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_item_field_note import DatasetReviewItemFieldNote
+        from ..models.dataset_review_item_field_note import DatasetReviewItemFieldNote # noqa: PLC0415
         example_name = self.example_name
 
         comment: None | str | Unset
@@ -76,7 +76,7 @@ class DatasetReviewCreateItemNote:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_item_field_note import DatasetReviewItemFieldNote
+        from ..models.dataset_review_item_field_note import DatasetReviewItemFieldNote # noqa: PLC0415
         d = dict(src_dict)
         example_name = d.pop("exampleName")
 

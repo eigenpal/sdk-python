@@ -53,9 +53,9 @@ class DatasetExampleMutation:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_example_mutation_input_type_0 import DatasetExampleMutationInputType0
-        from ..models.dataset_example_mutation_metadata_type_0 import DatasetExampleMutationMetadataType0
-        from ..models.dataset_example_mutation_overrides_type_0 import DatasetExampleMutationOverridesType0
+        from ..models.dataset_example_mutation_input_type_0 import DatasetExampleMutationInputType0 # noqa: PLC0415
+        from ..models.dataset_example_mutation_metadata_type_0 import DatasetExampleMutationMetadataType0 # noqa: PLC0415
+        from ..models.dataset_example_mutation_overrides_type_0 import DatasetExampleMutationOverridesType0 # noqa: PLC0415
         name: None | str | Unset
         if isinstance(self.name, Unset):
             name = UNSET
@@ -130,9 +130,9 @@ class DatasetExampleMutation:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_example_mutation_input_type_0 import DatasetExampleMutationInputType0
-        from ..models.dataset_example_mutation_metadata_type_0 import DatasetExampleMutationMetadataType0
-        from ..models.dataset_example_mutation_overrides_type_0 import DatasetExampleMutationOverridesType0
+        from ..models.dataset_example_mutation_input_type_0 import DatasetExampleMutationInputType0 # noqa: PLC0415
+        from ..models.dataset_example_mutation_metadata_type_0 import DatasetExampleMutationMetadataType0 # noqa: PLC0415
+        from ..models.dataset_example_mutation_overrides_type_0 import DatasetExampleMutationOverridesType0 # noqa: PLC0415
         d = dict(src_dict)
         def _parse_name(data: object) -> None | str | Unset:
             if data is None:

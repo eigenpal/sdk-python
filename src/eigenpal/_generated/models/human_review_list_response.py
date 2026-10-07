@@ -37,7 +37,7 @@ class HumanReviewListResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.human_review_list_response_tasks_item import HumanReviewListResponseTasksItem
+        from ..models.human_review_list_response_tasks_item import HumanReviewListResponseTasksItem # noqa: PLC0415
         tasks = []
         for tasks_item_data in self.tasks:
             tasks_item = tasks_item_data.to_dict()
@@ -62,7 +62,7 @@ class HumanReviewListResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.human_review_list_response_tasks_item import HumanReviewListResponseTasksItem
+        from ..models.human_review_list_response_tasks_item import HumanReviewListResponseTasksItem # noqa: PLC0415
         d = dict(src_dict)
         tasks = []
         _tasks = d.pop("tasks")

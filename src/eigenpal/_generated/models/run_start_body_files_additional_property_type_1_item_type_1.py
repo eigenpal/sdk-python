@@ -35,7 +35,7 @@ class RunStartBodyFilesAdditionalPropertyType1ItemType1:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_start_body_files_additional_property_type_1_item_type_1_inline import RunStartBodyFilesAdditionalPropertyType1ItemType1Inline
+        from ..models.run_start_body_files_additional_property_type_1_item_type_1_inline import RunStartBodyFilesAdditionalPropertyType1ItemType1Inline # noqa: PLC0415
         inline = self.inline.to_dict()
 
 
@@ -51,7 +51,7 @@ class RunStartBodyFilesAdditionalPropertyType1ItemType1:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_start_body_files_additional_property_type_1_item_type_1_inline import RunStartBodyFilesAdditionalPropertyType1ItemType1Inline
+        from ..models.run_start_body_files_additional_property_type_1_item_type_1_inline import RunStartBodyFilesAdditionalPropertyType1ItemType1Inline # noqa: PLC0415
         d = dict(src_dict)
         inline = RunStartBodyFilesAdditionalPropertyType1ItemType1Inline.from_dict(d.pop("$inline"))
 

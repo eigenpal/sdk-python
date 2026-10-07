@@ -8,7 +8,6 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from dateutil.parser import isoparse
 from typing import cast
 from typing import Literal, cast
 import datetime
@@ -48,7 +47,7 @@ class PresignFileUploadPartResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.presign_file_upload_part_response_headers import PresignFileUploadPartResponseHeaders
+        from ..models.presign_file_upload_part_response_headers import PresignFileUploadPartResponseHeaders # noqa: PLC0415
         transport = self.transport
 
         part_number = self.part_number
@@ -79,7 +78,7 @@ class PresignFileUploadPartResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.presign_file_upload_part_response_headers import PresignFileUploadPartResponseHeaders
+        from ..models.presign_file_upload_part_response_headers import PresignFileUploadPartResponseHeaders # noqa: PLC0415
         d = dict(src_dict)
         transport = cast(Literal['presigned-multipart'] , d.pop("transport"))
         if transport != 'presigned-multipart':
@@ -94,7 +93,7 @@ class PresignFileUploadPartResponse:
 
 
 
-        expires_at = isoparse(d.pop("expiresAt"))
+        expires_at = datetime.datetime.fromisoformat(d.pop("expiresAt"))
 
 
 

@@ -36,7 +36,7 @@ class RunReviewExpectedArtifacts:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_file import RunFile
+        from ..models.run_file import RunFile # noqa: PLC0415
         files = []
         for files_item_data in self.files:
             files_item = files_item_data.to_dict()
@@ -57,7 +57,7 @@ class RunReviewExpectedArtifacts:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_file import RunFile
+        from ..models.run_file import RunFile # noqa: PLC0415
         d = dict(src_dict)
         files = []
         _files = d.pop("files")

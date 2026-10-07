@@ -70,7 +70,7 @@ class RunReview:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_review_correction import RunReviewCorrection
+        from ..models.run_review_correction import RunReviewCorrection # noqa: PLC0415
         id = self.id
 
         verdict: None | str
@@ -148,7 +148,7 @@ class RunReview:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_review_correction import RunReviewCorrection
+        from ..models.run_review_correction import RunReviewCorrection # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

@@ -65,8 +65,8 @@ class ExperimentDetail:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.experiment_detail_results_by_run import ExperimentDetailResultsByRun
-        from ..models.experiment_detail_runs_item import ExperimentDetailRunsItem
+        from ..models.experiment_detail_results_by_run import ExperimentDetailResultsByRun # noqa: PLC0415
+        from ..models.experiment_detail_runs_item import ExperimentDetailRunsItem # noqa: PLC0415
         id = self.id
 
         automation_id = self.automation_id
@@ -130,8 +130,8 @@ class ExperimentDetail:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.experiment_detail_results_by_run import ExperimentDetailResultsByRun
-        from ..models.experiment_detail_runs_item import ExperimentDetailRunsItem
+        from ..models.experiment_detail_results_by_run import ExperimentDetailResultsByRun # noqa: PLC0415
+        from ..models.experiment_detail_runs_item import ExperimentDetailRunsItem # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

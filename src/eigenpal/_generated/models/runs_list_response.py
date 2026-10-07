@@ -37,7 +37,7 @@ class RunsListResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_list_item import RunListItem
+        from ..models.run_list_item import RunListItem # noqa: PLC0415
         runs = []
         for runs_item_data in self.runs:
             runs_item = runs_item_data.to_dict()
@@ -62,7 +62,7 @@ class RunsListResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_list_item import RunListItem
+        from ..models.run_list_item import RunListItem # noqa: PLC0415
         d = dict(src_dict)
         runs = []
         _runs = d.pop("runs")

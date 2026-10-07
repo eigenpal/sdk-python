@@ -20,8 +20,7 @@ T = TypeVar("T", bound="RunEventMetadata")
 
 @_attrs_define
 class RunEventMetadata:
-    """
-     """
+
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

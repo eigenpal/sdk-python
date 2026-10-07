@@ -37,11 +37,9 @@ def _get_kwargs(
     if isinstance(body, RunReviewExpectedFileCopyRequest):
         _kwargs["json"] = body.to_dict()
 
-
         headers["Content-Type"] = "application/json"
     if isinstance(body, RunReviewExpectedFileUploadRequest):
         _kwargs["files"] = body.to_multipart()
-
     _kwargs["headers"] = headers
     return _kwargs
 

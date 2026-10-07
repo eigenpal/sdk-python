@@ -20,8 +20,7 @@ T = TypeVar("T", bound="HumanReviewTaskDetailInputType0Type0DataType0")
 
 @_attrs_define
 class HumanReviewTaskDetailInputType0Type0DataType0:
-    """
-     """
+
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

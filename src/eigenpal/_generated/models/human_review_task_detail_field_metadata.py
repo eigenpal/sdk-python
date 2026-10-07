@@ -23,8 +23,7 @@ T = TypeVar("T", bound="HumanReviewTaskDetailFieldMetadata")
 
 @_attrs_define
 class HumanReviewTaskDetailFieldMetadata:
-    """
-     """
+
 
     additional_properties: dict[str, HumanReviewTaskDetailFieldMetadataAdditionalProperty] = _attrs_field(init=False, factory=dict)
 
@@ -33,7 +32,7 @@ class HumanReviewTaskDetailFieldMetadata:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.human_review_task_detail_field_metadata_additional_property import HumanReviewTaskDetailFieldMetadataAdditionalProperty
+        from ..models.human_review_task_detail_field_metadata_additional_property import HumanReviewTaskDetailFieldMetadataAdditionalProperty # noqa: PLC0415
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
@@ -46,13 +45,13 @@ class HumanReviewTaskDetailFieldMetadata:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.human_review_task_detail_field_metadata_additional_property import HumanReviewTaskDetailFieldMetadataAdditionalProperty
+        from ..models.human_review_task_detail_field_metadata_additional_property import HumanReviewTaskDetailFieldMetadataAdditionalProperty # noqa: PLC0415
         d = dict(src_dict)
         human_review_task_detail_field_metadata = cls(
         )
 
 
-        from ..models.human_review_task_detail_field_metadata_additional_property_display import HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay
+        from ..models.human_review_task_detail_field_metadata_additional_property_display import HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay # noqa: PLC0415
         additional_properties = {}
         for prop_name, prop_dict in d.items():
             additional_property = HumanReviewTaskDetailFieldMetadataAdditionalProperty.from_dict(prop_dict)

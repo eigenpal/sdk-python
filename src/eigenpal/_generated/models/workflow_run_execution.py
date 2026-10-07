@@ -62,10 +62,10 @@ class WorkflowRunExecution:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_human_review_summary import RunHumanReviewSummary
-        from ..models.run_review import RunReview
-        from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
+        from ..models.run_execution_retry import RunExecutionRetry # noqa: PLC0415
+        from ..models.run_human_review_summary import RunHumanReviewSummary # noqa: PLC0415
+        from ..models.run_review import RunReview # noqa: PLC0415
+        from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected # noqa: PLC0415
         status = self.status.value
 
         schema_valid: bool | None
@@ -139,10 +139,10 @@ class WorkflowRunExecution:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_execution_retry import RunExecutionRetry
-        from ..models.run_human_review_summary import RunHumanReviewSummary
-        from ..models.run_review import RunReview
-        from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected
+        from ..models.run_execution_retry import RunExecutionRetry # noqa: PLC0415
+        from ..models.run_human_review_summary import RunHumanReviewSummary # noqa: PLC0415
+        from ..models.run_review import RunReview # noqa: PLC0415
+        from ..models.workflow_run_execution_expected import WorkflowRunExecutionExpected # noqa: PLC0415
         d = dict(src_dict)
         status = ExecutionStatus(d.pop("status"))
 

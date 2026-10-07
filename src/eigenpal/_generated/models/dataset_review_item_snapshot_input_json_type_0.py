@@ -20,8 +20,7 @@ T = TypeVar("T", bound="DatasetReviewItemSnapshotInputJsonType0")
 
 @_attrs_define
 class DatasetReviewItemSnapshotInputJsonType0:
-    """
-     """
+
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

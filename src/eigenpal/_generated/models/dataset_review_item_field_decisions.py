@@ -23,8 +23,7 @@ T = TypeVar("T", bound="DatasetReviewItemFieldDecisions")
 
 @_attrs_define
 class DatasetReviewItemFieldDecisions:
-    """
-     """
+
 
     additional_properties: dict[str, DatasetReviewFieldDecision] = _attrs_field(init=False, factory=dict)
 
@@ -33,7 +32,7 @@ class DatasetReviewItemFieldDecisions:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_field_decision import DatasetReviewFieldDecision
+        from ..models.dataset_review_field_decision import DatasetReviewFieldDecision # noqa: PLC0415
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
@@ -46,7 +45,7 @@ class DatasetReviewItemFieldDecisions:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_field_decision import DatasetReviewFieldDecision
+        from ..models.dataset_review_field_decision import DatasetReviewFieldDecision # noqa: PLC0415
         d = dict(src_dict)
         dataset_review_item_field_decisions = cls(
         )

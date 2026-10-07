@@ -38,10 +38,10 @@ class RunStartBodyFiles:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0
-        from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1
-        from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0
-        from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1
+        from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0 # noqa: PLC0415
+        from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1 # noqa: PLC0415
+        from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0 # noqa: PLC0415
+        from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1 # noqa: PLC0415
 
         field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
@@ -71,10 +71,10 @@ class RunStartBodyFiles:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0
-        from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1
-        from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0
-        from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1
+        from ..models.run_start_body_files_additional_property_type_0_type_0 import RunStartBodyFilesAdditionalPropertyType0Type0 # noqa: PLC0415
+        from ..models.run_start_body_files_additional_property_type_0_type_1 import RunStartBodyFilesAdditionalPropertyType0Type1 # noqa: PLC0415
+        from ..models.run_start_body_files_additional_property_type_1_item_type_0 import RunStartBodyFilesAdditionalPropertyType1ItemType0 # noqa: PLC0415
+        from ..models.run_start_body_files_additional_property_type_1_item_type_1 import RunStartBodyFilesAdditionalPropertyType1ItemType1 # noqa: PLC0415
         d = dict(src_dict)
         run_start_body_files = cls(
         )

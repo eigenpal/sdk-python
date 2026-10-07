@@ -35,7 +35,7 @@ class RunUsageResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_usage import RunUsage
+        from ..models.run_usage import RunUsage # noqa: PLC0415
         usage: dict[str, Any] | None
         if isinstance(self.usage, RunUsage):
             usage = self.usage.to_dict()
@@ -55,7 +55,7 @@ class RunUsageResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_usage import RunUsage
+        from ..models.run_usage import RunUsage # noqa: PLC0415
         d = dict(src_dict)
         def _parse_usage(data: object) -> None | RunUsage:
             if data is None:

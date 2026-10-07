@@ -43,7 +43,7 @@ class EvaluatorConfigResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig
+        from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig # noqa: PLC0415
         automation_id = self.automation_id
 
         automation_type = self.automation_type.value
@@ -68,7 +68,7 @@ class EvaluatorConfigResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig
+        from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig # noqa: PLC0415
         d = dict(src_dict)
         automation_id = d.pop("automationId")
 

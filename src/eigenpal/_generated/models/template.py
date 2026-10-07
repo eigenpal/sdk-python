@@ -63,9 +63,9 @@ class Template:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.template_grammar import TemplateGrammar
-        from ..models.template_revision import TemplateRevision
-        from ..models.template_tokens_item import TemplateTokensItem
+        from ..models.template_grammar import TemplateGrammar # noqa: PLC0415
+        from ..models.template_revision import TemplateRevision # noqa: PLC0415
+        from ..models.template_tokens_item import TemplateTokensItem # noqa: PLC0415
         id = self.id
 
         name = self.name
@@ -150,9 +150,9 @@ class Template:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.template_grammar import TemplateGrammar
-        from ..models.template_revision import TemplateRevision
-        from ..models.template_tokens_item import TemplateTokensItem
+        from ..models.template_grammar import TemplateGrammar # noqa: PLC0415
+        from ..models.template_revision import TemplateRevision # noqa: PLC0415
+        from ..models.template_tokens_item import TemplateTokensItem # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

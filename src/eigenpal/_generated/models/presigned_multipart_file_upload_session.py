@@ -8,7 +8,6 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from dateutil.parser import isoparse
 from typing import cast
 from typing import Literal, cast
 import datetime
@@ -108,7 +107,7 @@ class PresignedMultipartFileUploadSession:
 
         complete_url = d.pop("completeUrl")
 
-        expires_at = isoparse(d.pop("expiresAt"))
+        expires_at = datetime.datetime.fromisoformat(d.pop("expiresAt"))
 
 
 

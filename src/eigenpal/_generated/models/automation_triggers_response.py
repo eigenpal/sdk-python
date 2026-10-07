@@ -40,7 +40,7 @@ class AutomationTriggersResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.automation_trigger_state import AutomationTriggerState
+        from ..models.automation_trigger_state import AutomationTriggerState # noqa: PLC0415
         automation_id = self.automation_id
 
         type_ = self.type_.value
@@ -62,7 +62,7 @@ class AutomationTriggersResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.automation_trigger_state import AutomationTriggerState
+        from ..models.automation_trigger_state import AutomationTriggerState # noqa: PLC0415
         d = dict(src_dict)
         automation_id = d.pop("automationId")
 

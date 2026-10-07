@@ -69,11 +69,11 @@ class DatasetReviewItem:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_expected_file import DatasetReviewExpectedFile
-        from ..models.dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions
-        from ..models.dataset_review_item_file_decisions import DatasetReviewItemFileDecisions
-        from ..models.dataset_review_item_snapshot_input_json_type_0 import DatasetReviewItemSnapshotInputJsonType0
-        from ..models.dataset_review_item_snapshot_manifest import DatasetReviewItemSnapshotManifest
+        from ..models.dataset_review_expected_file import DatasetReviewExpectedFile # noqa: PLC0415
+        from ..models.dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions # noqa: PLC0415
+        from ..models.dataset_review_item_file_decisions import DatasetReviewItemFileDecisions # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_input_json_type_0 import DatasetReviewItemSnapshotInputJsonType0 # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_manifest import DatasetReviewItemSnapshotManifest # noqa: PLC0415
         id = self.id
 
         review_id = self.review_id
@@ -144,11 +144,11 @@ class DatasetReviewItem:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_expected_file import DatasetReviewExpectedFile
-        from ..models.dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions
-        from ..models.dataset_review_item_file_decisions import DatasetReviewItemFileDecisions
-        from ..models.dataset_review_item_snapshot_input_json_type_0 import DatasetReviewItemSnapshotInputJsonType0
-        from ..models.dataset_review_item_snapshot_manifest import DatasetReviewItemSnapshotManifest
+        from ..models.dataset_review_expected_file import DatasetReviewExpectedFile # noqa: PLC0415
+        from ..models.dataset_review_item_field_decisions import DatasetReviewItemFieldDecisions # noqa: PLC0415
+        from ..models.dataset_review_item_file_decisions import DatasetReviewItemFileDecisions # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_input_json_type_0 import DatasetReviewItemSnapshotInputJsonType0 # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_manifest import DatasetReviewItemSnapshotManifest # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

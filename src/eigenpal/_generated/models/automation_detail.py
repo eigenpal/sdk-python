@@ -71,9 +71,9 @@ class AutomationDetail:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.automation_detail_input_schema_type_0 import AutomationDetailInputSchemaType0
-        from ..models.automation_detail_output_schema_type_0 import AutomationDetailOutputSchemaType0
-        from ..models.automation_trigger_state import AutomationTriggerState
+        from ..models.automation_detail_input_schema_type_0 import AutomationDetailInputSchemaType0 # noqa: PLC0415
+        from ..models.automation_detail_output_schema_type_0 import AutomationDetailOutputSchemaType0 # noqa: PLC0415
+        from ..models.automation_trigger_state import AutomationTriggerState # noqa: PLC0415
         id = self.id
 
         type_ = self.type_.value
@@ -169,9 +169,9 @@ class AutomationDetail:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.automation_detail_input_schema_type_0 import AutomationDetailInputSchemaType0
-        from ..models.automation_detail_output_schema_type_0 import AutomationDetailOutputSchemaType0
-        from ..models.automation_trigger_state import AutomationTriggerState
+        from ..models.automation_detail_input_schema_type_0 import AutomationDetailInputSchemaType0 # noqa: PLC0415
+        from ..models.automation_detail_output_schema_type_0 import AutomationDetailOutputSchemaType0 # noqa: PLC0415
+        from ..models.automation_trigger_state import AutomationTriggerState # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

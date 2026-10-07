@@ -104,17 +104,17 @@ class HumanReviewTaskDetail:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.human_review_task_detail_decisions_item import HumanReviewTaskDetailDecisionsItem
-        from ..models.human_review_task_detail_draft_data_type_0 import HumanReviewTaskDetailDraftDataType0
-        from ..models.human_review_task_detail_field_metadata import HumanReviewTaskDetailFieldMetadata
-        from ..models.human_review_task_detail_files_item import HumanReviewTaskDetailFilesItem
-        from ..models.human_review_task_detail_input_type_0_type_0 import HumanReviewTaskDetailInputType0Type0
-        from ..models.human_review_task_detail_input_type_0_type_1 import HumanReviewTaskDetailInputType0Type1
-        from ..models.human_review_task_detail_lineage import HumanReviewTaskDetailLineage
-        from ..models.human_review_task_detail_machine_data_type_0 import HumanReviewTaskDetailMachineDataType0
-        from ..models.human_review_task_detail_parsed_document import HumanReviewTaskDetailParsedDocument
-        from ..models.human_review_task_detail_schema_type_0 import HumanReviewTaskDetailSchemaType0
-        from ..models.human_review_task_detail_selection_reasons import HumanReviewTaskDetailSelectionReasons
+        from ..models.human_review_task_detail_decisions_item import HumanReviewTaskDetailDecisionsItem # noqa: PLC0415
+        from ..models.human_review_task_detail_draft_data_type_0 import HumanReviewTaskDetailDraftDataType0 # noqa: PLC0415
+        from ..models.human_review_task_detail_field_metadata import HumanReviewTaskDetailFieldMetadata # noqa: PLC0415
+        from ..models.human_review_task_detail_files_item import HumanReviewTaskDetailFilesItem # noqa: PLC0415
+        from ..models.human_review_task_detail_input_type_0_type_0 import HumanReviewTaskDetailInputType0Type0 # noqa: PLC0415
+        from ..models.human_review_task_detail_input_type_0_type_1 import HumanReviewTaskDetailInputType0Type1 # noqa: PLC0415
+        from ..models.human_review_task_detail_lineage import HumanReviewTaskDetailLineage # noqa: PLC0415
+        from ..models.human_review_task_detail_machine_data_type_0 import HumanReviewTaskDetailMachineDataType0 # noqa: PLC0415
+        from ..models.human_review_task_detail_parsed_document import HumanReviewTaskDetailParsedDocument # noqa: PLC0415
+        from ..models.human_review_task_detail_schema_type_0 import HumanReviewTaskDetailSchemaType0 # noqa: PLC0415
+        from ..models.human_review_task_detail_selection_reasons import HumanReviewTaskDetailSelectionReasons # noqa: PLC0415
         id = self.id
 
         execution_id = self.execution_id
@@ -254,17 +254,17 @@ class HumanReviewTaskDetail:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.human_review_task_detail_decisions_item import HumanReviewTaskDetailDecisionsItem
-        from ..models.human_review_task_detail_draft_data_type_0 import HumanReviewTaskDetailDraftDataType0
-        from ..models.human_review_task_detail_field_metadata import HumanReviewTaskDetailFieldMetadata
-        from ..models.human_review_task_detail_files_item import HumanReviewTaskDetailFilesItem
-        from ..models.human_review_task_detail_input_type_0_type_0 import HumanReviewTaskDetailInputType0Type0
-        from ..models.human_review_task_detail_input_type_0_type_1 import HumanReviewTaskDetailInputType0Type1
-        from ..models.human_review_task_detail_lineage import HumanReviewTaskDetailLineage
-        from ..models.human_review_task_detail_machine_data_type_0 import HumanReviewTaskDetailMachineDataType0
-        from ..models.human_review_task_detail_parsed_document import HumanReviewTaskDetailParsedDocument
-        from ..models.human_review_task_detail_schema_type_0 import HumanReviewTaskDetailSchemaType0
-        from ..models.human_review_task_detail_selection_reasons import HumanReviewTaskDetailSelectionReasons
+        from ..models.human_review_task_detail_decisions_item import HumanReviewTaskDetailDecisionsItem # noqa: PLC0415
+        from ..models.human_review_task_detail_draft_data_type_0 import HumanReviewTaskDetailDraftDataType0 # noqa: PLC0415
+        from ..models.human_review_task_detail_field_metadata import HumanReviewTaskDetailFieldMetadata # noqa: PLC0415
+        from ..models.human_review_task_detail_files_item import HumanReviewTaskDetailFilesItem # noqa: PLC0415
+        from ..models.human_review_task_detail_input_type_0_type_0 import HumanReviewTaskDetailInputType0Type0 # noqa: PLC0415
+        from ..models.human_review_task_detail_input_type_0_type_1 import HumanReviewTaskDetailInputType0Type1 # noqa: PLC0415
+        from ..models.human_review_task_detail_lineage import HumanReviewTaskDetailLineage # noqa: PLC0415
+        from ..models.human_review_task_detail_machine_data_type_0 import HumanReviewTaskDetailMachineDataType0 # noqa: PLC0415
+        from ..models.human_review_task_detail_parsed_document import HumanReviewTaskDetailParsedDocument # noqa: PLC0415
+        from ..models.human_review_task_detail_schema_type_0 import HumanReviewTaskDetailSchemaType0 # noqa: PLC0415
+        from ..models.human_review_task_detail_selection_reasons import HumanReviewTaskDetailSelectionReasons # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

@@ -37,7 +37,7 @@ class RunScoresResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.eval_result import EvalResult
+        from ..models.eval_result import EvalResult # noqa: PLC0415
         scores = []
         for scores_item_data in self.scores:
             scores_item = scores_item_data.to_dict()
@@ -58,7 +58,7 @@ class RunScoresResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.eval_result import EvalResult
+        from ..models.eval_result import EvalResult # noqa: PLC0415
         d = dict(src_dict)
         scores = []
         _scores = d.pop("scores")

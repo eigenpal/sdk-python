@@ -35,7 +35,7 @@ class DatasetReviewItemResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_item import DatasetReviewItem
+        from ..models.dataset_review_item import DatasetReviewItem # noqa: PLC0415
         item = self.item.to_dict()
 
 
@@ -51,7 +51,7 @@ class DatasetReviewItemResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_item import DatasetReviewItem
+        from ..models.dataset_review_item import DatasetReviewItem # noqa: PLC0415
         d = dict(src_dict)
         item = DatasetReviewItem.from_dict(d.pop("item"))
 

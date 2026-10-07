@@ -42,9 +42,9 @@ class DatasetReviewItemSnapshotManifest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_item_snapshot_manifest_expected_files_item import DatasetReviewItemSnapshotManifestExpectedFilesItem
-        from ..models.dataset_review_item_snapshot_manifest_input_file_hashes_item import DatasetReviewItemSnapshotManifestInputFileHashesItem
-        from ..models.dataset_review_item_snapshot_manifest_metadata_type_0 import DatasetReviewItemSnapshotManifestMetadataType0
+        from ..models.dataset_review_item_snapshot_manifest_expected_files_item import DatasetReviewItemSnapshotManifestExpectedFilesItem # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_manifest_input_file_hashes_item import DatasetReviewItemSnapshotManifestInputFileHashesItem # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_manifest_metadata_type_0 import DatasetReviewItemSnapshotManifestMetadataType0 # noqa: PLC0415
         expected_files = []
         for expected_files_item_data in self.expected_files:
             expected_files_item = expected_files_item_data.to_dict()
@@ -83,9 +83,9 @@ class DatasetReviewItemSnapshotManifest:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_item_snapshot_manifest_expected_files_item import DatasetReviewItemSnapshotManifestExpectedFilesItem
-        from ..models.dataset_review_item_snapshot_manifest_input_file_hashes_item import DatasetReviewItemSnapshotManifestInputFileHashesItem
-        from ..models.dataset_review_item_snapshot_manifest_metadata_type_0 import DatasetReviewItemSnapshotManifestMetadataType0
+        from ..models.dataset_review_item_snapshot_manifest_expected_files_item import DatasetReviewItemSnapshotManifestExpectedFilesItem # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_manifest_input_file_hashes_item import DatasetReviewItemSnapshotManifestInputFileHashesItem # noqa: PLC0415
+        from ..models.dataset_review_item_snapshot_manifest_metadata_type_0 import DatasetReviewItemSnapshotManifestMetadataType0 # noqa: PLC0415
         d = dict(src_dict)
         expected_files = []
         _expected_files = d.pop("expectedFiles")

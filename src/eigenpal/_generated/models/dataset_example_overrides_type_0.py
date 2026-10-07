@@ -20,8 +20,7 @@ T = TypeVar("T", bound="DatasetExampleOverridesType0")
 
 @_attrs_define
 class DatasetExampleOverridesType0:
-    """
-     """
+
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

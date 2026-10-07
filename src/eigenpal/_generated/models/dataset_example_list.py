@@ -41,7 +41,7 @@ class DatasetExampleList:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_example import DatasetExample
+        from ..models.dataset_example import DatasetExample # noqa: PLC0415
         data = []
         for data_item_data in self.data:
             data_item = data_item_data.to_dict()
@@ -71,7 +71,7 @@ class DatasetExampleList:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_example import DatasetExample
+        from ..models.dataset_example import DatasetExample # noqa: PLC0415
         d = dict(src_dict)
         data = []
         _data = d.pop("data")

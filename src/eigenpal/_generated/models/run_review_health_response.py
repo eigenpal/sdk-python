@@ -47,11 +47,11 @@ class RunReviewHealthResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_review_health_bucket import RunReviewHealthBucket
-        from ..models.run_review_health_response_granularity import RunReviewHealthResponseGranularity
-        from ..models.run_review_health_response_time_range import RunReviewHealthResponseTimeRange
-        from ..models.run_review_health_rolling_point import RunReviewHealthRollingPoint
-        from ..models.run_review_health_summary import RunReviewHealthSummary
+        from ..models.run_review_health_bucket import RunReviewHealthBucket # noqa: PLC0415
+        from ..models.run_review_health_response_granularity import RunReviewHealthResponseGranularity # noqa: PLC0415
+        from ..models.run_review_health_response_time_range import RunReviewHealthResponseTimeRange # noqa: PLC0415
+        from ..models.run_review_health_rolling_point import RunReviewHealthRollingPoint # noqa: PLC0415
+        from ..models.run_review_health_summary import RunReviewHealthSummary # noqa: PLC0415
         time_range = self.time_range.to_dict()
 
         granularity = self.granularity.to_dict()
@@ -89,11 +89,11 @@ class RunReviewHealthResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_review_health_bucket import RunReviewHealthBucket
-        from ..models.run_review_health_response_granularity import RunReviewHealthResponseGranularity
-        from ..models.run_review_health_response_time_range import RunReviewHealthResponseTimeRange
-        from ..models.run_review_health_rolling_point import RunReviewHealthRollingPoint
-        from ..models.run_review_health_summary import RunReviewHealthSummary
+        from ..models.run_review_health_bucket import RunReviewHealthBucket # noqa: PLC0415
+        from ..models.run_review_health_response_granularity import RunReviewHealthResponseGranularity # noqa: PLC0415
+        from ..models.run_review_health_response_time_range import RunReviewHealthResponseTimeRange # noqa: PLC0415
+        from ..models.run_review_health_rolling_point import RunReviewHealthRollingPoint # noqa: PLC0415
+        from ..models.run_review_health_summary import RunReviewHealthSummary # noqa: PLC0415
         d = dict(src_dict)
         time_range = RunReviewHealthResponseTimeRange.from_dict(d.pop("timeRange"))
 

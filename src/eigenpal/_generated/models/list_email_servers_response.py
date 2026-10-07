@@ -42,8 +42,8 @@ class ListEmailServersResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.public_resend_email_server import PublicResendEmailServer
-        from ..models.public_smtp_email_server import PublicSmtpEmailServer
+        from ..models.public_resend_email_server import PublicResendEmailServer # noqa: PLC0415
+        from ..models.public_smtp_email_server import PublicSmtpEmailServer # noqa: PLC0415
         data = []
         for data_item_data in self.data:
             data_item: dict[str, Any]
@@ -78,8 +78,8 @@ class ListEmailServersResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.public_resend_email_server import PublicResendEmailServer
-        from ..models.public_smtp_email_server import PublicSmtpEmailServer
+        from ..models.public_resend_email_server import PublicResendEmailServer # noqa: PLC0415
+        from ..models.public_smtp_email_server import PublicSmtpEmailServer # noqa: PLC0415
         d = dict(src_dict)
         data = []
         _data = d.pop("data")

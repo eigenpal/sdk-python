@@ -75,8 +75,8 @@ class PublicModel:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.public_model_cost import PublicModelCost
-        from ..models.public_model_limits import PublicModelLimits
+        from ..models.public_model_cost import PublicModelCost # noqa: PLC0415
+        from ..models.public_model_limits import PublicModelLimits # noqa: PLC0415
         id = self.id
 
         kind = self.kind.value
@@ -155,8 +155,8 @@ class PublicModel:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.public_model_cost import PublicModelCost
-        from ..models.public_model_limits import PublicModelLimits
+        from ..models.public_model_cost import PublicModelCost # noqa: PLC0415
+        from ..models.public_model_limits import PublicModelLimits # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

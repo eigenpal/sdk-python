@@ -52,7 +52,7 @@ class Folder:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.folder_preview_items_item import FolderPreviewItemsItem
+        from ..models.folder_preview_items_item import FolderPreviewItemsItem # noqa: PLC0415
         id = self.id
 
         parent_id: None | str
@@ -101,7 +101,7 @@ class Folder:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.folder_preview_items_item import FolderPreviewItemsItem
+        from ..models.folder_preview_items_item import FolderPreviewItemsItem # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

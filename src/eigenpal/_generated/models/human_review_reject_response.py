@@ -35,7 +35,7 @@ class HumanReviewRejectResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.human_review_task_detail import HumanReviewTaskDetail
+        from ..models.human_review_task_detail import HumanReviewTaskDetail # noqa: PLC0415
         task = self.task.to_dict()
 
 
@@ -51,7 +51,7 @@ class HumanReviewRejectResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.human_review_task_detail import HumanReviewTaskDetail
+        from ..models.human_review_task_detail import HumanReviewTaskDetail # noqa: PLC0415
         d = dict(src_dict)
         task = HumanReviewTaskDetail.from_dict(d.pop("task"))
 

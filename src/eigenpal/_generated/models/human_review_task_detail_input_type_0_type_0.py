@@ -38,7 +38,7 @@ class HumanReviewTaskDetailInputType0Type0:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.human_review_task_detail_input_type_0_type_0_data_type_0 import HumanReviewTaskDetailInputType0Type0DataType0
+        from ..models.human_review_task_detail_input_type_0_type_0_data_type_0 import HumanReviewTaskDetailInputType0Type0DataType0 # noqa: PLC0415
         status = self.status
 
         data: dict[str, Any] | list[Any]
@@ -64,7 +64,7 @@ class HumanReviewTaskDetailInputType0Type0:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.human_review_task_detail_input_type_0_type_0_data_type_0 import HumanReviewTaskDetailInputType0Type0DataType0
+        from ..models.human_review_task_detail_input_type_0_type_0_data_type_0 import HumanReviewTaskDetailInputType0Type0DataType0 # noqa: PLC0415
         d = dict(src_dict)
         status = cast(Literal['available'] , d.pop("status"))
         if status != 'available':

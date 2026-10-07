@@ -39,13 +39,11 @@ def _get_kwargs(
     if isinstance(body, UpdateDatasetReviewItem):
         _kwargs["json"] = body.to_dict()
 
-
         headers["Content-Type"] = "application/json"
     if isinstance(body, EditDatasetReviewItemFile):
         _kwargs["files"] = body.to_multipart()
 
-
-        headers["Content-Type"] = "multipart/form-data"
+        headers["Content-Type"] = "multipart/form-data; boundary=+++"
 
     _kwargs["headers"] = headers
     return _kwargs

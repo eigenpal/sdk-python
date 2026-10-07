@@ -50,7 +50,7 @@ class RunReviewHealthSummary:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_review_health_confidence import RunReviewHealthConfidence
+        from ..models.run_review_health_confidence import RunReviewHealthConfidence # noqa: PLC0415
         total_runs = self.total_runs
 
         reviewed_runs = self.reviewed_runs
@@ -89,7 +89,7 @@ class RunReviewHealthSummary:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_review_health_confidence import RunReviewHealthConfidence
+        from ..models.run_review_health_confidence import RunReviewHealthConfidence # noqa: PLC0415
         d = dict(src_dict)
         total_runs = d.pop("totalRuns")
 

@@ -35,7 +35,7 @@ class RunEventsResponse:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_event import RunEvent
+        from ..models.run_event import RunEvent # noqa: PLC0415
         events = []
         for events_item_data in self.events:
             events_item = events_item_data.to_dict()
@@ -56,7 +56,7 @@ class RunEventsResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_event import RunEvent
+        from ..models.run_event import RunEvent # noqa: PLC0415
         d = dict(src_dict)
         events = []
         _events = d.pop("events")

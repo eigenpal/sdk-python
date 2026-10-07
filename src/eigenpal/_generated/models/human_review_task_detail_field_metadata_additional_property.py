@@ -51,7 +51,7 @@ class HumanReviewTaskDetailFieldMetadataAdditionalProperty:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.human_review_task_detail_field_metadata_additional_property_display import HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay
+        from ..models.human_review_task_detail_field_metadata_additional_property_display import HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay # noqa: PLC0415
         confidence: float | str | Unset
         if isinstance(self.confidence, Unset):
             confidence = UNSET
@@ -95,7 +95,7 @@ class HumanReviewTaskDetailFieldMetadataAdditionalProperty:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.human_review_task_detail_field_metadata_additional_property_display import HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay
+        from ..models.human_review_task_detail_field_metadata_additional_property_display import HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay # noqa: PLC0415
         d = dict(src_dict)
         def _parse_confidence(data: object) -> float | HumanReviewTaskDetailFieldMetadataAdditionalPropertyConfidenceType1 | str | Unset:
             if isinstance(data, Unset):

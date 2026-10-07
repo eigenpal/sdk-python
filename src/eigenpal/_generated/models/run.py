@@ -97,18 +97,18 @@ class Run:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.agent_run_execution import AgentRunExecution
-        from ..models.run_artifact import RunArtifact
-        from ..models.run_debug import RunDebug
-        from ..models.run_eval import RunEval
-        from ..models.run_execution_meta import RunExecutionMeta
-        from ..models.run_input import RunInput
-        from ..models.run_output_type_0 import RunOutputType0
-        from ..models.run_source import RunSource
-        from ..models.run_timing import RunTiming
-        from ..models.run_trigger import RunTrigger
-        from ..models.run_usage import RunUsage
-        from ..models.workflow_run_execution import WorkflowRunExecution
+        from ..models.agent_run_execution import AgentRunExecution # noqa: PLC0415
+        from ..models.run_artifact import RunArtifact # noqa: PLC0415
+        from ..models.run_debug import RunDebug # noqa: PLC0415
+        from ..models.run_eval import RunEval # noqa: PLC0415
+        from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
+        from ..models.run_input import RunInput # noqa: PLC0415
+        from ..models.run_output_type_0 import RunOutputType0 # noqa: PLC0415
+        from ..models.run_source import RunSource # noqa: PLC0415
+        from ..models.run_timing import RunTiming # noqa: PLC0415
+        from ..models.run_trigger import RunTrigger # noqa: PLC0415
+        from ..models.run_usage import RunUsage # noqa: PLC0415
+        from ..models.workflow_run_execution import WorkflowRunExecution # noqa: PLC0415
         tags = self.tags
 
 
@@ -218,18 +218,18 @@ class Run:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.agent_run_execution import AgentRunExecution
-        from ..models.run_artifact import RunArtifact
-        from ..models.run_debug import RunDebug
-        from ..models.run_eval import RunEval
-        from ..models.run_execution_meta import RunExecutionMeta
-        from ..models.run_input import RunInput
-        from ..models.run_output_type_0 import RunOutputType0
-        from ..models.run_source import RunSource
-        from ..models.run_timing import RunTiming
-        from ..models.run_trigger import RunTrigger
-        from ..models.run_usage import RunUsage
-        from ..models.workflow_run_execution import WorkflowRunExecution
+        from ..models.agent_run_execution import AgentRunExecution # noqa: PLC0415
+        from ..models.run_artifact import RunArtifact # noqa: PLC0415
+        from ..models.run_debug import RunDebug # noqa: PLC0415
+        from ..models.run_eval import RunEval # noqa: PLC0415
+        from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
+        from ..models.run_input import RunInput # noqa: PLC0415
+        from ..models.run_output_type_0 import RunOutputType0 # noqa: PLC0415
+        from ..models.run_source import RunSource # noqa: PLC0415
+        from ..models.run_timing import RunTiming # noqa: PLC0415
+        from ..models.run_trigger import RunTrigger # noqa: PLC0415
+        from ..models.run_usage import RunUsage # noqa: PLC0415
+        from ..models.workflow_run_execution import WorkflowRunExecution # noqa: PLC0415
         d = dict(src_dict)
         tags = cast(list[str], d.pop("tags"))
 

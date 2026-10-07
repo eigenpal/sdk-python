@@ -59,8 +59,8 @@ class DatasetReviewRequest:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_review_focus_field_output import DatasetReviewFocusFieldOutput
-        from ..models.dataset_review_progress import DatasetReviewProgress
+        from ..models.dataset_review_focus_field_output import DatasetReviewFocusFieldOutput # noqa: PLC0415
+        from ..models.dataset_review_progress import DatasetReviewProgress # noqa: PLC0415
         id = self.id
 
         automation_id = self.automation_id
@@ -121,8 +121,8 @@ class DatasetReviewRequest:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_review_focus_field_output import DatasetReviewFocusFieldOutput
-        from ..models.dataset_review_progress import DatasetReviewProgress
+        from ..models.dataset_review_focus_field_output import DatasetReviewFocusFieldOutput # noqa: PLC0415
+        from ..models.dataset_review_progress import DatasetReviewProgress # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

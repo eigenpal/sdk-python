@@ -40,7 +40,7 @@ class RunTrigger:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_trigger_by_type_0 import RunTriggerByType0
+        from ..models.run_trigger_by_type_0 import RunTriggerByType0 # noqa: PLC0415
         type_: None | str
         type_ = self.type_
 
@@ -68,7 +68,7 @@ class RunTrigger:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_trigger_by_type_0 import RunTriggerByType0
+        from ..models.run_trigger_by_type_0 import RunTriggerByType0 # noqa: PLC0415
         d = dict(src_dict)
         def _parse_type_(data: object) -> None | str:
             if data is None:

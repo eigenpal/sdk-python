@@ -39,7 +39,7 @@ class AgentRunExecutionExpected:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.run_file import RunFile
+        from ..models.run_file import RunFile # noqa: PLC0415
         output = self.output
 
         files: list[dict[str, Any]] | Unset = UNSET
@@ -67,7 +67,7 @@ class AgentRunExecutionExpected:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.run_file import RunFile
+        from ..models.run_file import RunFile # noqa: PLC0415
         d = dict(src_dict)
         output = d.pop("output", UNSET)
 

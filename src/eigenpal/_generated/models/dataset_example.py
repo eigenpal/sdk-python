@@ -70,10 +70,10 @@ class DatasetExample:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.dataset_example_expected_files_item import DatasetExampleExpectedFilesItem
-        from ..models.dataset_example_input_type_0 import DatasetExampleInputType0
-        from ..models.dataset_example_metadata_type_0 import DatasetExampleMetadataType0
-        from ..models.dataset_example_overrides_type_0 import DatasetExampleOverridesType0
+        from ..models.dataset_example_expected_files_item import DatasetExampleExpectedFilesItem # noqa: PLC0415
+        from ..models.dataset_example_input_type_0 import DatasetExampleInputType0 # noqa: PLC0415
+        from ..models.dataset_example_metadata_type_0 import DatasetExampleMetadataType0 # noqa: PLC0415
+        from ..models.dataset_example_overrides_type_0 import DatasetExampleOverridesType0 # noqa: PLC0415
         id = self.id
 
         name = self.name
@@ -159,10 +159,10 @@ class DatasetExample:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.dataset_example_expected_files_item import DatasetExampleExpectedFilesItem
-        from ..models.dataset_example_input_type_0 import DatasetExampleInputType0
-        from ..models.dataset_example_metadata_type_0 import DatasetExampleMetadataType0
-        from ..models.dataset_example_overrides_type_0 import DatasetExampleOverridesType0
+        from ..models.dataset_example_expected_files_item import DatasetExampleExpectedFilesItem # noqa: PLC0415
+        from ..models.dataset_example_input_type_0 import DatasetExampleInputType0 # noqa: PLC0415
+        from ..models.dataset_example_metadata_type_0 import DatasetExampleMetadataType0 # noqa: PLC0415
+        from ..models.dataset_example_overrides_type_0 import DatasetExampleOverridesType0 # noqa: PLC0415
         d = dict(src_dict)
         id = d.pop("id")
 

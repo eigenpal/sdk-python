@@ -45,7 +45,7 @@ class ApiErrorEnvelope:
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.api_error_issue import ApiErrorIssue
+        from ..models.api_error_issue import ApiErrorIssue # noqa: PLC0415
         issues = []
         for issues_item_data in self.issues:
             issues_item = issues_item_data.to_dict()
@@ -81,7 +81,7 @@ class ApiErrorEnvelope:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.api_error_issue import ApiErrorIssue
+        from ..models.api_error_issue import ApiErrorIssue # noqa: PLC0415
         d = dict(src_dict)
         issues = []
         _issues = d.pop("issues")

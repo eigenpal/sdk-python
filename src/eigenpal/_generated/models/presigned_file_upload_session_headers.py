@@ -20,8 +20,7 @@ T = TypeVar("T", bound="PresignedFileUploadSessionHeaders")
 
 @_attrs_define
 class PresignedFileUploadSessionHeaders:
-    """
-     """
+
 
     additional_properties: dict[str, str] = _attrs_field(init=False, factory=dict)
 
