@@ -181,6 +181,9 @@ from .list_models_response import ListModelsResponse
 from .list_templates_response import ListTemplatesResponse
 from .models_list_capability import ModelsListCapability
 from .multipart_file_upload_fallback import MultipartFileUploadFallback
+from .parsing_readiness import ParsingReadiness
+from .parsing_readiness_image_reading import ParsingReadinessImageReading
+from .parsing_readiness_providers import ParsingReadinessProviders
 from .presign_file_upload_part_request import PresignFileUploadPartRequest
 from .presign_file_upload_part_response import PresignFileUploadPartResponse
 from .presign_file_upload_part_response_headers import PresignFileUploadPartResponseHeaders
@@ -497,6 +500,9 @@ __all__ = (
     "ListTemplatesResponse",
     "ModelsListCapability",
     "MultipartFileUploadFallback",
+    "ParsingReadiness",
+    "ParsingReadinessImageReading",
+    "ParsingReadinessProviders",
     "PresignedFileUploadSession",
     "PresignedFileUploadSessionHeaders",
     "PresignedMultipartFileUploadSession",

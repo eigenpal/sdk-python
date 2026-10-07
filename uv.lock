@@ -79,7 +79,7 @@ wheels = [
 
 [[package]]
 name = "eigenpal"
-version = "0.20.27"
+version = "0.20.28"
 source = { editable = "." }
 dependencies = [
     { name = "anyio" },

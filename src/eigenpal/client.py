@@ -448,6 +448,10 @@ class AuthResource:
 
 
 class ModelsResource:
+    def parser_readiness(self) -> Any:
+        """Report parsing catalog readiness; this does not probe live providers."""
+        return self._root._request("GET", "/v1/parsing/readiness")
+
     def __init__(self, root: EigenpalClient) -> None:
         self._root = root
 

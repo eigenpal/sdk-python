@@ -414,3 +414,10 @@ def test_run_sends_execution_tags_separately(client: EigenpalClient) -> None:
     assert json.loads(route.calls.last.request.content) == {
         "target": "agents.test", "input": {"id": "123"}, "tags": ["123", "batch"]
     }
+
+@respx.mock
+def test_parser_readiness(client: EigenpalClient) -> None:
+    body = {"stepType": "ai.parse-v2", "liveProbe": False}
+    route = respx.get("http://localhost:3000/v1/parsing/readiness").mock(return_value=httpx.Response(200, json=body))
+    assert client.models.parser_readiness() == body
+    assert route.calls.last.request.headers["authorization"] == "Bearer eg_test_key"

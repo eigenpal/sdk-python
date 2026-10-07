@@ -154,7 +154,8 @@ client
 ├── experiments
 │   └── resolve
 └── models
-    └── list
+    ├── list
+    └── parser_readiness
 ```
 
 Start runs with `client.run(...)` and create a new run from a previous snapshot with `client.rerun(...)`.
@@ -2263,6 +2264,20 @@ List text, vision, and OCR models configured for this tenant's environment from 
 
 ```python
 // ListModelsResponse
+```
+
+### `client.models.parser_readiness`
+
+**`GET /v1/parsing/readiness`**
+
+Inspect document parsing configuration
+
+Read deployment-approved OCR/vision defaults and configuration readiness for ai.parse-v2. Does not probe live providers or worker native binaries. Run document smoke tests to verify live readiness.
+
+**Response**
+
+```python
+// ParsingReadiness
 ```
 
 ## Runs
