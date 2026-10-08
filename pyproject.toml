@@ -1,6 +1,6 @@
 [project]
 name = "eigenpal"
-version = "0.20.30"
+version = "0.20.31"
 description = "Official Python SDK for the EigenPal API"
 readme = "README.md"
 requires-python = ">=3.10"
