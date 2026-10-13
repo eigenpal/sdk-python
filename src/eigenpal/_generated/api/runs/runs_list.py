@@ -9,6 +9,7 @@ from ...types import Response, UNSET
 from ... import errors
 
 from ...models.api_error_envelope import ApiErrorEnvelope
+from ...models.runs_list_has_example import RunsListHasExample
 from ...models.runs_list_response import RunsListResponse
 from ...types import UNSET, Unset
 from typing import cast
@@ -27,6 +28,7 @@ def _get_kwargs(
     batch_id: str | Unset = UNSET,
     example_id: str | Unset = UNSET,
     example_id_contains: str | Unset = UNSET,
+    has_example: RunsListHasExample | Unset = UNSET,
     from_: str | Unset = UNSET,
     to: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
@@ -81,6 +83,12 @@ def _get_kwargs(
     params["exampleId"] = example_id
 
     params["exampleIdContains"] = example_id_contains
+
+    json_has_example: str | Unset = UNSET
+    if not isinstance(has_example, Unset):
+        json_has_example = has_example.value
+
+    params["hasExample"] = json_has_example
 
     params["from"] = from_
 
@@ -243,6 +251,7 @@ def sync_detailed(
     batch_id: str | Unset = UNSET,
     example_id: str | Unset = UNSET,
     example_id_contains: str | Unset = UNSET,
+    has_example: RunsListHasExample | Unset = UNSET,
     from_: str | Unset = UNSET,
     to: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
@@ -287,6 +296,8 @@ def sync_detailed(
         batch_id (str | Unset):
         example_id (str | Unset):
         example_id_contains (str | Unset):
+        has_example (RunsListHasExample | Unset): Only runs linked to a dataset example (eval and
+            example runs).
         from_ (str | Unset):
         to (str | Unset):
         created_after (str | Unset):
@@ -336,6 +347,7 @@ source_ref=source_ref,
 batch_id=batch_id,
 example_id=example_id,
 example_id_contains=example_id_contains,
+has_example=has_example,
 from_=from_,
 to=to,
 created_after=created_after,
@@ -385,6 +397,7 @@ def sync(
     batch_id: str | Unset = UNSET,
     example_id: str | Unset = UNSET,
     example_id_contains: str | Unset = UNSET,
+    has_example: RunsListHasExample | Unset = UNSET,
     from_: str | Unset = UNSET,
     to: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
@@ -429,6 +442,8 @@ def sync(
         batch_id (str | Unset):
         example_id (str | Unset):
         example_id_contains (str | Unset):
+        has_example (RunsListHasExample | Unset): Only runs linked to a dataset example (eval and
+            example runs).
         from_ (str | Unset):
         to (str | Unset):
         created_after (str | Unset):
@@ -479,6 +494,7 @@ source_ref=source_ref,
 batch_id=batch_id,
 example_id=example_id,
 example_id_contains=example_id_contains,
+has_example=has_example,
 from_=from_,
 to=to,
 created_after=created_after,
@@ -522,6 +538,7 @@ async def asyncio_detailed(
     batch_id: str | Unset = UNSET,
     example_id: str | Unset = UNSET,
     example_id_contains: str | Unset = UNSET,
+    has_example: RunsListHasExample | Unset = UNSET,
     from_: str | Unset = UNSET,
     to: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
@@ -566,6 +583,8 @@ async def asyncio_detailed(
         batch_id (str | Unset):
         example_id (str | Unset):
         example_id_contains (str | Unset):
+        has_example (RunsListHasExample | Unset): Only runs linked to a dataset example (eval and
+            example runs).
         from_ (str | Unset):
         to (str | Unset):
         created_after (str | Unset):
@@ -615,6 +634,7 @@ source_ref=source_ref,
 batch_id=batch_id,
 example_id=example_id,
 example_id_contains=example_id_contains,
+has_example=has_example,
 from_=from_,
 to=to,
 created_after=created_after,
@@ -664,6 +684,7 @@ async def asyncio(
     batch_id: str | Unset = UNSET,
     example_id: str | Unset = UNSET,
     example_id_contains: str | Unset = UNSET,
+    has_example: RunsListHasExample | Unset = UNSET,
     from_: str | Unset = UNSET,
     to: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
@@ -708,6 +729,8 @@ async def asyncio(
         batch_id (str | Unset):
         example_id (str | Unset):
         example_id_contains (str | Unset):
+        has_example (RunsListHasExample | Unset): Only runs linked to a dataset example (eval and
+            example runs).
         from_ (str | Unset):
         to (str | Unset):
         created_after (str | Unset):
@@ -758,6 +781,7 @@ source_ref=source_ref,
 batch_id=batch_id,
 example_id=example_id,
 example_id_contains=example_id_contains,
+has_example=has_example,
 from_=from_,
 to=to,
 created_after=created_after,

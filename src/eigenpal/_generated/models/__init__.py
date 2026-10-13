@@ -287,6 +287,7 @@ from .run_usage_response import RunUsageResponse
 from .run_usage_tokens import RunUsageTokens
 from .runs_artifacts_list_bundle import RunsArtifactsListBundle
 from .runs_artifacts_list_zip import RunsArtifactsListZip
+from .runs_list_has_example import RunsListHasExample
 from .runs_list_response import RunsListResponse
 from .template import Template
 from .template_file_reference_request import TemplateFileReferenceRequest
@@ -580,6 +581,7 @@ __all__ = (
     "RunsArtifactsListBundle",
     "RunsArtifactsListZip",
     "RunScoresResponse",
+    "RunsListHasExample",
     "RunsListResponse",
     "RunSource",
     "RunSourceGit",

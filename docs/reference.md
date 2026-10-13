@@ -2292,45 +2292,46 @@ List workflow and agent runs with cursor pagination.
 
 **Query parameters**
 
-| Name                    | Type  | Description                                                                                                                   |
-| ----------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `tag`                   | `str` | (optional)Exact, case-sensitive execution tag                                                                                 |
-| `type`                  | `str` | (optional)                                                                                                                    |
-| `source`                | `str` | (optional)                                                                                                                    |
-| `status`                | `str` | (optional)                                                                                                                    |
-| `trigger`               | `str` | (optional)                                                                                                                    |
-| `triggered_by`          | `str` | (optional)                                                                                                                    |
-| `source_ref`            | `str` | (optional)                                                                                                                    |
-| `batch_id`              | `str` | (optional)                                                                                                                    |
-| `example_id`            | `str` | (optional)                                                                                                                    |
-| `example_id_contains`   | `str` | (optional)                                                                                                                    |
-| `from`                  | `str` | (optional)                                                                                                                    |
-| `to`                    | `str` | (optional)                                                                                                                    |
-| `created_after`         | `str` | (optional)                                                                                                                    |
-| `created_before`        | `str` | (optional)                                                                                                                    |
-| `completed_after`       | `str` | (optional)                                                                                                                    |
-| `completed_before`      | `str` | (optional)                                                                                                                    |
-| `cursor`                | `str` | (optional)                                                                                                                    |
-| `offset`                | `int` | (optional)                                                                                                                    |
-| `limit`                 | `int` | (optional)                                                                                                                    |
-| `ids`                   | `str` | (optional)                                                                                                                    |
-| `experiments`           | `str` | (optional)                                                                                                                    |
-| `sort`                  | `str` | (optional)                                                                                                                    |
-| `order`                 | `str` | (optional)                                                                                                                    |
-| `review_status`         | `str` | (optional)                                                                                                                    |
-| `review_verdict`        | `str` | (optional)                                                                                                                    |
-| `has_review`            | `str` | (optional)                                                                                                                    |
-| `no_review`             | `str` | (optional)                                                                                                                    |
-| `has_corrections`       | `str` | (optional)                                                                                                                    |
-| `review_note_contains`  | `str` | (optional)                                                                                                                    |
-| `review_created_after`  | `str` | (optional)                                                                                                                    |
-| `review_created_before` | `str` | (optional)                                                                                                                    |
-| `review_updated_after`  | `str` | (optional)                                                                                                                    |
-| `review_updated_before` | `str` | (optional)                                                                                                                    |
-| `review_closed_after`   | `str` | (optional)                                                                                                                    |
-| `review_closed_before`  | `str` | (optional)                                                                                                                    |
-| `since_last_closed`     | `str` | (optional)                                                                                                                    |
-| `sample_rate`           | `str` | (optional)Keep runs whose `sampleRank` is below this threshold (0–1). Pages may return fewer than `limit` rows when filtered. |
+| Name                    | Type              | Description                                                                                                                   |
+| ----------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `tag`                   | `str`             | (optional)Exact, case-sensitive execution tag                                                                                 |
+| `type`                  | `str`             | (optional)                                                                                                                    |
+| `source`                | `str`             | (optional)                                                                                                                    |
+| `status`                | `str`             | (optional)                                                                                                                    |
+| `trigger`               | `str`             | (optional)                                                                                                                    |
+| `triggered_by`          | `str`             | (optional)                                                                                                                    |
+| `source_ref`            | `str`             | (optional)                                                                                                                    |
+| `batch_id`              | `str`             | (optional)                                                                                                                    |
+| `example_id`            | `str`             | (optional)                                                                                                                    |
+| `example_id_contains`   | `str`             | (optional)                                                                                                                    |
+| `has_example`           | `Literal["true"]` | (optional)Only runs linked to a dataset example (eval and example runs).                                                      |
+| `from`                  | `str`             | (optional)                                                                                                                    |
+| `to`                    | `str`             | (optional)                                                                                                                    |
+| `created_after`         | `str`             | (optional)                                                                                                                    |
+| `created_before`        | `str`             | (optional)                                                                                                                    |
+| `completed_after`       | `str`             | (optional)                                                                                                                    |
+| `completed_before`      | `str`             | (optional)                                                                                                                    |
+| `cursor`                | `str`             | (optional)                                                                                                                    |
+| `offset`                | `int`             | (optional)                                                                                                                    |
+| `limit`                 | `int`             | (optional)                                                                                                                    |
+| `ids`                   | `str`             | (optional)                                                                                                                    |
+| `experiments`           | `str`             | (optional)                                                                                                                    |
+| `sort`                  | `str`             | (optional)                                                                                                                    |
+| `order`                 | `str`             | (optional)                                                                                                                    |
+| `review_status`         | `str`             | (optional)                                                                                                                    |
+| `review_verdict`        | `str`             | (optional)                                                                                                                    |
+| `has_review`            | `str`             | (optional)                                                                                                                    |
+| `no_review`             | `str`             | (optional)                                                                                                                    |
+| `has_corrections`       | `str`             | (optional)                                                                                                                    |
+| `review_note_contains`  | `str`             | (optional)                                                                                                                    |
+| `review_created_after`  | `str`             | (optional)                                                                                                                    |
+| `review_created_before` | `str`             | (optional)                                                                                                                    |
+| `review_updated_after`  | `str`             | (optional)                                                                                                                    |
+| `review_updated_before` | `str`             | (optional)                                                                                                                    |
+| `review_closed_after`   | `str`             | (optional)                                                                                                                    |
+| `review_closed_before`  | `str`             | (optional)                                                                                                                    |
+| `since_last_closed`     | `str`             | (optional)                                                                                                                    |
+| `sample_rate`           | `str`             | (optional)Keep runs whose `sampleRank` is below this threshold (0–1). Pages may return fewer than `limit` rows when filtered. |
 
 **Response**
 
