@@ -26,7 +26,8 @@ class RunStartMultipartRequest:
     """
         Attributes:
             target (str): Automation target, e.g. `workflows.invoice`.
-            tags (str | Unset): JSON string or string array of exact execution tags
+            tags (str | Unset): JSON string or string array of exact execution tags. Returned in every webhook event as
+                `data.run.tags`.
             input_ (str | Unset): JSON-encoded scalar input object.
             overrides (str | Unset): JSON-encoded step overrides.
             metadata (str | Unset): JSON-encoded run metadata.

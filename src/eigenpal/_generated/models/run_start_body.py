@@ -32,7 +32,8 @@ class RunStartBody:
 
         Attributes:
             target (str): Automation target without a version suffix, e.g. workflows.invoice or agents.support.
-            tags (list[str] | str | Unset):
+            tags (list[str] | str | Unset): One exact tag or a list of up to 100 (256 characters each). Tags are returned on
+                the run and in every webhook event as `data.run.tags`, so use them to carry your own correlation IDs.
             input_ (RunStartBodyInput | Unset): Scalar and structured automation arguments.
             files (RunStartBodyFiles | Unset): File inputs as ingress references (`{ "$fileId": "file_..." }` or `{
                 "$inline": { filename, mimeType, base64 } }`). Upload bytes via multipart `files.<fieldName>` parts instead.
