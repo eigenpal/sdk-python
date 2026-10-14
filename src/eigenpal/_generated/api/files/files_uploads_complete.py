@@ -128,7 +128,8 @@ def sync_detailed(
 ) -> Response[ApiErrorEnvelope | File]:
     """ Complete file upload
 
-     Verify a storage-direct pending object and promote it into a reusable file. Safe to retry.
+     Verify a storage-direct pending object or assemble an http-chunked session into a reusable file.
+    Safe to retry.
 
     Args:
         upload_id (str):
@@ -161,7 +162,8 @@ def sync(
 ) -> ApiErrorEnvelope | File | None:
     """ Complete file upload
 
-     Verify a storage-direct pending object and promote it into a reusable file. Safe to retry.
+     Verify a storage-direct pending object or assemble an http-chunked session into a reusable file.
+    Safe to retry.
 
     Args:
         upload_id (str):
@@ -189,7 +191,8 @@ async def asyncio_detailed(
 ) -> Response[ApiErrorEnvelope | File]:
     """ Complete file upload
 
-     Verify a storage-direct pending object and promote it into a reusable file. Safe to retry.
+     Verify a storage-direct pending object or assemble an http-chunked session into a reusable file.
+    Safe to retry.
 
     Args:
         upload_id (str):
@@ -222,7 +225,8 @@ async def asyncio(
 ) -> ApiErrorEnvelope | File | None:
     """ Complete file upload
 
-     Verify a storage-direct pending object and promote it into a reusable file. Safe to retry.
+     Verify a storage-direct pending object or assemble an http-chunked session into a reusable file.
+    Safe to retry.
 
     Args:
         upload_id (str):

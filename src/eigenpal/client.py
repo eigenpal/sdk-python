@@ -28,6 +28,11 @@ from eigenpal._upload import (
     storage_upload_timeout,
     upload_presigned_multipart_parts,
 )
+from eigenpal._upload_chunked import (
+    annotate_http_chunked_complete_failure,
+    should_abort_http_chunked_upload_session,
+    upload_http_chunks,
+)
 from eigenpal.errors import EigenpalError, EigenpalTimeoutError, error_from_response
 
 DEFAULT_BASE_URL = "https://api.eigenpal.com"
@@ -1340,6 +1345,23 @@ class FilesResource:
                     annotate_multipart_complete_failure(negotiation["uploadId"], error)
                 raise
 
+        if negotiation["transport"] == "http-chunked":
+            chunks_ready = False
+            try:
+                self._upload_http_chunks(source, negotiation)
+                chunks_ready = True
+                return self._complete_presigned_multipart(negotiation)
+            except BaseException as error:
+                if should_abort_http_chunked_upload_session(chunks_ready=chunks_ready):
+                    try:
+                        self.abort_upload(negotiation["uploadId"])
+                    except Exception:
+                        pass
+                    raise
+                if isinstance(error, Exception):
+                    annotate_http_chunked_complete_failure(negotiation["uploadId"], error)
+                raise
+
         headers = {
             name: value
             for name, value in negotiation.get("headers", {}).items()
@@ -1414,6 +1436,25 @@ class FilesResource:
             list_parts=list_parts,
             presign_part=presign_part,
             put_part=put_part,
+        )
+
+    def _upload_http_chunks(self, source: Any, negotiation: dict[str, Any]) -> None:
+        chunks_url = str(negotiation["chunksUrl"]).rstrip("/")
+
+        def put_chunk(chunk_index: int, start: int, length: int) -> None:
+            body = read_part(source, start, length)
+            self._root._request(
+                "PUT",
+                f"{chunks_url}/{chunk_index}",
+                content=body,
+                headers={"Content-Type": "application/octet-stream"},
+            )
+
+        upload_http_chunks(
+            chunk_count=int(negotiation["chunkCount"]),
+            chunk_size_bytes=int(negotiation["chunkSizeBytes"]),
+            total_size=source.size,
+            put_chunk=put_chunk,
         )
 
     def _complete_presigned_multipart(self, negotiation: dict[str, Any]) -> Any:

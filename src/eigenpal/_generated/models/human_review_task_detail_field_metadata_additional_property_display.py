@@ -20,7 +20,8 @@ T = TypeVar("T", bound="HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisp
 
 @_attrs_define
 class HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay:
-    """ Opaque display metadata preserved for the review UI
+    """ Opaque display metadata preserved for the review UI. When metadataFrom is ai.extract, numeric grounding scores are
+    copied here as display.score; routing confidence stays on confidence as categorical low|medium|high.
 
      """
 

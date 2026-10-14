@@ -28,16 +28,17 @@ T = TypeVar("T", bound="HumanReviewTaskDetailFieldMetadataAdditionalProperty")
 class HumanReviewTaskDetailFieldMetadataAdditionalProperty:
     """
         Attributes:
-            confidence (float | HumanReviewTaskDetailFieldMetadataAdditionalPropertyConfidenceType1 | str | Unset):
-                Producer-supplied confidence: 0–1 numeric (legacy) or categorical low|medium|high from ai.extract grounding. Not
-                calibrated by Eigenpal.
+            confidence (float | HumanReviewTaskDetailFieldMetadataAdditionalPropertyConfidenceType1 | str | Unset): Routing
+                confidence: categorical low|medium|high from ai.extract grounding, or legacy 0–1 numeric when authored. Numeric
+                grounding scores from extract land in display.score instead. Not calibrated by Eigenpal.
             label (str | Unset): Short label shown in the review UI
             description (str | Unset): Longer reviewer guidance for this field
             review (HumanReviewTaskDetailFieldMetadataAdditionalPropertyReview | Unset): Legacy per-field override kept for
                 existing tasks. Prefer selection.fields.review. Default:
                 HumanReviewTaskDetailFieldMetadataAdditionalPropertyReview.AUTO.
             display (HumanReviewTaskDetailFieldMetadataAdditionalPropertyDisplay | Unset): Opaque display metadata preserved
-                for the review UI
+                for the review UI. When metadataFrom is ai.extract, numeric grounding scores are copied here as display.score;
+                routing confidence stays on confidence as categorical low|medium|high.
      """
 
     confidence: float | HumanReviewTaskDetailFieldMetadataAdditionalPropertyConfidenceType1 | str | Unset = UNSET

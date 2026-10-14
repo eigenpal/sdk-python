@@ -35,6 +35,8 @@ class FileUploadSession:
             expires_at (datetime.datetime):
             part_size_bytes (int | None | Unset):
             part_count (int | None | Unset):
+            chunk_size_bytes (int | None | Unset):
+            chunk_count (int | None | Unset):
             parts (list[FileUploadSessionPartsItem] | Unset):
      """
 
@@ -45,6 +47,8 @@ class FileUploadSession:
     expires_at: datetime.datetime
     part_size_bytes: int | None | Unset = UNSET
     part_count: int | None | Unset = UNSET
+    chunk_size_bytes: int | None | Unset = UNSET
+    chunk_count: int | None | Unset = UNSET
     parts: list[FileUploadSessionPartsItem] | Unset = UNSET
 
 
@@ -75,6 +79,18 @@ class FileUploadSession:
         else:
             part_count = self.part_count
 
+        chunk_size_bytes: int | None | Unset
+        if isinstance(self.chunk_size_bytes, Unset):
+            chunk_size_bytes = UNSET
+        else:
+            chunk_size_bytes = self.chunk_size_bytes
+
+        chunk_count: int | None | Unset
+        if isinstance(self.chunk_count, Unset):
+            chunk_count = UNSET
+        else:
+            chunk_count = self.chunk_count
+
         parts: list[dict[str, Any]] | Unset = UNSET
         if not isinstance(self.parts, Unset):
             parts = []
@@ -98,6 +114,10 @@ class FileUploadSession:
             field_dict["partSizeBytes"] = part_size_bytes
         if part_count is not UNSET:
             field_dict["partCount"] = part_count
+        if chunk_size_bytes is not UNSET:
+            field_dict["chunkSizeBytes"] = chunk_size_bytes
+        if chunk_count is not UNSET:
+            field_dict["chunkCount"] = chunk_count
         if parts is not UNSET:
             field_dict["parts"] = parts
 
@@ -145,6 +165,26 @@ class FileUploadSession:
         part_count = _parse_part_count(d.pop("partCount", UNSET))
 
 
+        def _parse_chunk_size_bytes(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        chunk_size_bytes = _parse_chunk_size_bytes(d.pop("chunkSizeBytes", UNSET))
+
+
+        def _parse_chunk_count(data: object) -> int | None | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(int | None | Unset, data)
+
+        chunk_count = _parse_chunk_count(d.pop("chunkCount", UNSET))
+
+
         _parts = d.pop("parts", UNSET)
         parts: list[FileUploadSessionPartsItem] | Unset = UNSET
         if _parts is not UNSET:
@@ -165,6 +205,8 @@ class FileUploadSession:
             expires_at=expires_at,
             part_size_bytes=part_size_bytes,
             part_count=part_count,
+            chunk_size_bytes=chunk_size_bytes,
+            chunk_count=chunk_count,
             parts=parts,
         )
 

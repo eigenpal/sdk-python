@@ -872,3 +872,49 @@ def test_non_seekable_stream_is_rejected(client: EigenpalClient) -> None:
 
     with pytest.raises(EigenpalError, match="non-seekable"):
         client.files.upload(NonSeekable())  # type: ignore[arg-type]
+
+
+@respx.mock
+def test_files_upload_http_chunked_from_path(
+    tmp_path: Path, client: EigenpalClient
+) -> None:
+    blob = tmp_path / "notes.txt"
+    blob.write_bytes(b"abcdefghijkl")
+    chunk_puts: list[int] = []
+
+    respx.post("http://localhost:3000/v1/files/uploads").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "transport": "http-chunked",
+                "uploadId": "fup_chunk",
+                "fileId": "file_chunk",
+                "chunkSizeBytes": 5,
+                "chunkCount": 3,
+                "chunksUrl": "/v1/files/uploads/fup_chunk/chunks",
+                "completeUrl": "/v1/files/uploads/fup_chunk/complete",
+                "expiresAt": "2026-08-04T10:00:00.000Z",
+                "maxFileSizeBytes": 100 * 1024 * 1024,
+            },
+        )
+    )
+
+    def chunk_put(request: httpx.Request) -> httpx.Response:
+        chunk_index = int(str(request.url).rsplit("/", 1)[-1])
+        chunk_puts.append(chunk_index)
+        return httpx.Response(
+            200, json={"accepted": True, "chunkIndex": chunk_index, "size": 5}
+        )
+
+    respx.put(url__regex=r".*/v1/files/uploads/fup_chunk/chunks/\d+$").mock(
+        side_effect=chunk_put
+    )
+    respx.post("http://localhost:3000/v1/files/uploads/fup_chunk/complete").mock(
+        return_value=httpx.Response(
+            200, json={"id": "file_chunk", "filename": "notes.txt", "size": 12}
+        )
+    )
+
+    result = client.files.upload(blob)
+    assert result["id"] == "file_chunk"
+    assert chunk_puts == [0, 1, 2]

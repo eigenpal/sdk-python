@@ -121,8 +121,8 @@ def sync_detailed(
 ) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
     """ Abort file upload
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Abort a pending storage-direct or http-chunked upload. Multipart sessions call AbortMultipartUpload;
+    pending PUT objects and staged chunks are deleted. Completed canonical files are never deleted.
 
     Args:
         upload_id (str):
@@ -155,8 +155,8 @@ def sync(
 ) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
     """ Abort file upload
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Abort a pending storage-direct or http-chunked upload. Multipart sessions call AbortMultipartUpload;
+    pending PUT objects and staged chunks are deleted. Completed canonical files are never deleted.
 
     Args:
         upload_id (str):
@@ -184,8 +184,8 @@ async def asyncio_detailed(
 ) -> Response[AbortFileUploadResponse | ApiErrorEnvelope]:
     """ Abort file upload
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Abort a pending storage-direct or http-chunked upload. Multipart sessions call AbortMultipartUpload;
+    pending PUT objects and staged chunks are deleted. Completed canonical files are never deleted.
 
     Args:
         upload_id (str):
@@ -218,8 +218,8 @@ async def asyncio(
 ) -> AbortFileUploadResponse | ApiErrorEnvelope | None:
     """ Abort file upload
 
-     Abort a pending storage-direct upload. Multipart sessions call AbortMultipartUpload; pending PUT
-    objects are deleted. Completed canonical files are never deleted.
+     Abort a pending storage-direct or http-chunked upload. Multipart sessions call AbortMultipartUpload;
+    pending PUT objects and staged chunks are deleted. Completed canonical files are never deleted.
 
     Args:
         upload_id (str):
