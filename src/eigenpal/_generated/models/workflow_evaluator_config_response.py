@@ -8,45 +8,44 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from ..models.automation_type import AutomationType
 from typing import cast
+from typing import Literal, cast
 
 if TYPE_CHECKING:
-  from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig
+  from ..models.workflow_evaluator_config import WorkflowEvaluatorConfig
 
 
 
 
 
-T = TypeVar("T", bound="EvaluatorConfigResponse")
+T = TypeVar("T", bound="WorkflowEvaluatorConfigResponse")
 
 
 
 @_attrs_define
-class EvaluatorConfigResponse:
-    """ Evaluator YAML and parsed evaluator configuration for an automation.
-
+class WorkflowEvaluatorConfigResponse:
+    """
         Attributes:
-            automation_id (str): Automation that owns this evaluator config.
-            automation_type (AutomationType):
-            yaml (str): Evaluator configuration YAML.
-            config (EvaluatorConfigResponseConfig):
+            automation_id (str):
+            automation_type (Literal['workflow']):
+            yaml (str): Workflow evaluator configuration YAML.
+            config (WorkflowEvaluatorConfig):
      """
 
     automation_id: str
-    automation_type: AutomationType
+    automation_type: Literal['workflow']
     yaml: str
-    config: EvaluatorConfigResponseConfig
+    config: WorkflowEvaluatorConfig
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
-        from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig # noqa: PLC0415
+        from ..models.workflow_evaluator_config import WorkflowEvaluatorConfig # noqa: PLC0415
         automation_id = self.automation_id
 
-        automation_type = self.automation_type.value
+        automation_type = self.automation_type
 
         yaml = self.yaml
 
@@ -68,27 +67,26 @@ class EvaluatorConfigResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.evaluator_config_response_config import EvaluatorConfigResponseConfig # noqa: PLC0415
+        from ..models.workflow_evaluator_config import WorkflowEvaluatorConfig # noqa: PLC0415
         d = dict(src_dict)
         automation_id = d.pop("automationId")
 
-        automation_type = AutomationType(d.pop("automationType"))
-
-
-
+        automation_type = cast(Literal['workflow'] , d.pop("automationType"))
+        if automation_type != 'workflow':
+            raise ValueError(f"automationType must match const 'workflow', got '{automation_type}'")
 
         yaml = d.pop("yaml")
 
-        config = EvaluatorConfigResponseConfig.from_dict(d.pop("config"))
+        config = WorkflowEvaluatorConfig.from_dict(d.pop("config"))
 
 
 
 
-        evaluator_config_response = cls(
+        workflow_evaluator_config_response = cls(
             automation_id=automation_id,
             automation_type=automation_type,
             yaml=yaml,
             config=config,
         )
 
-        return evaluator_config_response
+        return workflow_evaluator_config_response

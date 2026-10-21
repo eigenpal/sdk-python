@@ -8,25 +8,36 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
+from ...models.agent_evaluator_config_response import AgentEvaluatorConfigResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.evaluator_config_response import EvaluatorConfigResponse
+from ...models.workflow_evaluator_config_response import WorkflowEvaluatorConfigResponse
+from ...types import UNSET, Unset
 from typing import cast
 
 
 
 def _get_kwargs(
     id: str,
+    *,
+    source_ref: str | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
 
 
 
+    params: dict[str, Any] = {}
+
+    params["sourceRef"] = source_ref
+
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
 
     _kwargs: dict[str, Any] = {
         "method": "get",
         "url": "/v1/automations/{id}/evaluators".format(id=quote(str(id), safe=""),),
+        "params": params,
     }
 
 
@@ -34,11 +45,28 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = EvaluatorConfigResponse.from_dict(response.json())
+        def _parse_response_200(data: object) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_evaluator_config_response_type_0 = WorkflowEvaluatorConfigResponse.from_dict(data)
 
 
+
+                return componentsschemas_evaluator_config_response_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_evaluator_config_response_type_1 = AgentEvaluatorConfigResponse.from_dict(data)
+
+
+
+            return componentsschemas_evaluator_config_response_type_1
+
+        response_200 = _parse_response_200(response.json())
 
         return response_200
 
@@ -104,7 +132,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -117,27 +145,31 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    source_ref: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
+) -> Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]:
     """ Get evaluators
 
-     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human review verdicts.
+     Fetch workflow evaluator YAML or agent evaluator metadata compiled from the requested sourceRef
+    (latest release by default). Agent evaluations are defined in agent.ts and captured with each run.
+    Automated scores are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
+        source_ref (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | EvaluatorConfigResponse]
+        Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+source_ref=source_ref,
 
     )
 
@@ -151,28 +183,32 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    source_ref: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
+) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope | None:
     """ Get evaluators
 
-     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human review verdicts.
+     Fetch workflow evaluator YAML or agent evaluator metadata compiled from the requested sourceRef
+    (latest release by default). Agent evaluations are defined in agent.ts and captured with each run.
+    Automated scores are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
+        source_ref (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | EvaluatorConfigResponse
+        AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope
      """
 
 
     return sync_detailed(
         id=id,
 client=client,
+source_ref=source_ref,
 
     ).parsed
 
@@ -180,27 +216,31 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    source_ref: str | Unset = UNSET,
 
-) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
+) -> Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]:
     """ Get evaluators
 
-     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human review verdicts.
+     Fetch workflow evaluator YAML or agent evaluator metadata compiled from the requested sourceRef
+    (latest release by default). Agent evaluations are defined in agent.ts and captured with each run.
+    Automated scores are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
+        source_ref (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | EvaluatorConfigResponse]
+        Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]
      """
 
 
     kwargs = _get_kwargs(
         id=id,
+source_ref=source_ref,
 
     )
 
@@ -214,27 +254,31 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient | Client,
+    source_ref: str | Unset = UNSET,
 
-) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
+) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope | None:
     """ Get evaluators
 
-     Fetch the evaluator configuration for an automation. Evaluators produce automated `score` results,
-    which are separate from human review verdicts.
+     Fetch workflow evaluator YAML or agent evaluator metadata compiled from the requested sourceRef
+    (latest release by default). Agent evaluations are defined in agent.ts and captured with each run.
+    Automated scores are separate from human review verdicts.
 
     Args:
         id (str): Automation id or typed alias.
+        source_ref (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | EvaluatorConfigResponse
+        AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope
      """
 
 
     return (await asyncio_detailed(
         id=id,
 client=client,
+source_ref=source_ref,
 
     )).parsed

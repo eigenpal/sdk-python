@@ -2,6 +2,21 @@
 
 from .abort_file_upload_response import AbortFileUploadResponse
 from .accept_http_chunked_upload_chunk_response import AcceptHttpChunkedUploadChunkResponse
+from .agent_evaluation import AgentEvaluation
+from .agent_evaluation_evaluators import AgentEvaluationEvaluators
+from .agent_evaluation_evaluators_additional_property_type_0 import AgentEvaluationEvaluatorsAdditionalPropertyType0
+from .agent_evaluation_evaluators_additional_property_type_1 import AgentEvaluationEvaluatorsAdditionalPropertyType1
+from .agent_evaluation_evaluators_additional_property_type_1_options import AgentEvaluationEvaluatorsAdditionalPropertyType1Options
+from .agent_evaluation_evaluators_additional_property_type_1_options_rules import AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRules
+from .agent_evaluation_evaluators_additional_property_type_1_options_rules_additional_property import AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRulesAdditionalProperty
+from .agent_evaluation_evaluators_additional_property_type_1_options_rules_additional_property_items import AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRulesAdditionalPropertyItems
+from .agent_evaluation_evaluators_additional_property_type_1_options_rules_additional_property_order import AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRulesAdditionalPropertyOrder
+from .agent_evaluation_evaluators_additional_property_type_2 import AgentEvaluationEvaluatorsAdditionalPropertyType2
+from .agent_evaluation_pass_type_0 import AgentEvaluationPassType0
+from .agent_evaluation_pass_type_1 import AgentEvaluationPassType1
+from .agent_evaluation_pass_type_1_weights import AgentEvaluationPassType1Weights
+from .agent_evaluator_config_response import AgentEvaluatorConfigResponse
+from .agent_evaluator_config_response_source import AgentEvaluatorConfigResponseSource
 from .agent_run_execution import AgentRunExecution
 from .agent_run_execution_expected import AgentRunExecutionExpected
 from .agent_run_execution_files import AgentRunExecutionFiles
@@ -116,8 +131,6 @@ from .delete_folder_response import DeleteFolderResponse
 from .delete_template_response import DeleteTemplateResponse
 from .edit_dataset_review_item_file import EditDatasetReviewItemFile
 from .eval_result import EvalResult
-from .evaluator_config_response import EvaluatorConfigResponse
-from .evaluator_config_response_config import EvaluatorConfigResponseConfig
 from .evaluator_config_update import EvaluatorConfigUpdate
 from .example_run_response import ExampleRunResponse
 from .example_run_response_type import ExampleRunResponseType
@@ -318,12 +331,29 @@ from .update_email_server_request_type_1 import UpdateEmailServerRequestType1
 from .update_email_server_request_type_1_security import UpdateEmailServerRequestType1Security
 from .update_email_server_request_type_2 import UpdateEmailServerRequestType2
 from .update_folder_request import UpdateFolderRequest
+from .workflow_evaluator_config import WorkflowEvaluatorConfig
+from .workflow_evaluator_config_response import WorkflowEvaluatorConfigResponse
 from .workflow_run_execution import WorkflowRunExecution
 from .workflow_run_execution_expected import WorkflowRunExecutionExpected
 
 __all__ = (
     "AbortFileUploadResponse",
     "AcceptHttpChunkedUploadChunkResponse",
+    "AgentEvaluation",
+    "AgentEvaluationEvaluators",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType0",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType1",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType1Options",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRules",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRulesAdditionalProperty",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRulesAdditionalPropertyItems",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType1OptionsRulesAdditionalPropertyOrder",
+    "AgentEvaluationEvaluatorsAdditionalPropertyType2",
+    "AgentEvaluationPassType0",
+    "AgentEvaluationPassType1",
+    "AgentEvaluationPassType1Weights",
+    "AgentEvaluatorConfigResponse",
+    "AgentEvaluatorConfigResponseSource",
     "AgentRunExecution",
     "AgentRunExecutionExpected",
     "AgentRunExecutionFiles",
@@ -438,8 +468,6 @@ __all__ = (
     "DeleteTemplateResponse",
     "EditDatasetReviewItemFile",
     "EvalResult",
-    "EvaluatorConfigResponse",
-    "EvaluatorConfigResponseConfig",
     "EvaluatorConfigUpdate",
     "ExampleRunResponse",
     "ExampleRunResponseType",
@@ -640,6 +668,8 @@ __all__ = (
     "UpdateEmailServerRequestType1Security",
     "UpdateEmailServerRequestType2",
     "UpdateFolderRequest",
+    "WorkflowEvaluatorConfig",
+    "WorkflowEvaluatorConfigResponse",
     "WorkflowRunExecution",
     "WorkflowRunExecutionExpected",
 )

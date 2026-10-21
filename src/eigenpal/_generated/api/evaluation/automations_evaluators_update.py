@@ -8,9 +8,10 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
+from ...models.agent_evaluator_config_response import AgentEvaluatorConfigResponse
 from ...models.api_error_envelope import ApiErrorEnvelope
-from ...models.evaluator_config_response import EvaluatorConfigResponse
 from ...models.evaluator_config_update import EvaluatorConfigUpdate
+from ...models.workflow_evaluator_config_response import WorkflowEvaluatorConfigResponse
 from typing import cast
 
 
@@ -42,11 +43,28 @@ def _get_kwargs(
 
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope | None:
     if response.status_code == 200:
-        response_200 = EvaluatorConfigResponse.from_dict(response.json())
+        def _parse_response_200(data: object) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                componentsschemas_evaluator_config_response_type_0 = WorkflowEvaluatorConfigResponse.from_dict(data)
 
 
+
+                return componentsschemas_evaluator_config_response_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            componentsschemas_evaluator_config_response_type_1 = AgentEvaluatorConfigResponse.from_dict(data)
+
+
+
+            return componentsschemas_evaluator_config_response_type_1
+
+        response_200 = _parse_response_200(response.json())
 
         return response_200
 
@@ -112,7 +130,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -127,11 +145,11 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: EvaluatorConfigUpdate,
 
-) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
+) -> Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]:
     """ Replace evaluators
 
-     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
-    source for future experiment scores.
+     Replace evaluator YAML for a workflow. Agents reject YAML updates: define evaluators and a pass rule
+    in agent.ts, then release.
 
     Args:
         id (str): Automation id or typed alias.
@@ -142,7 +160,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | EvaluatorConfigResponse]
+        Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]
      """
 
 
@@ -164,11 +182,11 @@ def sync(
     client: AuthenticatedClient | Client,
     body: EvaluatorConfigUpdate,
 
-) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
+) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope | None:
     """ Replace evaluators
 
-     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
-    source for future experiment scores.
+     Replace evaluator YAML for a workflow. Agents reject YAML updates: define evaluators and a pass rule
+    in agent.ts, then release.
 
     Args:
         id (str): Automation id or typed alias.
@@ -179,7 +197,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | EvaluatorConfigResponse
+        AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope
      """
 
 
@@ -196,11 +214,11 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: EvaluatorConfigUpdate,
 
-) -> Response[ApiErrorEnvelope | EvaluatorConfigResponse]:
+) -> Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]:
     """ Replace evaluators
 
-     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
-    source for future experiment scores.
+     Replace evaluator YAML for a workflow. Agents reject YAML updates: define evaluators and a pass rule
+    in agent.ts, then release.
 
     Args:
         id (str): Automation id or typed alias.
@@ -211,7 +229,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ApiErrorEnvelope | EvaluatorConfigResponse]
+        Response[AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope]
      """
 
 
@@ -233,11 +251,11 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: EvaluatorConfigUpdate,
 
-) -> ApiErrorEnvelope | EvaluatorConfigResponse | None:
+) -> AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope | None:
     """ Replace evaluators
 
-     Replace the evaluator YAML for an automation. The submitted YAML is validated before it becomes the
-    source for future experiment scores.
+     Replace evaluator YAML for a workflow. Agents reject YAML updates: define evaluators and a pass rule
+    in agent.ts, then release.
 
     Args:
         id (str): Automation id or typed alias.
@@ -248,7 +266,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ApiErrorEnvelope | EvaluatorConfigResponse
+        AgentEvaluatorConfigResponse | WorkflowEvaluatorConfigResponse | ApiErrorEnvelope
      """
 
 

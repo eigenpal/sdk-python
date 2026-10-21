@@ -15,16 +15,16 @@ from typing import cast
 
 
 
-T = TypeVar("T", bound="EvaluatorConfigResponseConfig")
+T = TypeVar("T", bound="WorkflowEvaluatorConfig")
 
 
 
 @_attrs_define
-class EvaluatorConfigResponseConfig:
+class WorkflowEvaluatorConfig:
     """
         Attributes:
-            evaluators (list[Any]): Parsed evaluator definitions from the YAML.
-            pass_threshold (float): Overall score threshold required for the experiment to pass.
+            evaluators (list[Any]):
+            pass_threshold (float):
      """
 
     evaluators: list[Any]
@@ -61,9 +61,9 @@ class EvaluatorConfigResponseConfig:
 
         pass_threshold = d.pop("passThreshold")
 
-        evaluator_config_response_config = cls(
+        workflow_evaluator_config = cls(
             evaluators=evaluators,
             pass_threshold=pass_threshold,
         )
 
-        return evaluator_config_response_config
+        return workflow_evaluator_config
