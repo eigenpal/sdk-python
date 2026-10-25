@@ -23,7 +23,7 @@ import sys
 SDK_LANGUAGE = "python"
 # Rewritten at publish time by scripts/release/platform/render-sdk-versions.sh.
 # Keep this string literal exactly stable — sed matches on it.
-SDK_VERSION = "0.20.88"
+SDK_VERSION = "0.20.89"
 
 
 def _detect_runtime() -> str:
