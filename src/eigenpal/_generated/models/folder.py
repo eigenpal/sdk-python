@@ -62,7 +62,6 @@ class Folder:
 
         name = self.name
 
-        created_at: str
         created_at = self.created_at
 
         child_count = self.child_count
@@ -120,11 +119,7 @@ class Folder:
 
         name = d.pop("name")
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         child_count = d.pop("childCount", UNSET)
 

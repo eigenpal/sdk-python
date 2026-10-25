@@ -95,7 +95,6 @@ class EvalResult:
         error: None | str
         error = self.error
 
-        created_at: str
         created_at = self.created_at
 
 
@@ -205,11 +204,7 @@ class EvalResult:
         error = _parse_error(d.pop("error"))
 
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         eval_result = cls(
             id=id,

@@ -89,7 +89,6 @@ class AutomationDetail:
         folder_path: None | str
         folder_path = self.folder_path
 
-        created_at: str
         created_at = self.created_at
 
         description: None | str | Unset
@@ -112,11 +111,7 @@ class AutomationDetail:
 
         implementation_available = self.implementation_available
 
-        updated_at: str | Unset
-        if isinstance(self.updated_at, Unset):
-            updated_at = UNSET
-        else:
-            updated_at = self.updated_at
+        updated_at = self.updated_at
 
         input_schema: dict[str, Any] | None | Unset
         if isinstance(self.input_schema, Unset):
@@ -206,11 +201,7 @@ class AutomationDetail:
         folder_path = _parse_folder_path(d.pop("folderPath"))
 
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         def _parse_description(data: object) -> None | str | Unset:
             if data is None:
@@ -246,13 +237,7 @@ class AutomationDetail:
 
         implementation_available = d.pop("implementationAvailable", UNSET)
 
-        def _parse_updated_at(data: object) -> str | Unset:
-            if isinstance(data, Unset):
-                return data
-            return cast(str | Unset, data)
-
-        updated_at = _parse_updated_at(d.pop("updatedAt", UNSET))
-
+        updated_at = d.pop("updatedAt", UNSET)
 
         def _parse_input_schema(data: object) -> AutomationDetailInputSchemaType0 | None | Unset:
             if data is None:

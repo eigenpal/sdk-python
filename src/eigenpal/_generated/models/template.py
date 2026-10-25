@@ -85,7 +85,6 @@ class Template:
 
         grammar = self.grammar.to_dict()
 
-        created_at: str
         created_at = self.created_at
 
         description: None | str | Unset
@@ -182,11 +181,7 @@ class Template:
 
 
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         def _parse_description(data: object) -> None | str | Unset:
             if data is None:

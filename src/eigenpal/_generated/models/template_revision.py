@@ -8,7 +8,6 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-from typing import cast
 
 
 
@@ -45,7 +44,6 @@ class TemplateRevision:
 
         sha256 = self.sha256
 
-        created_at: str
         created_at = self.created_at
 
 
@@ -71,11 +69,7 @@ class TemplateRevision:
 
         sha256 = d.pop("sha256")
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         template_revision = cls(
             id=id,

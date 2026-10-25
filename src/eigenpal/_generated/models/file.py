@@ -56,7 +56,6 @@ class File:
         size: int | None
         size = self.size
 
-        created_at: str
         created_at = self.created_at
 
         purpose: None | str | Unset
@@ -105,11 +104,7 @@ class File:
         size = _parse_size(d.pop("size"))
 
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         def _parse_purpose(data: object) -> None | str | Unset:
             if data is None:

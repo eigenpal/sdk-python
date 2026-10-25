@@ -67,10 +67,8 @@ class PublicSmtpEmailServer:
 
         enabled = self.enabled
 
-        created_at: str
         created_at = self.created_at
 
-        updated_at: str
         updated_at = self.updated_at
 
         transport = self.transport
@@ -125,17 +123,9 @@ class PublicSmtpEmailServer:
 
         enabled = d.pop("enabled")
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
+        created_at = d.pop("createdAt")
 
-        created_at = _parse_created_at(d.pop("createdAt"))
-
-
-        def _parse_updated_at(data: object) -> str:
-            return cast(str, data)
-
-        updated_at = _parse_updated_at(d.pop("updatedAt"))
-
+        updated_at = d.pop("updatedAt")
 
         transport = cast(Literal['smtp'] , d.pop("transport"))
         if transport != 'smtp':

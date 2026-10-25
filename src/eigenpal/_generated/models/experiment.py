@@ -77,7 +77,6 @@ class Experiment:
         avg_score: float | None
         avg_score = self.avg_score
 
-        created_at: str
         created_at = self.created_at
 
         completed_at: None | str
@@ -141,11 +140,7 @@ class Experiment:
         avg_score = _parse_avg_score(d.pop("avgScore"))
 
 
-        def _parse_created_at(data: object) -> str:
-            return cast(str, data)
-
-        created_at = _parse_created_at(d.pop("createdAt"))
-
+        created_at = d.pop("createdAt")
 
         def _parse_completed_at(data: object) -> None | str:
             if data is None:

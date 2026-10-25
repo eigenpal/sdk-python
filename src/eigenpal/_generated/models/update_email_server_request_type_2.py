@@ -25,10 +25,12 @@ class UpdateEmailServerRequestType2:
         Attributes:
             name (str | Unset):
             enabled (bool | Unset):
+            transport (Any | Unset):
      """
 
     name: str | Unset = UNSET
     enabled: bool | Unset = UNSET
+    transport: Any | Unset = UNSET
 
 
 
@@ -39,6 +41,8 @@ class UpdateEmailServerRequestType2:
 
         enabled = self.enabled
 
+        transport = self.transport
+
 
         field_dict: dict[str, Any] = {}
 
@@ -48,6 +52,8 @@ class UpdateEmailServerRequestType2:
             field_dict["name"] = name
         if enabled is not UNSET:
             field_dict["enabled"] = enabled
+        if transport is not UNSET:
+            field_dict["transport"] = transport
 
         return field_dict
 
@@ -60,9 +66,12 @@ class UpdateEmailServerRequestType2:
 
         enabled = d.pop("enabled", UNSET)
 
+        transport = d.pop("transport", UNSET)
+
         update_email_server_request_type_2 = cls(
             name=name,
             enabled=enabled,
+            transport=transport,
         )
 
         return update_email_server_request_type_2

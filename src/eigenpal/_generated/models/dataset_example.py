@@ -119,11 +119,7 @@ class DatasetExample:
         latest_run_id: None | str
         latest_run_id = self.latest_run_id
 
-        created_at: str | Unset
-        if isinstance(self.created_at, Unset):
-            created_at = UNSET
-        else:
-            created_at = self.created_at
+        created_at = self.created_at
 
         updated_at: None | str | Unset
         if isinstance(self.updated_at, Unset):
@@ -271,13 +267,7 @@ class DatasetExample:
         latest_run_id = _parse_latest_run_id(d.pop("latestRunId"))
 
 
-        def _parse_created_at(data: object) -> str | Unset:
-            if isinstance(data, Unset):
-                return data
-            return cast(str | Unset, data)
-
-        created_at = _parse_created_at(d.pop("createdAt", UNSET))
-
+        created_at = d.pop("createdAt", UNSET)
 
         def _parse_updated_at(data: object) -> None | str | Unset:
             if data is None:

@@ -59,11 +59,7 @@ class AutomationVersion:
 
         is_current = self.is_current
 
-        created_at: str | Unset
-        if isinstance(self.created_at, Unset):
-            created_at = UNSET
-        else:
-            created_at = self.created_at
+        created_at = self.created_at
 
 
         field_dict: dict[str, Any] = {}
@@ -111,13 +107,7 @@ class AutomationVersion:
 
         is_current = d.pop("isCurrent", UNSET)
 
-        def _parse_created_at(data: object) -> str | Unset:
-            if isinstance(data, Unset):
-                return data
-            return cast(str | Unset, data)
-
-        created_at = _parse_created_at(d.pop("createdAt", UNSET))
-
+        created_at = d.pop("createdAt", UNSET)
 
         automation_version = cls(
             id=id,
