@@ -31,6 +31,7 @@ from eigenpal.errors import (
     EigenpalValidationError,
 )
 from eigenpal._generated.models.api_error_envelope import ApiErrorEnvelope
+from eigenpal._generated.models.run_error import RunError
 from eigenpal._generated.models.create_automation_version_request_type_0 import (
     CreateAutomationVersionRequestType0,
 )
@@ -103,6 +104,7 @@ __all__ = [
     "EigenpalTimeoutError",
     "EigenpalValidationError",
     "ApiErrorEnvelope",
+    "RunError",
     "CreateAutomationVersionRequest",
     "CreateAutomationVersionRequestType0",
     "CreateAutomationVersionRequestType1",

@@ -16,6 +16,7 @@ if TYPE_CHECKING:
   from ..models.agent_run_execution import AgentRunExecution
   from ..models.run_artifact import RunArtifact
   from ..models.run_debug import RunDebug
+  from ..models.run_error import RunError
   from ..models.run_eval import RunEval
   from ..models.run_execution_meta import RunExecutionMeta
   from ..models.run_input import RunInput
@@ -68,7 +69,9 @@ class Run:
                 schema. Absent until the run completes.
             files (list[RunArtifact] | Unset): Completed runs only. Download with GET /api/v1/runs/:id/artifacts/:path.
                 Absent until the run completes.
-            error (None | str | Unset):
+            error (None | RunError | Unset): Structured processing failure, independent of the HTTP response status.
+                Includes control.fail statusCode and step when known. Present on terminal runs; null when no error is recorded.
+                Absent while in flight.
             input_ (RunInput | Unset):
             usage (None | RunUsage | Unset): Present only with `expand=usage`. Null for old runs without telemetry.
             debug (RunDebug | Unset):
@@ -87,7 +90,7 @@ class Run:
     eval_: RunEval | Unset = UNSET
     output: None | RunOutputType0 | Unset = UNSET
     files: list[RunArtifact] | Unset = UNSET
-    error: None | str | Unset = UNSET
+    error: None | RunError | Unset = UNSET
     input_: RunInput | Unset = UNSET
     usage: None | RunUsage | Unset = UNSET
     debug: RunDebug | Unset = UNSET
@@ -100,6 +103,7 @@ class Run:
         from ..models.agent_run_execution import AgentRunExecution # noqa: PLC0415
         from ..models.run_artifact import RunArtifact # noqa: PLC0415
         from ..models.run_debug import RunDebug # noqa: PLC0415
+        from ..models.run_error import RunError # noqa: PLC0415
         from ..models.run_eval import RunEval # noqa: PLC0415
         from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
         from ..models.run_input import RunInput # noqa: PLC0415
@@ -159,9 +163,11 @@ class Run:
 
 
 
-        error: None | str | Unset
+        error: dict[str, Any] | None | Unset
         if isinstance(self.error, Unset):
             error = UNSET
+        elif isinstance(self.error, RunError):
+            error = self.error.to_dict()
         else:
             error = self.error
 
@@ -221,6 +227,7 @@ class Run:
         from ..models.agent_run_execution import AgentRunExecution # noqa: PLC0415
         from ..models.run_artifact import RunArtifact # noqa: PLC0415
         from ..models.run_debug import RunDebug # noqa: PLC0415
+        from ..models.run_error import RunError # noqa: PLC0415
         from ..models.run_eval import RunEval # noqa: PLC0415
         from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
         from ..models.run_input import RunInput # noqa: PLC0415
@@ -336,12 +343,22 @@ class Run:
                 files.append(files_item)
 
 
-        def _parse_error(data: object) -> None | str | Unset:
+        def _parse_error(data: object) -> None | RunError | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
-            return cast(None | str | Unset, data)
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                error_type_0 = RunError.from_dict(data)
+
+
+
+                return error_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunError | Unset, data)
 
         error = _parse_error(d.pop("error", UNSET))
 

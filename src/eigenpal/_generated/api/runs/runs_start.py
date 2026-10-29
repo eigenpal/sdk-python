@@ -117,6 +117,13 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
         return response_404
 
+    if response.status_code == 409:
+        response_409 = ApiErrorEnvelope.from_dict(response.json())
+
+
+
+        return response_409
+
     if response.status_code == 413:
         response_413 = ApiErrorEnvelope.from_dict(response.json())
 
@@ -173,9 +180,10 @@ def sync_detailed(
      Start a run. Send JSON or multipart/form-data.
 
     How to read a run: the envelope is at the root. The automation business result is in `output` (per-
-    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
-    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
-    on eval-scoped runs.
+    automation, not this generic schema). HTTP 200 can report a failed run. Inspect `execution.status`
+    and the structured `error` (`code`, `message`, `retryable`, and optional business `statusCode` and
+    `step`). Status is `execution.status` (`execution.retry.nextRun.status` is a later retry). `input`,
+    `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
@@ -220,9 +228,10 @@ def sync(
      Start a run. Send JSON or multipart/form-data.
 
     How to read a run: the envelope is at the root. The automation business result is in `output` (per-
-    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
-    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
-    on eval-scoped runs.
+    automation, not this generic schema). HTTP 200 can report a failed run. Inspect `execution.status`
+    and the structured `error` (`code`, `message`, `retryable`, and optional business `statusCode` and
+    `step`). Status is `execution.status` (`execution.retry.nextRun.status` is a later retry). `input`,
+    `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
@@ -262,9 +271,10 @@ async def asyncio_detailed(
      Start a run. Send JSON or multipart/form-data.
 
     How to read a run: the envelope is at the root. The automation business result is in `output` (per-
-    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
-    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
-    on eval-scoped runs.
+    automation, not this generic schema). HTTP 200 can report a failed run. Inspect `execution.status`
+    and the structured `error` (`code`, `message`, `retryable`, and optional business `statusCode` and
+    `step`). Status is `execution.status` (`execution.retry.nextRun.status` is a later retry). `input`,
+    `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.
@@ -309,9 +319,10 @@ async def asyncio(
      Start a run. Send JSON or multipart/form-data.
 
     How to read a run: the envelope is at the root. The automation business result is in `output` (per-
-    automation, not this generic schema). Status is `execution.status` (`execution.retry.nextRun.status`
-    is a later retry). `input`, `usage`, and `debug` appear only with `?expand=`. `eval` is present only
-    on eval-scoped runs.
+    automation, not this generic schema). HTTP 200 can report a failed run. Inspect `execution.status`
+    and the structured `error` (`code`, `message`, `retryable`, and optional business `statusCode` and
+    `step`). Status is `execution.status` (`execution.retry.nextRun.status` is a later retry). `input`,
+    `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
         version (str | Unset): Release or git ref. Defaults to latest.

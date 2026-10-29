@@ -12,3 +12,15 @@ def test_all_generated_modules_import():
     assert modules
     for module in modules:
         importlib.import_module(module.name)
+
+
+def test_public_run_error_preserves_business_code():
+    from eigenpal import RunError
+
+    payload = {
+        "code": "workflow_rejected", "statusCode": 422,
+        "message": "Wrong document", "step": "assert_contract", "retryable": False,
+    }
+    failure = RunError.from_dict(payload)
+    assert failure.status_code == 422
+    assert failure.to_dict() == payload

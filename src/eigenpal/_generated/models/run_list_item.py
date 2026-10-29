@@ -13,6 +13,7 @@ from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
+  from ..models.run_error import RunError
   from ..models.run_eval import RunEval
   from ..models.run_execution_meta import RunExecutionMeta
   from ..models.run_source import RunSource
@@ -44,7 +45,9 @@ class RunListItem:
             parent_execution_id (str | Unset): Parent run id when this run was started by an invoke-workflow step. Omitted
                 for top-level runs.
             eval_ (RunEval | Unset):
-            error (None | str | Unset):
+            error (None | RunError | Unset): Structured processing failure, independent of the HTTP response status.
+                Includes control.fail statusCode and step when known. Present on terminal runs; null when no error is recorded.
+                Absent while in flight.
      """
 
     tags: list[str]
@@ -58,13 +61,14 @@ class RunListItem:
     execution: RunExecutionMeta
     parent_execution_id: str | Unset = UNSET
     eval_: RunEval | Unset = UNSET
-    error: None | str | Unset = UNSET
+    error: None | RunError | Unset = UNSET
 
 
 
 
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.run_error import RunError # noqa: PLC0415
         from ..models.run_eval import RunEval # noqa: PLC0415
         from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
         from ..models.run_source import RunSource # noqa: PLC0415
@@ -96,9 +100,11 @@ class RunListItem:
         if not isinstance(self.eval_, Unset):
             eval_ = self.eval_.to_dict()
 
-        error: None | str | Unset
+        error: dict[str, Any] | None | Unset
         if isinstance(self.error, Unset):
             error = UNSET
+        elif isinstance(self.error, RunError):
+            error = self.error.to_dict()
         else:
             error = self.error
 
@@ -129,6 +135,7 @@ class RunListItem:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.run_error import RunError # noqa: PLC0415
         from ..models.run_eval import RunEval # noqa: PLC0415
         from ..models.run_execution_meta import RunExecutionMeta # noqa: PLC0415
         from ..models.run_source import RunSource # noqa: PLC0415
@@ -181,12 +188,22 @@ class RunListItem:
 
 
 
-        def _parse_error(data: object) -> None | str | Unset:
+        def _parse_error(data: object) -> None | RunError | Unset:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
-            return cast(None | str | Unset, data)
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                error_type_0 = RunError.from_dict(data)
+
+
+
+                return error_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            return cast(None | RunError | Unset, data)
 
         error = _parse_error(d.pop("error", UNSET))
 

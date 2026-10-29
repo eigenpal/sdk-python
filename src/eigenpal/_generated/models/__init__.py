@@ -231,6 +231,7 @@ from .run_cancel_response_cancellation_state import RunCancelResponseCancellatio
 from .run_cancel_response_execution import RunCancelResponseExecution
 from .run_cancel_response_type import RunCancelResponseType
 from .run_debug import RunDebug
+from .run_error import RunError
 from .run_eval import RunEval
 from .run_event import RunEvent
 from .run_event_metadata import RunEventMetadata
@@ -568,6 +569,7 @@ __all__ = (
     "RunCancelResponseExecution",
     "RunCancelResponseType",
     "RunDebug",
+    "RunError",
     "RunEval",
     "RunEvent",
     "RunEventMetadata",

@@ -421,3 +421,20 @@ def test_parser_readiness(client: EigenpalClient) -> None:
     route = respx.get("http://localhost:3000/v1/parsing/readiness").mock(return_value=httpx.Response(200, json=body))
     assert client.models.parser_readiness() == body
     assert route.calls.last.request.headers["authorization"] == "Bearer eg_test_key"
+
+
+@respx.mock
+def test_failed_run_is_data_not_an_http_error(client: EigenpalClient) -> None:
+    error = {
+        "code": "workflow_rejected", "statusCode": 422,
+        "message": "Wrong document", "step": "assert_contract", "retryable": False,
+    }
+    route = respx.get("http://localhost:3000/v1/runs/exec_1").mock(
+        return_value=httpx.Response(200, json=run_summary(
+            id="exec_1", execution={"status": "failed"}, error=error
+        ))
+    )
+    run = client.runs.get("exec_1")
+    assert run["execution"]["status"] == "failed"
+    assert run["error"] == error
+    assert route.call_count == 1
