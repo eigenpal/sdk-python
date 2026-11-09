@@ -153,6 +153,7 @@ from .folder import Folder
 from .folder_preview_items_item import FolderPreviewItemsItem
 from .folder_preview_items_item_kind import FolderPreviewItemsItemKind
 from .folder_type import FolderType
+from .folders_list_tree import FoldersListTree
 from .http_chunked_file_upload_session import HttpChunkedFileUploadSession
 from .human_review_approve_response import HumanReviewApproveResponse
 from .human_review_field_response import HumanReviewFieldResponse
@@ -490,6 +491,7 @@ __all__ = (
     "Folder",
     "FolderPreviewItemsItem",
     "FolderPreviewItemsItemKind",
+    "FoldersListTree",
     "FolderType",
     "HttpChunkedFileUploadSession",
     "HumanReviewApproveResponse",

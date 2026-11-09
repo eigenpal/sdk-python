@@ -2029,11 +2029,11 @@ folders = client.folders.list(type="workflow", tree="true")
 
 **Query parameters**
 
-| Name        | Type         | Description                                                                                                          |
-| ----------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `type`      | `FolderType` | Folder tree to list. Required; there is no default.                                                                  |
-| `parent_id` | `str`        | (optional)Limit to direct children of this folder. Pass `null` for root folders only. Ignored when `tree=true`.      |
-| `tree`      | `str`        | (optional)When `true`, return the full tree for `type` with child counts (and workflow previews for workflow trees). |
+| Name        | Type                       | Description                                                                                                                                                              |
+| ----------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `type`      | `FolderType`               | Folder tree to list. Required; there is no default.                                                                                                                      |
+| `parent_id` | `str`                      | (optional)Limit to direct children of this folder. Pass `null` for root folders only. Ignored when `tree=true`.                                                          |
+| `tree`      | `Literal["true", "false"]` | (optional)When `true`, return the full tree for `type` with child counts (and workflow previews for workflow trees). Any value other than `true` or `false` is rejected. |
 
 **Response**
 

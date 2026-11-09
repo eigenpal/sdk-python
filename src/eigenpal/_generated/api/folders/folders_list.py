@@ -11,6 +11,7 @@ from ... import errors
 from ...models.api_error_envelope import ApiErrorEnvelope
 from ...models.folder import Folder
 from ...models.folder_type import FolderType
+from ...models.folders_list_tree import FoldersListTree
 from ...types import UNSET, Unset
 from typing import cast
 
@@ -20,7 +21,7 @@ def _get_kwargs(
     *,
     type_: FolderType,
     parent_id: str | Unset = UNSET,
-    tree: str | Unset = UNSET,
+    tree: FoldersListTree | Unset = UNSET,
 
 ) -> dict[str, Any]:
 
@@ -34,7 +35,11 @@ def _get_kwargs(
 
     params["parentId"] = parent_id
 
-    params["tree"] = tree
+    json_tree: str | Unset = UNSET
+    if not isinstance(tree, Unset):
+        json_tree = tree.value
+
+    params["tree"] = json_tree
 
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
@@ -140,7 +145,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     type_: FolderType,
     parent_id: str | Unset = UNSET,
-    tree: str | Unset = UNSET,
+    tree: FoldersListTree | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | list[Folder]]:
     """ List folders
@@ -153,8 +158,9 @@ def sync_detailed(
         type_ (FolderType):
         parent_id (str | Unset): Limit to direct children of this folder. Pass `null` for root
             folders only. Ignored when `tree=true`.
-        tree (str | Unset): When `true`, return the full tree for `type` with child counts (and
-            workflow previews for workflow trees).
+        tree (FoldersListTree | Unset): When `true`, return the full tree for `type` with child
+            counts (and workflow previews for workflow trees). Any value other than `true` or `false`
+            is rejected.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -183,7 +189,7 @@ def sync(
     client: AuthenticatedClient | Client,
     type_: FolderType,
     parent_id: str | Unset = UNSET,
-    tree: str | Unset = UNSET,
+    tree: FoldersListTree | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | list[Folder] | None:
     """ List folders
@@ -196,8 +202,9 @@ def sync(
         type_ (FolderType):
         parent_id (str | Unset): Limit to direct children of this folder. Pass `null` for root
             folders only. Ignored when `tree=true`.
-        tree (str | Unset): When `true`, return the full tree for `type` with child counts (and
-            workflow previews for workflow trees).
+        tree (FoldersListTree | Unset): When `true`, return the full tree for `type` with child
+            counts (and workflow previews for workflow trees). Any value other than `true` or `false`
+            is rejected.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -221,7 +228,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     type_: FolderType,
     parent_id: str | Unset = UNSET,
-    tree: str | Unset = UNSET,
+    tree: FoldersListTree | Unset = UNSET,
 
 ) -> Response[ApiErrorEnvelope | list[Folder]]:
     """ List folders
@@ -234,8 +241,9 @@ async def asyncio_detailed(
         type_ (FolderType):
         parent_id (str | Unset): Limit to direct children of this folder. Pass `null` for root
             folders only. Ignored when `tree=true`.
-        tree (str | Unset): When `true`, return the full tree for `type` with child counts (and
-            workflow previews for workflow trees).
+        tree (FoldersListTree | Unset): When `true`, return the full tree for `type` with child
+            counts (and workflow previews for workflow trees). Any value other than `true` or `false`
+            is rejected.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -264,7 +272,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     type_: FolderType,
     parent_id: str | Unset = UNSET,
-    tree: str | Unset = UNSET,
+    tree: FoldersListTree | Unset = UNSET,
 
 ) -> ApiErrorEnvelope | list[Folder] | None:
     """ List folders
@@ -277,8 +285,9 @@ async def asyncio(
         type_ (FolderType):
         parent_id (str | Unset): Limit to direct children of this folder. Pass `null` for root
             folders only. Ignored when `tree=true`.
-        tree (str | Unset): When `true`, return the full tree for `type` with child counts (and
-            workflow previews for workflow trees).
+        tree (FoldersListTree | Unset): When `true`, return the full tree for `type` with child
+            counts (and workflow previews for workflow trees). Any value other than `true` or `false`
+            is rejected.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

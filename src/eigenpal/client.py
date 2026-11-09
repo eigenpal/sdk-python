@@ -1018,7 +1018,7 @@ class FoldersResource:
         *,
         type: Literal["workflow", "template"],
         parent_id: Optional[str] = None,
-        tree: Optional[str] = None,
+        tree: Optional[Literal["true", "false"]] = None,
     ) -> Any:
         params: dict[str, Any] = {"type": type}
         if parent_id is not None:
