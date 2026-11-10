@@ -22,9 +22,11 @@ Example
 from eigenpal.client import EigenpalClient
 from eigenpal.errors import (
     EigenpalAuthError,
+    EigenpalConflictError,
     EigenpalError,
     EigenpalForbiddenError,
     EigenpalNotFoundError,
+    EigenpalPayloadTooLargeError,
     EigenpalRateLimitError,
     EigenpalServerError,
     EigenpalTimeoutError,
@@ -97,8 +99,10 @@ __all__ = [
     "EigenpalClient",
     "EigenpalError",
     "EigenpalAuthError",
+    "EigenpalConflictError",
     "EigenpalForbiddenError",
     "EigenpalNotFoundError",
+    "EigenpalPayloadTooLargeError",
     "EigenpalRateLimitError",
     "EigenpalServerError",
     "EigenpalTimeoutError",

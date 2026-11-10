@@ -1,4 +1,4 @@
-"""Typed exceptions raised by the Eigenpal SDK.
+"""Typed exceptions raised by the EigenPal SDK.
 
 Every non-2xx HTTP response is mapped to one of these subclasses based on
 the status code. The original API error envelope (`{ issues, requestId, hint?, docsUrl?, conflictingWorkflowId? }`)
@@ -60,6 +60,22 @@ class EigenpalValidationError(EigenpalError):
         self.issues = issues
 
 
+class EigenpalConflictError(EigenpalError):
+    """409: the resource changed or already exists (e.g. a stale ``expectedUpdatedAt``)."""
+
+    def __init__(self, envelope: Optional[dict[str, Any]] = None) -> None:
+        msg = _first_issue_message(envelope) or "conflict"
+        super().__init__(msg, status=409, envelope=envelope)
+
+
+class EigenpalPayloadTooLargeError(EigenpalError):
+    """413: the request body or uploaded file is larger than the server accepts."""
+
+    def __init__(self, envelope: Optional[dict[str, Any]] = None) -> None:
+        msg = _first_issue_message(envelope) or "payload too large"
+        super().__init__(msg, status=413, envelope=envelope)
+
+
 class EigenpalRateLimitError(EigenpalError):
     def __init__(
         self,
@@ -106,8 +122,13 @@ def error_from_response(
         return EigenpalForbiddenError(envelope)
     if status == 404:
         return EigenpalNotFoundError(envelope)
+    if status == 409:
+        return EigenpalConflictError(envelope)
+    if status == 413:
+        return EigenpalPayloadTooLargeError(envelope)
     if status == 429:
         return EigenpalRateLimitError(envelope, retry_after)
     if status >= 500:
         return EigenpalServerError(status, envelope)
-    return EigenpalError(f"unexpected status {status}", status=status, envelope=envelope)
+    message = _first_issue_message(envelope) or f"unexpected status {status}"
+    return EigenpalError(message, status=status, envelope=envelope)

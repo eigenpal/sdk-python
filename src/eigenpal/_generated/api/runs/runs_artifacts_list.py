@@ -158,7 +158,7 @@ def sync_detailed(
     Args:
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
-            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            listing paths. Does not include trace, scores, or input; use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
             inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
             a smaller `files=` subset.
@@ -206,7 +206,7 @@ def sync(
     Args:
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
-            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            listing paths. Does not include trace, scores, or input; use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
             inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
             a smaller `files=` subset.
@@ -249,7 +249,7 @@ async def asyncio_detailed(
     Args:
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
-            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            listing paths. Does not include trace, scores, or input; use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
             inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
             a smaller `files=` subset.
@@ -297,7 +297,7 @@ async def asyncio(
     Args:
         id (str): Run id
         zip_ (RunsArtifactsListZip | Unset): When `1`, download output files as a ZIP instead of
-            listing paths. Does not include trace, scores, or input — use `GET /runs/{id}/scores` and
+            listing paths. Does not include trace, scores, or input; use `GET /runs/{id}/scores` and
             `GET /runs/{id}/trace` for those. Cloud deployments reject archives whose uncompressed
             inputs exceed 32 MiB (`413 artifacts_zip_too_large`); download files individually or pass
             a smaller `files=` subset.

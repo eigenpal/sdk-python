@@ -14,6 +14,7 @@ from eigenpal import (
     CreateAutomationVersionRequestType0,
     EigenpalAuthError,
     EigenpalClient,
+    EigenpalConflictError,
     EigenpalError,
     EigenpalNotFoundError,
     EigenpalRateLimitError,
@@ -343,6 +344,45 @@ def test_401_404_429_and_400_raise_typed_errors(client: EigenpalClient) -> None:
 
 
 @respx.mock
+def test_run_start_is_not_retried_on_network_error_or_plain_5xx() -> None:
+    retrying = EigenpalClient(
+        api_key="eg_test_key", base_url="http://localhost:3000", max_retries=3
+    )
+    route = respx.post("http://localhost:3000/v1/runs").mock(
+        side_effect=httpx.ConnectError("connection reset")
+    )
+    with pytest.raises(httpx.ConnectError):
+        retrying.run("workflows.extract-invoice", input={"language": "en"})
+    assert route.call_count == 1
+
+    rerun = respx.post("http://localhost:3000/v1/runs/run_1/rerun").mock(
+        side_effect=[
+            httpx.Response(502, json={"issues": [{"field": "<root>", "message": "bad"}]}),
+            httpx.Response(202, json=run_accepted(id="run_dup")),
+        ]
+    )
+    with pytest.raises(EigenpalError):
+        retrying.rerun("run_1")
+    assert rerun.call_count == 1
+
+
+@respx.mock
+def test_run_start_retries_on_429_with_retry_after() -> None:
+    retrying = EigenpalClient(
+        api_key="eg_test_key", base_url="http://localhost:3000", max_retries=2
+    )
+    route = respx.post("http://localhost:3000/v1/runs").mock(
+        side_effect=[
+            httpx.Response(429, headers={"retry-after": "0"}, json={"issues": []}),
+            httpx.Response(202, json=run_accepted(id="run_ok")),
+        ]
+    )
+    result = retrying.run("workflows.extract-invoice", input={"language": "en"})
+    assert result.id == "run_ok"
+    assert route.call_count == 2
+
+
+@respx.mock
 def test_409_name_conflict_exposes_conflicting_workflow_id(client: EigenpalClient) -> None:
     respx.post("http://localhost:3000/v1/automations/workflows.extract-invoice/versions").mock(
         return_value=httpx.Response(
@@ -361,10 +401,11 @@ def test_409_name_conflict_exposes_conflicting_workflow_id(client: EigenpalClien
             },
         )
     )
-    with pytest.raises(EigenpalError) as raised:
+    with pytest.raises(EigenpalConflictError) as raised:
         client.automations.create_version(
             "workflows.extract-invoice", yaml="name: x\n", version="1.2.0"
         )
+    assert str(raised.value) == "already in use"
     assert raised.value.status == 409
     assert raised.value.envelope is not None
     assert raised.value.envelope["conflictingWorkflowId"] == "wf_existing"

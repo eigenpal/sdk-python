@@ -1,5 +1,5 @@
 
-""" A client library for accessing Eigenpal API """
+""" A client library for accessing EigenPal API """
 from .client import AuthenticatedClient, Client
 
 __all__ = (

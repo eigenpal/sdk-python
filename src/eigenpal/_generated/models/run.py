@@ -65,7 +65,7 @@ class Run:
             parent_execution_id (str | Unset): Parent run id when this run was started by an invoke-workflow step. Omitted
                 for top-level runs.
             eval_ (RunEval | Unset):
-            output (None | RunOutputType0 | Unset): Completed runs only. Per-automation business result — not a generic
+            output (None | RunOutputType0 | Unset): Completed runs only. Per-automation business result, not a generic
                 schema. Absent until the run completes.
             files (list[RunArtifact] | Unset): Completed runs only. Download with GET /api/v1/runs/:id/artifacts/:path.
                 Absent until the run completes.

@@ -165,11 +165,16 @@ def _assert_json_response(response: httpx.Response) -> None:
     if response.status_code == 204:
         return
     content_type = (response.headers.get("content-type") or "").lower()
-    if content_type == "" or "json" in content_type or "octet-stream" in content_type:
+    if (
+        content_type == ""
+        or "json" in content_type
+        or "octet-stream" in content_type
+        or "zip" in content_type
+    ):
         return
     raise EigenpalError(
         f'Expected a JSON response from the API but got Content-Type "{content_type}". '
-        "Set `base_url` to your Eigenpal instance root, "
+        "Set `base_url` to your EigenPal instance root, "
         'e.g. "https://api.eigenpal.com".',
         status=response.status_code,
     )
@@ -202,6 +207,26 @@ def _check_response(response: httpx.Response) -> Any:
 
 def _is_retriable(status: int) -> bool:
     return status >= 500 or status == 429
+
+
+def _is_refused(response: httpx.Response) -> bool:
+    """The server refused the request outright, so a retry cannot duplicate work."""
+    if response.status_code == 429:
+        return True
+    return response.status_code == 503 and "retry-after" in response.headers
+
+
+def _backoff(attempt: int) -> float:
+    return 0.25 * (2**attempt)
+
+
+def _retry_delay(response: httpx.Response, attempt: int) -> float:
+    """Honor a numeric ``Retry-After`` header; otherwise back off exponentially."""
+    try:
+        seconds = float(response.headers.get("retry-after", ""))
+    except ValueError:
+        return _backoff(attempt)
+    return seconds if seconds >= 0 else _backoff(attempt)
 
 
 def _path_target(target: RunTarget) -> tuple[str, Optional[str]]:
@@ -296,26 +321,54 @@ class EigenpalClient:
     def __exit__(self, *_: object) -> None:
         self.close()
 
-    def _request(self, method: str, url: str, **kwargs: Any) -> Any:
+    def _send(
+        self, method: str, url: str, *, idempotent: bool = True, **kwargs: Any
+    ) -> httpx.Response:
+        """Send with retries and return the final raw response (status unchecked).
+
+        Idempotent calls retry on 5xx, 429 and network or timeout errors.
+        Non-idempotent calls (run start, rerun) retry only when the server
+        explicitly refused the request (429, or 503 with ``Retry-After``):
+        a lost response may mean the run was already enqueued, and retrying
+        would start a duplicate billed run.
+        """
         for attempt in range(self.max_retries + 1):
+            can_retry = attempt < self.max_retries
             try:
                 response = self._http.request(method, url, **kwargs)
-                if _is_retriable(response.status_code) and attempt < self.max_retries:
-                    time.sleep(0.25 * (2**attempt))
-                    continue
-                return _check_response(response)
             except httpx.TimeoutException as exc:
-                if attempt < self.max_retries:
-                    time.sleep(0.25 * (2**attempt))
+                if idempotent and can_retry:
+                    time.sleep(_backoff(attempt))
                     continue
                 raise EigenpalTimeoutError() from exc
             except httpx.TransportError:
-                if attempt < self.max_retries:
-                    time.sleep(0.25 * (2**attempt))
+                if idempotent and can_retry:
+                    time.sleep(_backoff(attempt))
                     continue
                 raise
+            retriable = (
+                _is_retriable(response.status_code)
+                if idempotent
+                else _is_refused(response)
+            )
+            if retriable and can_retry:
+                time.sleep(_retry_delay(response, attempt))
+                continue
+            return response
 
         raise AssertionError("unreachable")
+
+    def _request(
+        self, method: str, url: str, *, idempotent: bool = True, **kwargs: Any
+    ) -> Any:
+        return _check_response(self._send(method, url, idempotent=idempotent, **kwargs))
+
+    def _download(self, url: str, **kwargs: Any) -> httpx.Response:
+        """GET a binary or text body with retries; raise a typed error on 4xx/5xx."""
+        response = self._send("GET", url, **kwargs)
+        if response.status_code >= 400:
+            _check_response(response)
+        return response
 
     def run(
         self,
@@ -353,7 +406,11 @@ class EigenpalClient:
             if metadata:
                 fields["metadata"] = (None, json.dumps(metadata), "application/json")
             return self._request(
-                "POST", "/v1/runs", params=params or None, files=fields
+                "POST",
+                "/v1/runs",
+                idempotent=False,
+                params=params or None,
+                files=fields,
             )
 
         body: dict[str, Any] = {"target": path_target}
@@ -365,7 +422,9 @@ class EigenpalClient:
             body["overrides"] = overrides
         if metadata:
             body["metadata"] = metadata
-        return self._request("POST", "/v1/runs", params=params or None, json=body)
+        return self._request(
+            "POST", "/v1/runs", idempotent=False, params=params or None, json=body
+        )
 
     def _prepare_run_file_inputs(self, input_dict: dict[str, Any]) -> dict[str, Any]:
         """Pre-upload files when aggregate multipart bytes exceed the configured limit."""
@@ -414,7 +473,10 @@ class EigenpalClient:
         if wait_for_completion is not None:
             params["wait_for_completion"] = wait_for_completion
         return self._request(
-            "POST", f"/v1/runs/{quote(run_id, safe='')}/rerun", params=params or None
+            "POST",
+            f"/v1/runs/{quote(run_id, safe='')}/rerun",
+            idempotent=False,
+            params=params or None,
         )
 
     def run_and_wait(
@@ -750,13 +812,11 @@ class AutomationDatasetReviewRequestsResource:
     ) -> bytes:
         relative = path.lstrip("/")
         params = {"kind": kind} if kind == "expected" else None
-        response = self._root._http.get(
+        response = self._root._download(
             f"{_dataset_review_requests_base(automation_id)}/{quote(review_id, safe='')}/items/{quote(item_id, safe='')}/files/{_quote_path(relative)}",
             params=params,
             follow_redirects=True,
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
     def record_item_file_decision(
@@ -828,13 +888,11 @@ class AutomationDatasetResource:
         self, automation_id: str, *, example_ids: Optional[Sequence[str]] = None
     ) -> bytes:
         params = {"exampleIds": ",".join(example_ids)} if example_ids else None
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/automations/{quote(automation_id, safe='')}/dataset/export",
             params=params,
             follow_redirects=True,
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
     def import_(
@@ -966,12 +1024,10 @@ class AutomationExperimentsResource:
         *,
         format: Literal["csv", "json"] = "csv",
     ) -> str:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/automations/{quote(automation_id, safe='')}/experiments/{quote(experiment_id, safe='')}/export",
             params={"format": format},
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.text
 
     def export_all(
@@ -980,12 +1036,10 @@ class AutomationExperimentsResource:
         *,
         format: Literal["csv", "json"] = "csv",
     ) -> str:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/automations/{quote(automation_id, safe='')}/experiments/export",
             params={"format": format},
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.text
 
     def create_stream(
@@ -1140,13 +1194,10 @@ class RunsArtifactsResource:
         )
 
     def download(self, run_id: str, path: str) -> BinaryIO | bytes:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/runs/{quote(run_id, safe='')}/artifacts/{_quote_path(path)}",
             follow_redirects=True,
         )
-        _assert_json_response(response) if response.status_code >= 400 else None
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
 
@@ -1214,11 +1265,9 @@ class RunsReviewsResource:
         )
 
     def download_expected(self, run_id: str, filename: str) -> bytes:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/runs/{quote(run_id, safe='')}/reviews/expected/{_quote_path(filename)}"
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
     def rename_expected(self, run_id: str, filename: str, new_filename: str) -> Any:
@@ -1277,11 +1326,9 @@ class HumanReviewsResource:
         )
 
     def download_file(self, task_id: str, file_id: str) -> bytes:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/human-reviews/{quote(task_id, safe='')}/files/{quote(file_id, safe='')}/content"
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
 
@@ -1519,12 +1566,10 @@ class FilesResource:
         return self._root._request("GET", f"/v1/files/{quote(file_id, safe='')}")
 
     def download(self, file_id: str) -> bytes:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/files/{quote(file_id, safe='')}/content",
             follow_redirects=True,
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
     def delete(self, file_id: str) -> Any:
@@ -1604,13 +1649,11 @@ class TemplatesResource:
         )
 
     def download(self, template_id: str, *, revision_id: Optional[str] = None) -> bytes:
-        response = self._root._http.get(
+        response = self._root._download(
             f"/v1/templates/{quote(template_id, safe='')}/content",
             params={"revisionId": revision_id} if revision_id else None,
             follow_redirects=True,
         )
-        if response.status_code >= 400:
-            _check_response(response)
         return response.content
 
     def delete(self, template_id: str) -> Any:

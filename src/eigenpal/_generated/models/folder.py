@@ -34,8 +34,8 @@ class Folder:
             created_at (str):
             child_count (int | Unset): Direct subfolder count. Present on tree listings.
             workflow_count (int | Unset): Workflows filed directly in this folder. Present on workflow-tree listings.
-            preview_items (list[FolderPreviewItemsItem] | Unset): Up to a handful of item names — subfolders first, then
-                workflows — for a peek at folder contents. Present on workflow-tree listings.
+            preview_items (list[FolderPreviewItemsItem] | Unset): Up to a handful of item names (subfolders first, then
+                workflows) for a peek at folder contents. Present on workflow-tree listings.
      """
 
     id: str

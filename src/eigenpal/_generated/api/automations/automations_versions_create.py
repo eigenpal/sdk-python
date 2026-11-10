@@ -146,7 +146,7 @@ def sync_detailed(
      Create a tagged YAML workflow candidate from validated YAML or by copying an existing snapshot
     (`historyId`). Provide exactly one of `yaml` or `historyId`. Copy creates a new tagged row and
     leaves the source tag unchanged; it does not retag the original. Defaults to making the new version
-    current. Set `activate: false` to keep it off live traffic until promote — that path requires an
+    current. Set `activate: false` to keep it off live traffic until promote. That path requires an
     existing current workflow version and returns 400 if HEAD is empty. Agent automations are Git-backed
     and return 400. Requires a Bearer API key or a dashboard session.
 
@@ -191,7 +191,7 @@ def sync(
      Create a tagged YAML workflow candidate from validated YAML or by copying an existing snapshot
     (`historyId`). Provide exactly one of `yaml` or `historyId`. Copy creates a new tagged row and
     leaves the source tag unchanged; it does not retag the original. Defaults to making the new version
-    current. Set `activate: false` to keep it off live traffic until promote — that path requires an
+    current. Set `activate: false` to keep it off live traffic until promote. That path requires an
     existing current workflow version and returns 400 if HEAD is empty. Agent automations are Git-backed
     and return 400. Requires a Bearer API key or a dashboard session.
 
@@ -231,7 +231,7 @@ async def asyncio_detailed(
      Create a tagged YAML workflow candidate from validated YAML or by copying an existing snapshot
     (`historyId`). Provide exactly one of `yaml` or `historyId`. Copy creates a new tagged row and
     leaves the source tag unchanged; it does not retag the original. Defaults to making the new version
-    current. Set `activate: false` to keep it off live traffic until promote — that path requires an
+    current. Set `activate: false` to keep it off live traffic until promote. That path requires an
     existing current workflow version and returns 400 if HEAD is empty. Agent automations are Git-backed
     and return 400. Requires a Bearer API key or a dashboard session.
 
@@ -276,7 +276,7 @@ async def asyncio(
      Create a tagged YAML workflow candidate from validated YAML or by copying an existing snapshot
     (`historyId`). Provide exactly one of `yaml` or `historyId`. Copy creates a new tagged row and
     leaves the source tag unchanged; it does not retag the original. Defaults to making the new version
-    current. Set `activate: false` to keep it off live traffic until promote — that path requires an
+    current. Set `activate: false` to keep it off live traffic until promote. That path requires an
     existing current workflow version and returns 400 if HEAD is empty. Agent automations are Git-backed
     and return 400. Requires a Bearer API key or a dashboard session.
 

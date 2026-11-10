@@ -24,9 +24,9 @@ T = TypeVar("T", bound="RunCancelResponseCancellation")
 class RunCancelResponseCancellation:
     """
         Attributes:
-            state (RunCancelResponseCancellationState): `cancelled` — the run was terminated immediately (it had not
-                started). `requested` — the run is in-flight; cancellation was requested and the status will become `cancelled`
-                shortly. `already_terminal` — the run had already finished; nothing changed.
+            state (RunCancelResponseCancellationState): `cancelled`: the run was terminated immediately (it had not
+                started). `requested`: the run is in-flight; cancellation was requested and the status will become `cancelled`
+                shortly. `already_terminal`: the run had already finished; nothing changed.
             was_status (ExecutionStatus):
      """
 

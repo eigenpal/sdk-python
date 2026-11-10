@@ -4,15 +4,17 @@
 
 Every non-2xx response raises a typed subclass of `EigenpalError`.
 
-| HTTP    | Class                     | Notes                                                                |
-| ------- | ------------------------- | -------------------------------------------------------------------- |
-| 400     | `EigenpalValidationError` | `.issues` carries per-field problems                                 |
-| 401     | `EigenpalAuthError`       | Bad / missing API key                                                |
-| 403     | `EigenpalForbiddenError`  | `api_trigger_disabled`, `manual_trigger_disabled`, or scope mismatch |
-| 404     | `EigenpalNotFoundError`   | Automation / run does not exist                                      |
-| 429     | `EigenpalRateLimitError`  | `.retry_after` is the server-suggested wait (seconds)                |
-| 5xx     | `EigenpalServerError`     |                                                                      |
-| timeout | `EigenpalTimeoutError`    |                                                                      |
+| HTTP    | Class                          | Notes                                                                |
+| ------- | ------------------------------ | -------------------------------------------------------------------- |
+| 400     | `EigenpalValidationError`      | `.issues` carries per-field problems                                 |
+| 401     | `EigenpalAuthError`            | Bad / missing API key                                                |
+| 403     | `EigenpalForbiddenError`       | `api_trigger_disabled`, `manual_trigger_disabled`, or scope mismatch |
+| 404     | `EigenpalNotFoundError`        | Automation / run does not exist                                      |
+| 409     | `EigenpalConflictError`        | Stale `expectedUpdatedAt`, name already in use                       |
+| 413     | `EigenpalPayloadTooLargeError` | Body or file over the server limit                                   |
+| 429     | `EigenpalRateLimitError`       | `.retry_after` is the server-suggested wait (seconds)                |
+| 5xx     | `EigenpalServerError`          |                                                                      |
+| timeout | `EigenpalTimeoutError`         |                                                                      |
 
 ```python
 from eigenpal import EigenpalClient, EigenpalValidationError
