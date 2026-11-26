@@ -170,8 +170,9 @@ def sync_detailed(
 
     Args:
         id (str): Source run id to retry.
-        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
-            to latest.
+        version (str | Unset): Version for the new run: `latest` (default), `original` (the source
+            run's version), an exact workflow tag (`1.2.3`), a range (`^1`, `1.2.x`, `~1.2.3`; highest
+            released tag that matches), or a version id. Agent reruns take a git ref.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
 
@@ -212,8 +213,9 @@ def sync(
 
     Args:
         id (str): Source run id to retry.
-        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
-            to latest.
+        version (str | Unset): Version for the new run: `latest` (default), `original` (the source
+            run's version), an exact workflow tag (`1.2.3`), a range (`^1`, `1.2.x`, `~1.2.3`; highest
+            released tag that matches), or a version id. Agent reruns take a git ref.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
 
@@ -249,8 +251,9 @@ async def asyncio_detailed(
 
     Args:
         id (str): Source run id to retry.
-        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
-            to latest.
+        version (str | Unset): Version for the new run: `latest` (default), `original` (the source
+            run's version), an exact workflow tag (`1.2.3`), a range (`^1`, `1.2.x`, `~1.2.3`; highest
+            released tag that matches), or a version id. Agent reruns take a git ref.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
 
@@ -291,8 +294,9 @@ async def asyncio(
 
     Args:
         id (str): Source run id to retry.
-        version (str | Unset): Version for the new run. `original` pins the source run. Defaults
-            to latest.
+        version (str | Unset): Version for the new run: `latest` (default), `original` (the source
+            run's version), an exact workflow tag (`1.2.3`), a range (`^1`, `1.2.x`, `~1.2.3`; highest
+            released tag that matches), or a version id. Agent reruns take a git ref.
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
 

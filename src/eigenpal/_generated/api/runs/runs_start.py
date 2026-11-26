@@ -186,7 +186,10 @@ def sync_detailed(
     `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
-        version (str | Unset): Release or git ref. Defaults to latest.
+        version (str | Unset): Version to run. Defaults to `latest` (the current version).
+            Workflows: an exact tag (`1.2.3`), a range (`1`, `1.2`, `1.x`, `^1.2.3`, `~1.2.3`; the
+            highest released tag that matches, never a candidate), or a version id (`wfv_...`,
+            `wfh_...`). Agents: a git ref (`main`, `1.2.3`, `1.x`, or a commit SHA).
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
@@ -234,7 +237,10 @@ def sync(
     `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
-        version (str | Unset): Release or git ref. Defaults to latest.
+        version (str | Unset): Version to run. Defaults to `latest` (the current version).
+            Workflows: an exact tag (`1.2.3`), a range (`1`, `1.2`, `1.x`, `^1.2.3`, `~1.2.3`; the
+            highest released tag that matches, never a candidate), or a version id (`wfv_...`,
+            `wfh_...`). Agents: a git ref (`main`, `1.2.3`, `1.x`, or a commit SHA).
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
@@ -277,7 +283,10 @@ async def asyncio_detailed(
     `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
-        version (str | Unset): Release or git ref. Defaults to latest.
+        version (str | Unset): Version to run. Defaults to `latest` (the current version).
+            Workflows: an exact tag (`1.2.3`), a range (`1`, `1.2`, `1.x`, `^1.2.3`, `~1.2.3`; the
+            highest released tag that matches, never a candidate), or a version id (`wfv_...`,
+            `wfh_...`). Agents: a git ref (`main`, `1.2.3`, `1.x`, or a commit SHA).
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header
@@ -325,7 +334,10 @@ async def asyncio(
     `usage`, and `debug` appear only with `?expand=`. `eval` is present only on eval-scoped runs.
 
     Args:
-        version (str | Unset): Release or git ref. Defaults to latest.
+        version (str | Unset): Version to run. Defaults to `latest` (the current version).
+            Workflows: an exact tag (`1.2.3`), a range (`1`, `1.2`, `1.x`, `^1.2.3`, `~1.2.3`; the
+            highest released tag that matches, never a candidate), or a version id (`wfv_...`,
+            `wfh_...`). Agents: a git ref (`main`, `1.2.3`, `1.x`, or a commit SHA).
         wait_for_completion (int | Unset): Seconds to wait before returning (max 600). Omit for
             async.
         body (RunStartBody): Run envelope. Declare provenance with the `X-Eigenpal-Trigger` header

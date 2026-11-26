@@ -30,6 +30,8 @@ class RunSource:
             name (None | str):
             version (None | str): Workflow version label (workflow runs only).
             version_id (None | str | Unset): Captured workflow version id (workflow runs only).
+            requested_version (None | str | Unset): Version selector the caller asked for (`latest`, `1.2.3`, `^1`), as
+                resolved to `version` / `versionId` (workflow run start responses only).
             slug (None | str | Unset): Agent slug (agent runs only).
             model (None | str | Unset): LLM model used (agent runs only).
             git (None | RunSourceGit | Unset): Git provenance (agent runs only).
@@ -45,6 +47,7 @@ class RunSource:
     name: None | str
     version: None | str
     version_id: None | str | Unset = UNSET
+    requested_version: None | str | Unset = UNSET
     slug: None | str | Unset = UNSET
     model: None | str | Unset = UNSET
     git: None | RunSourceGit | Unset = UNSET
@@ -71,6 +74,12 @@ class RunSource:
             version_id = UNSET
         else:
             version_id = self.version_id
+
+        requested_version: None | str | Unset
+        if isinstance(self.requested_version, Unset):
+            requested_version = UNSET
+        else:
+            requested_version = self.requested_version
 
         slug: None | str | Unset
         if isinstance(self.slug, Unset):
@@ -112,6 +121,8 @@ class RunSource:
         })
         if version_id is not UNSET:
             field_dict["versionId"] = version_id
+        if requested_version is not UNSET:
+            field_dict["requestedVersion"] = requested_version
         if slug is not UNSET:
             field_dict["slug"] = slug
         if model is not UNSET:
@@ -159,6 +170,16 @@ class RunSource:
             return cast(None | str | Unset, data)
 
         version_id = _parse_version_id(d.pop("versionId", UNSET))
+
+
+        def _parse_requested_version(data: object) -> None | str | Unset:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        requested_version = _parse_requested_version(d.pop("requestedVersion", UNSET))
 
 
         def _parse_slug(data: object) -> None | str | Unset:
@@ -220,6 +241,7 @@ class RunSource:
             name=name,
             version=version,
             version_id=version_id,
+            requested_version=requested_version,
             slug=slug,
             model=model,
             git=git,
